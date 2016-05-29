@@ -568,7 +568,7 @@ class IP_Geo_Block_Admin {
 		foreach ( array( 'anonymize' ) as $key )
 			$output[ $key ] = 0;
 
-		foreach ( array( 'admin', 'ajax', 'plugins', 'themes' ) as $key )
+		foreach ( array( 'admin', 'ajax', 'plugins', 'themes', 'public' ) as $key )
 			$output['validation'][ $key ] = 0;
 
 		// restore the 'signature' that might be transformed to avoid self blocking
@@ -715,6 +715,9 @@ class IP_Geo_Block_Admin {
 				$key[] = $val;
 		}
 		$output['signature'] = implode( ',', $key );
+
+		foreach ( array( 'includes', 'uploads', 'languages' ) as $key )
+			$output['exception'][ $key ] = $default['exception'][ $key ];
 
 		return $output;
 	}

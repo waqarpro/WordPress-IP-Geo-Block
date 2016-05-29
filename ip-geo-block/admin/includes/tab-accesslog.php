@@ -85,6 +85,7 @@ endif;
 			'xmlrpc'  => sprintf( $dfn, 'xmlrpc.php',           __( 'XML-RPC',      IP_Geo_Block::TEXT_DOMAIN ) ),
 			'login'   => sprintf( $dfn, 'wp-login.php',         __( 'Login form',   IP_Geo_Block::TEXT_DOMAIN ) ),
 			'admin'   => sprintf( $dfn, 'wp-admin/*.php',       __( 'Admin area',   IP_Geo_Block::TEXT_DOMAIN ) ),
+			'public'  => sprintf( $dfn, 'public facing pages',  __( 'Public pages', IP_Geo_Block::TEXT_DOMAIN ) ),
 		);
 
 		foreach ( $target as $key => $val ) {

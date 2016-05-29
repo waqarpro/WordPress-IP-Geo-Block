@@ -66,6 +66,7 @@ class IP_Geo_Block {
 			'admin'     => 'admin_url',          // @since 2.6.0
 			'plugins'   => 'plugins_url',        // @since 2.6.0
 			'themes'    => 'get_theme_root_uri', // @since 1.5.0
+			'includes'  => 'includes_url',       // @since 2.6.0
 		);
 
 		// analize the validation target (admin|plugins|themes|includes)
@@ -77,6 +78,16 @@ class IP_Geo_Block {
 			}
 		}
 
+		// analize additional validation target (uploads|languages)
+		if ( ! $this->target_type ) {
+			$key = wp_upload_dir(); // @since 2.2.0
+			if ( $this->target_type =
+				FALSE !== strpos( $this->request_uri, parse_url( $key['baseurl'], PHP_URL_PATH ) ) ? 'uploads' :
+				FALSE !== strpos( $this->request_uri, str_replace( ABSPATH, '', WP_CONTENT_DIR ) . '/languages/' ) ? 'languages' : NULL ) {
+				self::$wp_path[ $this->target_type ] = $this->request_uri;
+			}
+		}
+
 		// WordPress core files
 		global $pagenow;
 		$key = array(
@@ -85,6 +96,7 @@ class IP_Geo_Block {
 			'xmlrpc.php'           => 'xmlrpc',
 			'wp-login.php'         => 'login',
 			'wp-signup.php'        => 'login',
+			'index.php'            => 'public',
 		);
 
 		// wp-admin/*.php, wp-includes, wp-content/(plugins|themes|language|uploads)
@@ -716,6 +728,36 @@ class IP_Geo_Block {
 		}
 
 		return $validate;
+	}
+
+	/**
+	 * Validate at public facing pages.
+	 *
+	 */
+	public function validate_public() {
+		if ( ! $this->is_feed() ) {
+			add_filter( self::PLUGIN_SLUG . '-post-public', array( $this, 'check_host' ), 10, 2 );
+			$this->validate_ip( 'public', self::get_option( 'settings' ) );
+		}
+	}
+
+	public function check_host( $validate, $settings ) {
+		if ( 'passed' !== $validate['result'] ) {
+			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php' );
+
+			$validate['host'] = IP_Geo_Block_Util::gethostbyaddr( $validate['ip'] );
+
+			if ( $validate['host'] !== $validate['ip'] )
+				$validate['result'] = 'passed'; // pass when the host name is available
+		}
+
+		return apply_filters( self::PLUGIN_SLUG . '-bypass-public', $validate, $settings );
+	}
+
+	private function is_feed() {
+		return 'feed' === basename( $this->request_uri ) || (
+			isset( $_GET['feed'] ) && in_array( $_GET['feed'], array( 'rss', 'rss2', 'rdf', 'atom' ) )
+		) ? TRUE : FALSE;
 	}
 
 	/**

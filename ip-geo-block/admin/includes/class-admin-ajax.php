@@ -189,10 +189,19 @@ class IP_Geo_Block_Admin_Ajax {
 			'[validation][ajax][2]',
 			'[validation][plugins]',
 			'[validation][themes]',
+			'[validation][includes]',    // 2.3.0
+		    '[validation][uploads]',     // 2.3.0
+			'[validation][languages]',   // 2.3.0
 			'[rewrite][plugins]',
 			'[rewrite][themes]',
+			'[rewrite][includes]',       // 2.3.0
+		    '[rewrite][uploads]',        // 2.3.0
+			'[rewrite][languages]',      // 2.3.0
 			'[exception][plugins][*]',   // 2.2.5
 			'[exception][themes][*]',    // 2.2.5
+			'[exception][includes][*]',  // 2.3.0
+		    '[exception][uploads][*]',   // 2.3.0
+			'[exception][languages][*]', // 2.3.0
 			'[providers][Maxmind]',
 			'[providers][IP2Location]',
 			'[providers][freegeoip.net]',

@@ -305,6 +305,8 @@ class IP_Geo_Block_Admin_Tab {
 			'xmlrpc'  => sprintf( $dfn, 'xmlrpc.php',           __( 'XML-RPC',      IP_Geo_Block::TEXT_DOMAIN ) ),
 			'login'   => sprintf( $dfn, 'wp-login.php',         __( 'Login form',   IP_Geo_Block::TEXT_DOMAIN ) ),
 			'admin'   => sprintf( $dfn, 'wp-admin/*.php',       __( 'Admin area',   IP_Geo_Block::TEXT_DOMAIN ) ),
+			'others'  => sprintf( $dfn, 'hacked PHP files',     __( 'Other areas',  IP_Geo_Block::TEXT_DOMAIN ) ),
+			'public'  => sprintf( $dfn, 'public facing pages',  __( 'Pubic pages',  IP_Geo_Block::TEXT_DOMAIN ) ),
 		);
 
 		// Comment post
@@ -540,6 +542,46 @@ class IP_Geo_Block_Admin_Tab {
 					. '<ul class="ip_geo_block_settings_exception ip-geo-block-dropup">' . $desc[2] . "<li style='display:none'><ul>\n"
 					. $exception
 					. "</ul></li></ul>\n",
+			)
+		);
+
+		// Other area
+		$key = IP_Geo_Block_Admin_Rewrite::get_dirs();
+		$tmp  = '<ul style="margin-top:0.25em">' . "\n";
+		$tmp .= '<li><input type="checkbox" id="ip_geo_block_settings_rewrite_includes"  name="ip_geo_block_settings[rewrite][includes]"  value="1"' . checked( $options['rewrite']['includes' ], TRUE, FALSE ) . ' /><label for="ip_geo_block_settings_rewrite_includes"><dfn title="' . __( 'except &#8220;wp-includes/ms-files.php&#8221;', IP_Geo_Block::TEXT_DOMAIN ) . '">' . substr( $key['includes' ], 1 ) . "</dfn></label></li>\n";
+		$tmp .= '<li><input type="checkbox" id="ip_geo_block_settings_rewrite_uploads"   name="ip_geo_block_settings[rewrite][uploads]"   value="1"' . checked( $options['rewrite']['uploads'  ], TRUE, FALSE ) . ' /><label for="ip_geo_block_settings_rewrite_uploads">'   . substr( $key['uploads'  ], 1 ) . "</label></li>\n";
+		$tmp .= '<li><input type="checkbox" id="ip_geo_block_settings_rewrite_languages" name="ip_geo_block_settings[rewrite][languages]" value="1"' . checked( $options['rewrite']['languages'], TRUE, FALSE ) . ' /><label for="ip_geo_block_settings_rewrite_languages">' . substr( $key['languages'], 1 ) . "</label></li>\n";
+		$tmp .= '</ul>' . "\n";
+
+		$key = 'others';
+		add_settings_field(
+			$option_name.'_'.$field.'_'.$key,
+			$target[ $key ],
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'html',
+				'value' => $tmp,
+				'before' => '<p class="ip-geo-block-desc">' . __( 'WordPress core does not directly request the PHP files in the following directories. This feature inhibits a direct access to the file such as PHP, CGI and SSI in order to provide against your site being compromised.', IP_Geo_Block::TEXT_DOMAIN ) . '</p>',
+			)
+		);
+
+		// Public facing pages
+		$key = 'public';
+		add_settings_field(
+			$option_name.'_'.$field.'_'.$key,
+			$target[ $key ],
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'checkbox',
+				'option' => $option_name,
+				'field' => $field,
+				'sub-field' => $key,
+				'value' => $options[ $field ][ $key ],
+				'text' => __( 'Block by country', IP_Geo_Block::TEXT_DOMAIN ),
 			)
 		);
 

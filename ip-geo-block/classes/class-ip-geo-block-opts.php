@@ -53,6 +53,12 @@ class IP_Geo_Block_Opts {
 			    // since version 2.1.0
 			    'plugins'     => 0,       // Validate on wp-content/plugins
 			    'themes'      => 0,       // Validate on wp-content/themes
+			    // since version 2.3.0
+			    'includes'    => 3,       // for wp-includes/
+			    'uploads'     => 3,       // for UPLOADS/uploads
+			    'languages'   => 3,       // for wp-content/language
+			    // since version 3.0.0
+			    'public'      => 0,       // Validate on public facing pages
 			),
 			'update'          => array(   // Updating IP address DB
 			    'auto'        => TRUE,    // Auto updating of DB file
@@ -71,6 +77,10 @@ class IP_Geo_Block_Opts {
 			'rewrite'         => array(   // Apply rewrite rule
 			    'plugins'     => FALSE,   // for wp-content/plugins
 			    'themes'      => FALSE,   // for wp-content/themes
+			    // since version 2.3.0
+			    'includes'    => FALSE,   // for wp-includes/
+			    'uploads'     => FALSE,   // for UPLOADS/uploads
+			    'languages'   => FALSE,   // for wp-content/language
 			),
 			'Maxmind'         => array(   // Maxmind
 			    // since version 2.2.2
@@ -94,6 +104,18 @@ class IP_Geo_Block_Opts {
 			'exception'       => array(   // list of exceptional
 			    'plugins'     => array(), // for pliugins
 			    'themes'      => array(), // for themes
+			    // since version 2.3.0
+			    'includes'    => array(   // for wp-includes/
+			        'ms-files.php', 'js/tinymce/wp-tinymce.php'
+			     ),
+			    'uploads'     => array(), // for UPLOADS/uploads
+			    'languages'   => array(), // for wp-content/language
+			),
+			// since version 3.0.0
+			'public'          => array(
+			    'matching_rule' => -1,      // -1:neither, 0:white list, 1:black list
+			    'white_list'    => NULL,    // Comma separeted country code
+			    'black_list'    => 'ZZ',    // Comma separeted country code
 			),
 		),
 	);
@@ -184,6 +206,19 @@ class IP_Geo_Block_Opts {
 				foreach ( array( 'plugins', 'themes' ) as $tmp ) {
 					$settings['exception'][ $tmp ] = $default[ $key[0] ]['exception'][ $tmp ];
 				}
+			}
+
+			if ( version_compare( $version, '2.3.0' ) < 0 ) {
+				foreach ( array( 'includes', 'uploads', 'languages' ) as $tmp ) {
+					$settings['validation'][ $tmp ] = $default[ $key[0] ]['validation'][ $tmp ];
+					$settings['rewrite'   ][ $tmp ] = $default[ $key[0] ]['rewrite'   ][ $tmp ];
+					$settings['exception' ][ $tmp ] = $default[ $key[0] ]['exception' ][ $tmp ];
+				}
+			}
+
+			if ( version_compare( $version, '3.0' ) < 0 ) {
+				$settings['validation']['public'] = $default[ $key[0] ]['validation']['public'];
+				$settings['public'] = $default[ $key[0] ]['public'];
 			}
 
 			// save package version number
