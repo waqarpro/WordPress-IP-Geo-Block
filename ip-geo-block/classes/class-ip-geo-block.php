@@ -48,6 +48,7 @@ class IP_Geo_Block {
 		$settings = self::get_option( 'settings' );
 		$priority = $settings['priority'];
 		$validate = $settings['validation'];
+		$is_admin = is_admin();
 
 		// the action hook which will be fired by cron job
 		if ( $settings['update']['auto'] )
@@ -55,13 +56,14 @@ class IP_Geo_Block {
 
 		// check the package version and upgrade if needed
 		if ( version_compare( $settings['version'], self::VERSION ) < 0 || $settings['matching_rule'] < 0 )
-			add_action( 'init', array( __CLASS__, 'activate' ), $priority );
+			$this->add_action( $is_admin, 'init', array( __CLASS__, 'activate' ), $priority );
 
 		// normalize requested uri
 		$this->request_uri = preg_replace( array( '!\.+/!', '!//+!' ), '/', $_SERVER['REQUEST_URI'] );
 
 		// setup the content folders
 		self::$wp_path = array( 'home' => untrailingslashit( parse_url( site_url(), PHP_URL_PATH ) ) ); // @since 2.6.0
+		$len = strlen( self::$wp_path['home'] );
 		$list = array(
 			'admin'     => 'admin_url',          // @since 2.6.0
 			'plugins'   => 'plugins_url',        // @since 2.6.0
@@ -70,7 +72,6 @@ class IP_Geo_Block {
 		);
 
 		// analize the validation target (admin|plugins|themes|includes)
-		$len = strlen( self::$wp_path['home'] );
 		foreach ( $list as $key => $val ) {
 			self::$wp_path[ $key ] = trailingslashit( substr( parse_url( call_user_func( $val ), PHP_URL_PATH ), $len ) );
 			if ( ! $this->target_type && FALSE !== strpos( $this->request_uri, self::$wp_path[ $key ] ) ) {
@@ -102,13 +103,13 @@ class IP_Geo_Block {
 		// wp-admin/*.php, wp-includes, wp-content/(plugins|themes|language|uploads)
 		if ( $this->target_type ) {
 			$val = ( 'admin' === $this->target_type ? 'admin' : 'direct' );
-			add_action( 'init', array( $this, 'validate_' . $val ), $priority );
+			$this->add_action( $is_admin, 'init', array( $this, 'validate_' . $val ), $priority );
 		}
 
 		// analize core validation target (comment|xmlrpc|login|public)
 		elseif ( isset( $key[ $pagenow ] ) ) {
 			if ( $validate[ $key[ $pagenow ] ] )
-				add_action( 'init', array( $this, 'validate_' . $key[ $pagenow ] ), $priority );
+				$this->add_action( FALSE, 'init', array( $this, 'validate_' . $key[ $pagenow ] ), $priority );
 		}
 
 		else {
@@ -137,6 +138,17 @@ class IP_Geo_Block {
 		// force to change the redirect URL at logout to remove nonce, embed a nonce into pages
 		add_filter( 'wp_redirect', array( $this, 'logout_redirect' ), 20, 2 ); // logout_redirect @4.2
 		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_nonce' ), $priority );
+	}
+
+	/**
+	 * Kick of the callback function depending on the condition
+	 *
+	 */
+	private function add_action( $defer, $hook, $callback, $priority ) {
+		if ( $defer )
+			add_action( $hook, $callback, $priority );
+		else
+			call_user_func( $callback, $priority );
 	}
 
 	/**
