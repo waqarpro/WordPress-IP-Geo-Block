@@ -318,7 +318,7 @@ var ip_geo_block_time = new Date();
 
 			// Initialize show/hide form-table on tab 0, 1
 			if (tabNum <= 1) {
-				index += (tabNum ? 8 : 0);
+				index += (tabNum ? 9 : 0);
 				if ('undefined' === typeof cookie[index] || cookie[index]) { // 'undefined' or 'o'
 					title.addClass(ID('dropdown')).parent().nextAll().show();
 				} else {
