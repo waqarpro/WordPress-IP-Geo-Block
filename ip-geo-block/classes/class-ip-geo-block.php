@@ -45,10 +45,12 @@ class IP_Geo_Block {
 	 * 
 	 */
 	private function __construct() {
+		global $pagenow;
+		$is_admin = is_admin();
+		$page_now = $is_admin ? $pagenow : 'index.php';
 		$settings = self::get_option( 'settings' );
 		$priority = $settings['priority'];
 		$validate = $settings['validation'];
-		$is_admin = is_admin();
 
 		// the action hook which will be fired by cron job
 		if ( $settings['update']['auto'] )
@@ -59,7 +61,7 @@ class IP_Geo_Block {
 			$this->add_action( $is_admin, 'init', array( __CLASS__, 'activate' ), $priority );
 
 		// normalize requested uri
-		$this->request_uri = preg_replace( array( '!\.+/!', '!//+!' ), '/', $_SERVER['REQUEST_URI'] );
+		$this->request_uri = strtolower( preg_replace( array( '!\.+/!', '!//+!' ), '/', $_SERVER['REQUEST_URI'] ) );
 
 		// setup the content folders
 		self::$wp_path = array( 'home' => untrailingslashit( parse_url( site_url(), PHP_URL_PATH ) ) ); // @since 2.6.0
@@ -90,7 +92,6 @@ class IP_Geo_Block {
 		}
 
 		// WordPress core files
-		global $pagenow;
 		$key = array(
 			'wp-comments-post.php' => 'comment',
 			'wp-trackback.php'     => 'comment',
@@ -107,9 +108,9 @@ class IP_Geo_Block {
 		}
 
 		// analize core validation target (comment|xmlrpc|login|public)
-		elseif ( isset( $key[ $pagenow ] ) ) {
-			if ( $validate[ $key[ $pagenow ] ] )
-				$this->add_action( FALSE, 'init', array( $this, 'validate_' . $key[ $pagenow ] ), $priority );
+		elseif ( isset( $key[ $page_now ] ) ) {
+			if ( $validate[ $key[ $page_now ] ] )
+				$this->add_action( FALSE, 'init', array( $this, 'validate_' . $key[ $page_now ] ), $priority );
 		}
 
 		else {
@@ -164,12 +165,12 @@ class IP_Geo_Block {
 	 *
 	 */
 	public static function activate( $network_wide = FALSE ) {
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-actv.php' );
+		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-actv.php' );
 		IP_Geo_Block_Activate::activate( $network_wide );
 	}
 
 	public static function deactivate( $network_wide = FALSE ) {
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-actv.php' );
+		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-actv.php' );
 		IP_Geo_Block_Activate::deactivate( $network_wide );
 	}
 
@@ -178,7 +179,7 @@ class IP_Geo_Block {
 	 *
 	 */
 	public static function get_default( $name = 'settings' ) {
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
+		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
 		return IP_Geo_Block_Opts::get_table( self::$option_keys[ $name ] );
 	}
 
@@ -207,7 +208,7 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function logout_redirect( $uri ) {
-		if ( FALSE !== strpos( $uri, self::$wp_path['admin'] ) &&
+		if ( FALSE !== stripos( $uri, self::$wp_path['admin'] ) &&
 		     isset( $_REQUEST['action'] ) && 'logout' === $_REQUEST['action'] )
 			return esc_url_raw( add_query_arg( array( 'loggedout' => 'true' ), wp_login_url() ) );
 		else
@@ -250,7 +251,7 @@ class IP_Geo_Block {
 	private static function make_validation( $ip, $result ) {
 		return array_merge( array(
 			'ip' => $ip,
-			'auth' => get_current_user_id(),
+			'auth' => get_current_user_id(), // unavailale before 'init' hook
 			'code' => 'ZZ', // may be overwritten with $result
 		), $result );
 	}
@@ -264,7 +265,7 @@ class IP_Geo_Block {
 	 * @return array $result country code and so on
 	 */
 	public static function get_geolocation( $ip = NULL, $providers = array(), $callback = 'get_country' ) {
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
+		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
 
 		$ip = $ip ? $ip : self::get_ip_address();
 		$result = self::_get_geolocation( $ip, self::get_option( 'settings' ), $providers, $callback );
@@ -305,7 +306,14 @@ class IP_Geo_Block {
 	 * Validate geolocation by country code.
 	 *
 	 */
-	public static function validate_country( $validate, $settings, $block = TRUE ) {
+	public static function validate_country( $hook, $validate, $settings, $block = TRUE ) {
+		// replace matching rule and while/black list
+		if ( 'public' === $hook ) {
+			$settings['matching_rule'] = $settings['public']['matching_rule'];
+			$settings['white_list'   ] = $settings['public']['white_list'   ];
+			$settings['black_list'   ] = $settings['public']['black_list'   ];
+		}
+
 		if ( $block && 0 === (int)$settings['matching_rule'] ) {
 			// 'ZZ' will be blocked if it's not in the $list.
 			if ( ( $list = $settings['white_list'] ) && FALSE === strpos( $list, $validate['code'] ) )
@@ -377,14 +385,16 @@ class IP_Geo_Block {
 
 		// register auxiliary validation functions
 		$var = self::PLUGIN_SLUG . '-' . $hook;
-		$auth and add_filter( $var, array( $this, 'check_auth' ), 9, 2 );
-		$auth and add_filter( $var, array( $this, 'check_fail' ), 8, 2 );
+		if ( $auth ) {
+			add_filter( $var, array( $this, 'check_auth' ), 9, 2 );
+			add_filter( $var, array( $this, 'check_fail' ), 8, 2 );
+		}
 		$settings['extra_ips'] = apply_filters( self::PLUGIN_SLUG . '-extra-ips', $settings['extra_ips'], $hook );
 		$settings['extra_ips']['white_list'] and add_filter( $var, array( $this, 'check_ips_white' ), 7, 2 );
 		$settings['extra_ips']['black_list'] and add_filter( $var, array( $this, 'check_ips_black' ), 7, 2 );
 
 		// make valid provider name list
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
+		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
 		$providers = IP_Geo_Block_Provider::get_valid_providers( $settings['providers'] );
 
 		// apply custom filter for validation
@@ -401,21 +411,18 @@ class IP_Geo_Block {
 
 			// if no 'result' then validate ip address by country
 			if ( empty( $validate['result'] ) )
-				$validate = self::validate_country( $validate, $settings, $block );
+				$validate = self::validate_country( $hook, $validate, $settings, $block );
 
 			// if one of IPs is blocked then stop
 			if ( 'passed' !== $validate['result'] )
 				break;
 		}
 
-		// Post process
-		$validate = apply_filters( self::PLUGIN_SLUG . "-post-$hook", $validate, $settings );
-
 		// update cache
 		IP_Geo_Block_API_Cache::update_cache( $hook, $validate, $settings );
 
 		if ( $die ) {
-			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+			include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 
 			// record log (0:no, 1:blocked, 2:passed, 3:unauth, 4:auth, 5:all)
 			$var = (int)$settings['validation']['reclogs'];
@@ -591,7 +598,7 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function auth_fail( $something = NULL ) {
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 
 		// Count up a number of fails when authentication is failed
 		if ( $cache = IP_Geo_Block_API_Cache::get_cache( $this->remote_addr ) ) {
@@ -606,7 +613,7 @@ class IP_Geo_Block {
 			$cache = IP_Geo_Block_API_Cache::update_cache( $cache['hook'], $validate, $settings );
 
 			// validate xmlrpc system.multicall (HTTP_RAW_POST_DATA has already populated in xmlrpc.php)
-			if ( defined( 'XMLRPC_REQUEST' ) && FALSE !== strpos( $GLOBALS['HTTP_RAW_POST_DATA'], 'system.multicall' ) )
+			if ( defined( 'XMLRPC_REQUEST' ) && FALSE !== stripos( $GLOBALS['HTTP_RAW_POST_DATA'], 'system.multicall' ) )
 				$validate['result'] = 'multi';
 
 			// (1) blocked, (3) unauthenticated, (5) all
@@ -617,6 +624,7 @@ class IP_Geo_Block {
 			if ( $cache['fail'] > max( 0, $settings['login_fails'] ) || 'multi' === $validate['result'] ) {
 				if ( $settings['save_statistics'] )
 					IP_Geo_Block_Logs::update_stat( $cache['hook'], $validate, $settings );
+
 				$this->send_response( $cache['hook'], $settings['response_code'] );
 			}
 		}
@@ -714,7 +722,7 @@ class IP_Geo_Block {
 		$ips = $settings['extra_ips'][ $which ? 'black_list' : 'white_list' ];
 
 		if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ) {
-			require_once( IP_GEO_BLOCK_PATH . 'includes/Net/IPv4.php' );
+			include_once( IP_GEO_BLOCK_PATH . 'includes/Net/IPv4.php' );
 
 			foreach ( $this->multiexplode( array( ',', ' ' ), $ips ) as $i ) {
 				$j = explode( '/', $i, 2 );
@@ -727,7 +735,7 @@ class IP_Geo_Block {
 		}
 
 		elseif ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) ) {
-			require_once( IP_GEO_BLOCK_PATH . 'includes/Net/IPv6.php' );
+			include_once( IP_GEO_BLOCK_PATH . 'includes/Net/IPv6.php' );
 
 			foreach ( $this->multiexplode( array( ',', ' ' ), $ips ) as $i ) {
 				$j = explode( '/', $i, 2 );
@@ -747,20 +755,24 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function validate_public() {
-		if ( ! $this->is_feed() ) {
-			add_filter( self::PLUGIN_SLUG . '-post-public', array( $this, 'check_host' ), 10, 2 );
-			$this->validate_ip( 'public', self::get_option( 'settings' ) );
-		}
+		add_filter( self::PLUGIN_SLUG . '-public', array( $this, 'check_bots' ), 10, 2 );
+		$this->validate_ip( 'public', self::get_option( 'settings' ) );
 	}
 
-	public function check_host( $validate, $settings ) {
-		if ( 'passed' !== $validate['result'] ) {
-			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php' );
+	public function check_bots( $validate, $settings ) {
+		// pass when access to feed
+		if ( $this->is_feed() )
+			$validate['result'] = 'passed'; // can overwrite existing result
 
-			$validate['host'] = IP_Geo_Block_Util::gethostbyaddr( $validate['ip'] );
+		// pass when the host name is available
+		elseif ( $this->is_bot( $settings['public']['ua_list'] ) ) {
+			include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php' );
+
+			if ( empty( $validate['host'] ) )
+				$validate['host'] = IP_Geo_Block_Util::gethostbyaddr( $validate['ip'] );
 
 			if ( $validate['host'] !== $validate['ip'] )
-				$validate['result'] = 'passed'; // pass when the host name is available
+				$validate['result'] = 'passed'; // can overwrite existing result
 		}
 
 		return apply_filters( self::PLUGIN_SLUG . '-bypass-public', $validate, $settings );
@@ -772,12 +784,22 @@ class IP_Geo_Block {
 		) ? TRUE : FALSE;
 	}
 
+	private function is_bot( $list ) {
+		$ua = strtolower( $_SERVER['HTTP_USER_AGENT'] );
+		foreach ( $list as $bot ) {
+			if ( FALSE !== strpos( $ua, $bot ) )
+				return TRUE;
+		}
+
+		return FALSE;
+	}
+
 	/**
 	 * Database auto updater.
 	 *
 	 */
 	public static function update_database( $immediate = FALSE ) {
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-cron.php' );
+		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-cron.php' );
 		return IP_Geo_Block_Cron::exec_job( $immediate );
 	}
 

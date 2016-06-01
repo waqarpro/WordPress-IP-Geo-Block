@@ -39,8 +39,8 @@ class IP_Geo_Block_Uninstall {
 	 *
 	 */
 	public static function uninstall() {
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
+		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
 
 		$settings = IP_Geo_Block::get_option( 'settings' );
 

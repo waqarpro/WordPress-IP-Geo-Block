@@ -23,10 +23,10 @@ class IP_Geo_Block_Activate {
 	 */
 	public static function activate( $network_wide = FALSE ) {
 		if ( ! function_exists( 'is_plugin_active_for_network' ) )
-			require_once( ABSPATH . '/wp-admin/includes/plugin.php' );
+			include_once( ABSPATH . '/wp-admin/includes/plugin.php' );
 
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
+		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
 
 		if ( is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) ) {
 			global $wpdb;
@@ -45,8 +45,8 @@ class IP_Geo_Block_Activate {
 
 		// only for main blog
 		if ( is_user_logged_in() && current_user_can( 'manage_options' ) ) {
-			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-cron.php' );
-			require_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php' );
+			include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-cron.php' );
+			include_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php' );
 
 			// kick off a cron job to download database immediately
 			IP_Geo_Block_Cron::spawn_job( TRUE, IP_Geo_Block::get_ip_address() );
@@ -66,7 +66,7 @@ class IP_Geo_Block_Activate {
 		wp_clear_scheduled_hook( IP_Geo_Block::CRON_NAME, array( FALSE ) ); // @since 2.1.0
 
 		// deactivate rewrite rules
-		require_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php' );
+		include_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php' );
 		IP_Geo_Block_Admin_Rewrite::deactivate_rewrite_all();
 	}
 

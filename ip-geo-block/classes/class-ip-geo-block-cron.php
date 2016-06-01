@@ -48,8 +48,8 @@ class IP_Geo_Block_Cron {
 	 *   B. Multiple time for each blog when this plugin is individually activated
 	 */
 	public static function exec_job( $immediate = FALSE ) {
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php' );
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
+		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php' );
+		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
 
 		$settings = IP_Geo_Block::get_option( 'settings' );
 		$args = IP_Geo_Block::get_request_headers( $settings );
@@ -73,7 +73,7 @@ class IP_Geo_Block_Cron {
 			add_filter( IP_Geo_Block::PLUGIN_SLUG . '-ip-addr', array( __CLASS__, 'extract_ip' ) );
 
 			$validate = IP_Geo_Block::get_geolocation( NULL, $providers );
-			$validate = IP_Geo_Block::validate_country( $validate, $settings );
+			$validate = IP_Geo_Block::validate_country( NULL, $validate, $settings );
 
 			// if blocking may happen then disable validation
 			if ( -1 !== (int)$settings['matching_rule'] && 'passed' !== $validate['result'] )
@@ -104,7 +104,7 @@ class IP_Geo_Block_Cron {
 	 */
 	private static function update_settings( $src, $keys = array() ) {
 		if ( ! function_exists( 'is_plugin_active_for_network' ) )
-			require_once( ABSPATH . '/wp-admin/includes/plugin.php' );
+			include_once( ABSPATH . '/wp-admin/includes/plugin.php' );
 
 		$slug = IP_Geo_Block::$option_keys['settings'];
 

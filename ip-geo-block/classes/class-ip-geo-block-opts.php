@@ -113,9 +113,12 @@ class IP_Geo_Block_Opts {
 			),
 			// since version 3.0.0
 			'public'          => array(
-			    'matching_rule' => -1,      // -1:neither, 0:white list, 1:black list
+			    'matching_rule' => 0,       // -1:neither, 0:white list, 1:black list
 			    'white_list'    => NULL,    // Comma separeted country code
 			    'black_list'    => 'ZZ',    // Comma separeted country code
+			    'ua_list'       => array(
+			        'http', 'bot', 'crawler',
+			    ),
 			),
 		),
 	);

@@ -339,7 +339,7 @@ var ip_geo_block_time = new Date();
 
 				// Save cookie
 				if ('undefined' !== typeof wpCookies) {
-					cookie[index + (tabNum ? 8: 0)] = title.hasClass(ID('dropdown')) ? 'o' : '';
+					cookie[index + (tabNum ? 9 : 0)] = title.hasClass(ID('dropdown')) ? 'o' : '';
 					wpCookies.setHash(ID('admin'), cookie, new Date(Date.now() + 2592000000));
 				}
 
@@ -394,6 +394,12 @@ var ip_geo_block_time = new Date();
 			$(ID('@', 'matching_rule')).on('change', function () {
 				$(ID('@', 'white_list')).closest('tr').toggle(this.value !== '1');
 				$(ID('@', 'black_list')).closest('tr').toggle(this.value !== '0');
+				return false;
+			}).trigger('change');
+
+			$(ID('@', 'public_matching_rule')).on('change', function () {
+				$(ID('@', 'public_white_list')).closest('tr').toggle(this.value !== '1');
+				$(ID('@', 'public_black_list')).closest('tr').toggle(this.value !== '0');
 				return false;
 			}).trigger('change');
 

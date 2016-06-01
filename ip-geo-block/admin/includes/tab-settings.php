@@ -1,9 +1,9 @@
 <?php
-require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php' );
-require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
-require_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php' );
+include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php' );
+include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
+include_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php' );
 if ( ! function_exists( 'get_plugins' ) ) {
-	require_once ABSPATH . 'wp-admin/includes/plugin.php';
+	include_once ABSPATH . 'wp-admin/includes/plugin.php';
 }
 
 class IP_Geo_Block_Admin_Tab {
@@ -84,18 +84,19 @@ class IP_Geo_Block_Admin_Tab {
 		);
 
 		// If the matching rule is not initialized, then add a caution
-		$list = array(
+		$rule = array(
 			-1 => NULL,
 			 0 => __( 'Whitelist', IP_Geo_Block::TEXT_DOMAIN ),
 			 1 => __( 'Blacklist', IP_Geo_Block::TEXT_DOMAIN ),
 		);
 
-		$comma = '<span class="ip-geo-block-sup">' . __( '(comma separated)', IP_Geo_Block::TEXT_DOMAIN ) . '</span>';
-		$desc = __( 'Please select either &#8220;Whitelist&#8221; or &#8220;Blacklist&#8221;.', IP_Geo_Block::TEXT_DOMAIN );
-		$dfn = array(
+		$rule_desc = array(
 			__( '<dfn title="&#8220;Block by country&#8221; will be bypassed in case of empty. All the countries will be blocked in case you put &#8220;XX&#8221; only.">Whitelist of country code</dfn>', IP_Geo_Block::TEXT_DOMAIN ) . '<br/>(<a class="ip-geo-block-link" href="http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements" title="ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia" target=_blank>ISO 3166-1 alpha-2</a>)',
 			__( '<dfn title="&#8220;Block by country&#8221; will be bypassed in case of empty. Please consider to include &#8220;ZZ&#8221; which means UNKNOWN country.">Blacklist of country code</dfn>', IP_Geo_Block::TEXT_DOMAIN ) . '<br/>(<a class="ip-geo-block-link" href="http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements" title="ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia" target=_blank>ISO 3166-1 alpha-2</a>)',
 		);
+
+		$comma = '<span class="ip-geo-block-sup">' . __( '(comma separated)', IP_Geo_Block::TEXT_DOMAIN ) . '</span>';
+		$desc = __( 'Please select either &#8220;Whitelist&#8221; or &#8220;Blacklist&#8221;.', IP_Geo_Block::TEXT_DOMAIN );
 
 		// Matching rule
 		$field = 'matching_rule';
@@ -110,7 +111,7 @@ class IP_Geo_Block_Admin_Tab {
 				'option' => $option_name,
 				'field' => $field,
 				'value' => $options[ $field ],
-				'list' => $list,
+				'list' => $rule,
 				'desc' => array(
 					-1 => $desc,
 					 0 => __( 'A request from which the country code or IP address is <strong>NOT</strong> in the whitelist will be blocked.', IP_Geo_Block::TEXT_DOMAIN ),
@@ -125,7 +126,7 @@ class IP_Geo_Block_Admin_Tab {
 		$field = 'white_list';
 		add_settings_field(
 			$option_name.'_'.$field,
-			$dfn[0],
+			$rule_desc[0],
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -134,7 +135,7 @@ class IP_Geo_Block_Admin_Tab {
 				'option' => $option_name,
 				'field' => $field,
 				'value' => $options[ $field ],
-				'display' => $options['matching_rule'] !== 1,
+//				'display' => $options['matching_rule'] !== 1,
 				'after' => $comma,
 			)
 		);
@@ -142,7 +143,7 @@ class IP_Geo_Block_Admin_Tab {
 		$field = 'black_list';
 		add_settings_field(
 			$option_name.'_'.$field,
-			$dfn[1],
+			$rule_desc[1],
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -151,7 +152,7 @@ class IP_Geo_Block_Admin_Tab {
 				'option' => $option_name,
 				'field' => $field,
 				'value' => $options[ $field ],
-				'display' => $options['matching_rule'] !== 0,
+//				'display' => $options['matching_rule'] !== 0,
 				'after' => $comma,
 			)
 		);
@@ -301,12 +302,12 @@ class IP_Geo_Block_Admin_Tab {
 		// same as in tab-accesslog.php
 		$dfn = __( '<dfn title="Validate request to %s.">%s</dfn>', IP_Geo_Block::TEXT_DOMAIN );
 		$target = array(
-			'comment' => sprintf( $dfn, 'wp-comments-post.php', __( 'Comment post', IP_Geo_Block::TEXT_DOMAIN ) ),
-			'xmlrpc'  => sprintf( $dfn, 'xmlrpc.php',           __( 'XML-RPC',      IP_Geo_Block::TEXT_DOMAIN ) ),
-			'login'   => sprintf( $dfn, 'wp-login.php',         __( 'Login form',   IP_Geo_Block::TEXT_DOMAIN ) ),
-			'admin'   => sprintf( $dfn, 'wp-admin/*.php',       __( 'Admin area',   IP_Geo_Block::TEXT_DOMAIN ) ),
-			'others'  => sprintf( $dfn, 'hacked PHP files',     __( 'Other areas',  IP_Geo_Block::TEXT_DOMAIN ) ),
-			'public'  => sprintf( $dfn, 'public facing pages',  __( 'Pubic pages',  IP_Geo_Block::TEXT_DOMAIN ) ),
+			'comment' => sprintf( $dfn, 'wp-comments-post.php', __( 'Comment post',       IP_Geo_Block::TEXT_DOMAIN ) ),
+			'xmlrpc'  => sprintf( $dfn, 'xmlrpc.php',           __( 'XML-RPC',            IP_Geo_Block::TEXT_DOMAIN ) ),
+			'login'   => sprintf( $dfn, 'wp-login.php',         __( 'Login form',         IP_Geo_Block::TEXT_DOMAIN ) ),
+			'admin'   => sprintf( $dfn, 'wp-admin/*.php',       __( 'Admin area',         IP_Geo_Block::TEXT_DOMAIN ) ),
+			'others'  => sprintf( $dfn, 'hacked PHP files',     __( 'Other areas',        IP_Geo_Block::TEXT_DOMAIN ) ),
+			'public'  => sprintf( $dfn, 'public facing pages',  __( 'Pubic facing pages', IP_Geo_Block::TEXT_DOMAIN ) ),
 		);
 
 		// Comment post
@@ -567,6 +568,17 @@ class IP_Geo_Block_Admin_Tab {
 			)
 		);
 
+		/*----------------------------------------*
+		 * Frontend settings
+		 *----------------------------------------*/
+		$section = $plugin_slug . '-public';
+		add_settings_section(
+			$section,
+			__( 'Frontend settings', IP_Geo_Block::TEXT_DOMAIN ),
+			array( __CLASS__, 'note_public' ),
+			$option_slug
+		);
+
 		// Public facing pages
 		$key = 'public';
 		add_settings_field(
@@ -582,6 +594,60 @@ class IP_Geo_Block_Admin_Tab {
 				'sub-field' => $key,
 				'value' => $options[ $field ][ $key ],
 				'text' => __( 'Block by country', IP_Geo_Block::TEXT_DOMAIN ),
+			)
+		);
+
+		// Matching rule
+		$field = 'public';
+		$key = 'matching_rule';
+		add_settings_field(
+			$option_name.'_'.$field.'_'.$key,
+			__( 'Matching rule', IP_Geo_Block::TEXT_DOMAIN ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'select',
+				'option' => $option_name,
+				'field' => $field,
+				'sub-field' => $key,
+				'value' => $options[ $field ][ $key ],
+				'list' => $rule,
+			)
+		);
+
+		// Country code for matching rule (ISO 3166-1 alpha-2)
+		$key = 'white_list';
+		add_settings_field(
+			$option_name.'_'.$field.'_'.$key,
+			$rule_desc[0],
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'text',
+				'option' => $option_name,
+				'field' => $field,
+				'sub-field' => $key,
+				'value' => $options[ $field ][ $key ],
+				'after' => $comma,
+			)
+		);
+
+		$key = 'black_list';
+		add_settings_field(
+			$option_name.'_'.$field.'_'.$key,
+			$rule_desc[1],
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'text',
+				'option' => $option_name,
+				'field' => $field,
+				'sub-field' => $key,
+				'value' => $options[ $field ][ $key ],
+				'after' => $comma,
 			)
 		);
 
@@ -972,6 +1038,13 @@ endif;
 			'<ul class="ip-geo-block-note">', "\n",
 				'<li>', __('While Maxmind and IP2Location will fetch the local database, others will pass an IP address to the APIs via HTTP.', IP_Geo_Block::TEXT_DOMAIN ), '</li>', "\n",
 				'<li>', __('Please select the appropriate APIs to fit the privacy law in your country.', IP_Geo_Block::TEXT_DOMAIN ), '</li>', "\n",
+			'</ul>', "\n";
+	}
+
+	public static function note_public() {
+		echo
+			'<ul class="ip-geo-block-note">', "\n",
+				'<li>', '</li>', "\n",
 			'</ul>', "\n";
 	}
 

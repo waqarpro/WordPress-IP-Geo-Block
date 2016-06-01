@@ -78,7 +78,23 @@ class IP_Geo_Block_Logs {
 			ON DUPLICATE KEY UPDATE No = No", 1, serialize( self::$default )
 		) and $wpdb->query( $sql );
 
-		return (FALSE !== $logs) && (FALSE !== $stat);
+		// for IP address cache
+		$table = $wpdb->prefix . IP_Geo_Block::CACHE_KEY;
+		$cache = $wpdb->query( "CREATE TABLE IF NOT EXISTS `$table` (
+			`No` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			`time` datetime NOT NULL,
+			`ip` varchar(40) NOT NULL,
+			`hook` varchar(8) NOT NULL,
+			`auth` int(10) unsigned NOT NULL DEFAULT 0,
+			`code` varchar(2) NOT NULL DEFAULT 'ZZ',
+			`fail` int(10) unsigned NOT NULL DEFAULT 0,
+			`call` int(10) unsigned NOT NULL DEFAULT 0,
+			`host` tinytext NOT NULL,
+			PRIMARY KEY (`No`)
+			) CHARACTER SET " . $charset
+		) or self::error( __LINE__ ); // utf8mb4 ENGINE=InnoDB or MyISAM
+
+		return (FALSE !== $logs) && (FALSE !== $stat) && (FALSE !== $cache);
 	}
 
 	/**
@@ -87,12 +103,12 @@ class IP_Geo_Block_Logs {
 	 */
 	public static function delete_tables() {
 		global $wpdb;
+		$tables = array( self::TABLE_LOGS, self::TABLE_STAT, IP_Geo_Block::CACHE_KEY );
 
-		$table = $wpdb->prefix . self::TABLE_LOGS;
-		$wpdb->query( "DROP TABLE IF EXISTS `$table`" ) or self::error( __LINE__ );
-
-		$table = $wpdb->prefix . self::TABLE_STAT;
-		$wpdb->query( "DROP TABLE IF EXISTS `$table`" ) or self::error( __LINE__ );
+		foreach ( $tables as $table ) {
+			$table = $wpdb->prefix . $table;
+			$wpdb->query( "DROP TABLE IF EXISTS `$table`" ) or self::error( __LINE__ );
+		}
 	}
 
 	/**
@@ -117,6 +133,16 @@ class IP_Geo_Block_Logs {
 	 */
 	public static function clear_stat() {
 		self::record_stat( self::$default );
+	}
+
+	/**
+	 * Clear IP address cache.
+	 *
+	 */
+	public static function clear_cache() {
+		global $wpdb;
+		$table = $wpdb->prefix . IP_Geo_Block::CACHE_KEY;
+		$wpdb->query( "TRUNCATE TABLE `$table`" ) or self::error( __LINE__ );
 	}
 
 	/**
@@ -157,20 +183,17 @@ class IP_Geo_Block_Logs {
 	 */
 	public static function diag_tables() {
 		global $wpdb;
+		$tables = array( self::TABLE_LOGS, self::TABLE_STAT, IP_Geo_Block::CACHE_KEY );
 
-		$table = $wpdb->prefix . self::TABLE_LOGS;
-		if ( $wpdb->get_var( "SHOW TABLES LIKE '$table'" ) !== $table )
-			return  __(
-				'Creating a DB table for validation logs had failed. Once de-activate this plugin, and then activate again.',
-				IP_Geo_Block::TEXT_DOMAIN
-			);
-
-		$table = $wpdb->prefix . self::TABLE_STAT;
-		if ( $wpdb->get_var( "SHOW TABLES LIKE '$table'" ) !== $table )
-			return  __(
-				'Creating a DB table for statistics had failed. Once de-activate this plugin, and then activate again.',
-				IP_Geo_Block::TEXT_DOMAIN
-			);
+		foreach ( $tables as $table ) {
+			$table = $wpdb->prefix . $table;
+			if ( $wpdb->get_var( "SHOW TABLES LIKE '$table'" ) !== $table ) {
+				return  sprintf(
+					__( 'Creating a DB table %s had failed. Once de-activate this plugin, and then activate again.', IP_Geo_Block::TEXT_DOMAIN ),
+					$table
+				);
+			}
+		}
 
 		return NULL;
 	}

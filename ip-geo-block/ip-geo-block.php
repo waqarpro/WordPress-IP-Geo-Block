@@ -27,6 +27,8 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
+if ( ! class_exists( 'IP_Geo_Block' ) ):
+
 /*----------------------------------------------------------------------------*
  * Global definition
  *----------------------------------------------------------------------------*/
@@ -41,7 +43,7 @@ define( 'IP_GEO_BLOCK_BASE', plugin_basename( __FILE__ ) ); // @since 1.5
  * Load class
  *
  */
-require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block.php' );
+include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block.php' );
 
 /**
  * Register hooks that are fired when the plugin is activated or deactivated.
@@ -65,9 +67,11 @@ add_action( 'plugins_loaded', array( 'IP_Geo_Block', 'get_instance' ) );
  *
  */
 if ( is_admin() ) {
-	require_once( IP_GEO_BLOCK_PATH . 'admin/class-ip-geo-block-admin.php' );
+	include_once( IP_GEO_BLOCK_PATH . 'admin/class-ip-geo-block-admin.php' );
 	add_action( 'plugins_loaded', array( 'IP_Geo_Block_Admin', 'get_instance' ) );
 }
+
+endif; // ! class_exists( 'IP_Geo_Block' )
 
 /*----------------------------------------------------------------------------*
  * Emergent Functionality

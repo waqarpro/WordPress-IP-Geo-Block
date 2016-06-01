@@ -39,7 +39,7 @@ class IP_Geo_Block_Util {
 	 */
 	public static function download_zip( $url, $args, $filename, $modified ) {
 		if ( ! function_exists( 'download_url' ) )
-			require_once( ABSPATH . 'wp-admin/includes/file.php' );
+			include_once( ABSPATH . 'wp-admin/includes/file.php' );
 
 		// if the name of src file is changed, then update the dst
 		if ( basename( $filename ) !== ( $base = pathinfo( $url, PATHINFO_FILENAME ) ) ) {
@@ -240,7 +240,7 @@ class IP_Geo_Block_Util {
 		// For compatibility with versions before PHP 5.3.0
 		// on some operating systems, try the PEAR class Net_DNS
 		if ( empty( $host ) ) {
-			require_once( IP_GEO_BLOCK_PATH . 'includes/Net/DNS2.php' );
+			include_once( IP_GEO_BLOCK_PATH . 'includes/Net/DNS2.php' );
 
 			// use google public dns
 			$r = new Net_DNS2_Resolver(
