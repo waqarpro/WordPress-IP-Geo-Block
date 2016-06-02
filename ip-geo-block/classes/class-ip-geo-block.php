@@ -36,6 +36,7 @@ class IP_Geo_Block {
 
 	// Globals in this class
 	public static $wp_path;
+	private $pagenow = NULL;
 	private $request_uri = NULL;
 	private $target_type = NULL;
 	private $remote_addr = NULL;
@@ -45,9 +46,6 @@ class IP_Geo_Block {
 	 * 
 	 */
 	private function __construct() {
-		global $pagenow;
-		$is_admin = is_admin();
-		$page_now = $is_admin ? $pagenow : 'index.php';
 		$settings = self::get_option( 'settings' );
 		$priority = $settings['priority'];
 		$validate = $settings['validation'];
@@ -58,9 +56,10 @@ class IP_Geo_Block {
 
 		// check the package version and upgrade if needed
 		if ( version_compare( $settings['version'], self::VERSION ) < 0 || $settings['matching_rule'] < 0 )
-			$this->add_action( $is_admin, 'init', array( __CLASS__, 'activate' ), $priority );
+			add_action( 'init', array( __CLASS__, 'activate' ), $priority );
 
 		// normalize requested uri
+		$this->pagenow = is_admin() && isset( $GLOBALS['pagenow'] ) ? $GLOBALS['pagenow'] : 'index.php';
 		$this->request_uri = strtolower( preg_replace( array( '!\.+/!', '!//+!' ), '/', $_SERVER['REQUEST_URI'] ) );
 
 		// setup the content folders
@@ -85,8 +84,8 @@ class IP_Geo_Block {
 		if ( ! $this->target_type ) {
 			$key = wp_upload_dir(); // @since 2.2.0
 			if ( $this->target_type =
-				FALSE !== strpos( $this->request_uri, parse_url( $key['baseurl'], PHP_URL_PATH ) ) ? 'uploads' :
-				FALSE !== strpos( $this->request_uri, str_replace( ABSPATH, '', WP_CONTENT_DIR ) . '/languages/' ) ? 'languages' : NULL ) {
+				FALSE !== strpos( $this->request_uri, parse_url( $key['baseurl'], PHP_URL_PATH ) . '/'           ) ? 'uploads'   : (
+				FALSE !== strpos( $this->request_uri, str_replace( ABSPATH, '', WP_CONTENT_DIR ) . '/languages/' ) ? 'languages' : NULL ) ) {
 				self::$wp_path[ $this->target_type ] = $this->request_uri;
 			}
 		}
@@ -104,13 +103,13 @@ class IP_Geo_Block {
 		// wp-admin/*.php, wp-includes, wp-content/(plugins|themes|language|uploads)
 		if ( $this->target_type ) {
 			$val = ( 'admin' === $this->target_type ? 'admin' : 'direct' );
-			$this->add_action( $is_admin, 'init', array( $this, 'validate_' . $val ), $priority );
+			add_action( 'init', array( $this, 'validate_' . $val ), $priority );
 		}
 
 		// analize core validation target (comment|xmlrpc|login|public)
-		elseif ( isset( $key[ $page_now ] ) ) {
-			if ( $validate[ $key[ $page_now ] ] )
-				$this->add_action( FALSE, 'init', array( $this, 'validate_' . $key[ $page_now ] ), $priority );
+		elseif ( isset( $key[ $this->pagenow ] ) ) {
+			if ( $validate[ $key[ $this->pagenow ] ] )
+				add_action( 'init', array( $this, 'validate_' . $key[ $this->pagenow ] ), $priority );
 		}
 
 		else {
@@ -139,17 +138,6 @@ class IP_Geo_Block {
 		// force to change the redirect URL at logout to remove nonce, embed a nonce into pages
 		add_filter( 'wp_redirect', array( $this, 'logout_redirect' ), 20, 2 ); // logout_redirect @4.2
 		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_nonce' ), $priority );
-	}
-
-	/**
-	 * Kick of the callback function depending on the condition
-	 *
-	 */
-	private function add_action( $defer, $hook, $callback, $priority ) {
-		if ( $defer )
-			add_action( $hook, $callback, $priority );
-		else
-			call_user_func( $callback, $priority );
 	}
 
 	/**
@@ -516,7 +504,7 @@ class IP_Geo_Block {
 		$page   = isset( $_REQUEST['page'  ] ) ? $_REQUEST['page'  ] : NULL;
 		$action = isset( $_REQUEST['action'] ) ? $_REQUEST['action'] : NULL;
 
-		switch ( $GLOBALS['pagenow'] ) {
+		switch ( $this->pagenow ) {
 		  case 'admin-ajax.php':
 			// if the request has an action for no privilege user, skip WP-ZEP
 			$zep = ! has_action( 'wp_ajax_nopriv_'.$action );
@@ -570,13 +558,15 @@ class IP_Geo_Block {
 	public function validate_direct() {
 		$settings = self::get_option( 'settings' );
 		$request = preg_quote( self::$wp_path[ $type = $this->target_type ], '/' );
+		$module = in_array( $type, array( 'plugins', 'themes' ) ) ? '[^\?\&\/]*' : '[^\?\&]*';
 
 		// wp-includes, wp-content/(plugins|themes|language|uploads)
-		preg_match( "/($request)([^\?\&]*)/", $this->request_uri, $matches );
+		preg_match( "/($request)($module)/", $this->request_uri, $module );
+		$request = empty( $module[2] ) ? $module[1] : $module[2];
 
-		// set validation type (1: Block by country, 2: WP-ZEP)
+		// set validation type (0: Bypass, 1: Block by country, 2: WP-ZEP)
 		$list = apply_filters( self::PLUGIN_SLUG . "-bypass-{$type}", $settings['exception'][ $type ] );
-		$type = isset( $matches[2] ) && in_array( $matches[2], $list, TRUE ) ? 0 : $settings['validation'][ $type ];
+		$type = in_array( $request, $list, TRUE ) ? 0 : $settings['validation'][ $type ];
 
 		// register validation of nonce (2: WP-ZEP)
 		if ( 2 & $type )

@@ -36,7 +36,7 @@ $plugin_name = 'ip-geo-block/ip-geo-block.php';
 
 if ( is_plugin_active( $plugin_name ) || is_plugin_active_for_network( $plugin_name ) ) {
 	// load plugin class
-	include_once( '../plugins/' . $plugin_name );
+	include_once( WP_PLUGIN_DIR . '/' . $plugin_name );
 
 	// remove instanciation
 	remove_action( 'plugins_loaded', array( 'IP_Geo_Block', 'get_instance' ) );
