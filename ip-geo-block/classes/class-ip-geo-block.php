@@ -415,7 +415,7 @@ class IP_Geo_Block {
 			include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 
 			// record log (0:no, 1:blocked, 2:passed, 3:unauth, 4:auth, 5:all)
-			$var = (int)$settings['validation']['reclogs'];
+			$var = (int)apply_filters( self::PLUGIN_SLUG . '-record-log', $settings['validation']['reclogs'], $validate );
 			$result = ( 'passed' !== $validate['result'] );
 			if ( ( 1 === $var &&   $result ) || // blocked
 			     ( 2 === $var && ! $result ) || // passed
