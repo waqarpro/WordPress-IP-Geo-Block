@@ -59,7 +59,7 @@ class IP_Geo_Block {
 			add_action( 'init', array( __CLASS__, 'activate' ), $priority );
 
 		// normalize requested uri
-		$this->pagenow = is_admin() && isset( $GLOBALS['pagenow'] ) ? $GLOBALS['pagenow'] : 'index.php';
+		$this->pagenow = ! empty( $GLOBALS['pagenow'] ) ? $GLOBALS['pagenow'] : 'index.php';
 		$this->request_uri = strtolower( preg_replace( array( '!\.+/!', '!//+!' ), '/', $_SERVER['REQUEST_URI'] ) );
 
 		// setup the content folders
