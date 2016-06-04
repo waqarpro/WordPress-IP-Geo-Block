@@ -533,15 +533,7 @@ class IP_Geo_Block_Logs {
 		else
 			$sql .= $wpdb->prepare( " WHERE `hook` = '%s' ORDER BY `No` DESC", $hook );
 
-		$list = $sql ? $wpdb->get_results( $sql, ARRAY_N ) : array();
-
-		foreach ( $list as $row ) {
-			$hook = array_shift( $row );
-			$result[ $hook ][] = $row; // array_map( 'IP_Geo_Block_Logs::validate_utf8', $row );
-		}
-
-		// must be sanitized just before sending to UA.
-		return isset( $result ) ? $result : array();
+		return $sql ? $wpdb->get_results( $sql, ARRAY_N ) : array();
 	}
 
 	/**

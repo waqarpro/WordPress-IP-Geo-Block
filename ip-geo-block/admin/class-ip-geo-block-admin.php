@@ -725,6 +725,10 @@ class IP_Geo_Block_Admin {
 		foreach ( array( 'includes', 'uploads', 'languages' ) as $key )
 			$output['exception'][ $key ] = $default['exception'][ $key ];
 
+		// public : convert country code to upper case
+		foreach ( array( 'white_list', 'black_list' ) as $key )
+			$output['public'][ $key ] = strtoupper( $output['public'][ $key ] );
+
 		return $output;
 	}
 
@@ -845,6 +849,12 @@ class IP_Geo_Block_Admin {
 				'page' => 'options-general.php?page=' . IP_Geo_Block::PLUGIN_SLUG,
 				'tab' => 'tab=4'
 			);
+			break;
+
+		  case 'export-logs':
+			// Export logs from MySQL DB
+			include_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-ajax.php' );
+			IP_Geo_Block_Admin_Ajax::export_logs( $which );
 			break;
 
 		  case 'restore':

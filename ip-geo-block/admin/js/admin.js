@@ -359,6 +359,9 @@ var ip_geo_block_time = new Date();
 
 		// Register event handler at specific tab
 		switch (tabNum) {
+		  /*----------------------------------------
+		   * Settings
+		   *----------------------------------------*/
 		  case 0:
 			// Scan your country code
 			$(ID('#', 'scan-code')).on('click', function (event) {
@@ -560,6 +563,9 @@ var ip_geo_block_time = new Date();
 
 			break;
 
+		  /*----------------------------------------
+		   * Statistics
+		   *----------------------------------------*/
 		  case 1:
 			// https://developers.google.com/loader/#Dynamic
 			if ($(ID('#', 'chart-countries')).length && 'object' === typeof google) {
@@ -588,6 +594,9 @@ var ip_geo_block_time = new Date();
 			});
 			break;
 
+		  /*----------------------------------------
+		   * Search
+		   *----------------------------------------*/
 		  case 2:
 			// Initialize map if exists
 			$(ID('#', 'map')).each(function () {
@@ -630,6 +639,9 @@ var ip_geo_block_time = new Date();
 			});
 			break;
 
+		  /*----------------------------------------
+		   * Logs
+		   *----------------------------------------*/
 		  case 4:
 			// Kick-off footable
 			if ($(ID('.', 'log')).hide().length) {
@@ -658,6 +670,15 @@ var ip_geo_block_time = new Date();
 				confirm('Clear logs ?', function () {
 					ajax_clear('logs', null);
 				});
+				return false;
+			});
+
+			// Export / Import settings
+			add_hidden_form('export-logs');
+
+			// Export settings
+			$(ID('#', 'export-logs')).on('click', function (event) {
+				$(ID('#', 'export-form')).trigger('submit');
 				return false;
 			});
 			break;

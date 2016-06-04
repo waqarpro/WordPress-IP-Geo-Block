@@ -777,10 +777,12 @@ class IP_Geo_Block {
 	}
 
 	private function is_bot( $list ) {
-		$ua = strtolower( $_SERVER['HTTP_USER_AGENT'] );
-		foreach ( $list as $bot ) {
-			if ( FALSE !== strpos( $ua, $bot ) )
-				return TRUE;
+		if ( isset( $_SERVER['HTTP_USER_AGENT'] ) ) {
+			$ua = strtolower( $_SERVER['HTTP_USER_AGENT'] );
+			foreach ( $list as $bot ) {
+				if ( FALSE !== strpos( $ua, $bot ) )
+					return TRUE;
+			}
 		}
 
 		return FALSE;

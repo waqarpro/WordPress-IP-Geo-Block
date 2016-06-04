@@ -63,6 +63,53 @@ class IP_Geo_Block_Admin_Ajax {
 	}
 
 	/**
+	 * Insert array
+	 *
+	 */
+	static private function array_insert( &$base_array, $insert_value, $position = null ) {
+		if ( ! is_array( $insert_value ) )
+			$insert_value = array( $insert_value );
+
+		$position = is_null( $position ) ? count( $base_array ) : intval( $position );
+
+		$base_array = array_merge(
+			array_splice( $base_array, 0, $position ),
+			$insert_value, $base_array
+		);
+	}
+
+	/**
+	 * Export logs from MySQL DB
+	 *
+	 */
+	static public function export_logs( $which ) {
+		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php' );
+		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+
+		$csv = '';
+		$which = IP_Geo_Block_Logs::restore_logs( $which );
+		$date = isset( $which[0] ) ? $which[0][1] : $_SERVER['REQUEST_TIME'];
+		$date = IP_Geo_Block_Util::localdate( $date, 'Y-m-d_H-i-s' );
+
+		foreach ( $which as $data ) {
+			$hook = array_shift( $data );
+			self::array_insert( $data, $hook, 3 );
+			$data[0] = IP_Geo_Block_Util::localdate( $data[0], 'Y-m-d H:i:s' );
+			$csv .= implode( ',', $data ) . PHP_EOL;
+		}
+
+		// Send as file
+		header( 'Content-Description: File Transfer' );
+		header( 'Content-Type: application/octet-stream' );
+		header( 'Content-Disposition: attachment; filename="' . IP_Geo_Block::PLUGIN_SLUG . '_' . $date . '.csv"' );
+		header( 'Pragma: public' );
+		header( 'Expires: 0' );
+		header( 'Cache-Control: no-store, no-cache, must-revalidate' );
+		header( 'Content-Length: ' . strlen( $csv ) );
+		echo $csv;
+	}
+
+	/**
 	 * Restore logs from MySQL DB
 	 *
 	 */
@@ -72,17 +119,21 @@ class IP_Geo_Block_Admin_Ajax {
 
 		// if js is slow then limit the number of rows
 		$limit = IP_Geo_Block_Logs::limit_rows( @$_POST['time'] );
-		$which = IP_Geo_Block_Logs::restore_logs( $which );
+
+		foreach ( IP_Geo_Block_Logs::restore_logs( $which ) as $row ) {
+			$hook = array_shift( $row );
+			$list[ $hook ][] = $row; // array_map( 'IP_Geo_Block_Logs::validate_utf8', $row );
+		}
 
 		// compose html with sanitization
-		foreach ( $which as $hook => $rows ) {
+		foreach ( $list as $hook => $rows ) {
 			$html = '';
 			$n = 0;
-			foreach ( $rows as $logs ) {
-				$log = (int)array_shift( $logs );
+			foreach ( $rows as $row ) {
+				$log = (int)array_shift( $row );
 				$html .= '<tr><td data-value='.$log.'>';
 				$html .= IP_Geo_Block_Util::localdate( $log, 'Y-m-d H:i:s' ) . "</td>";
-				foreach ( $logs as $log ) {
+				foreach ( $row as $log ) {
 					$log = esc_html( $log );
 					$html .= "<td>$log</td>";
 				}

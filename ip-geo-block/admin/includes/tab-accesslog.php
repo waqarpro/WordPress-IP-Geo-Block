@@ -5,7 +5,6 @@ include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 class IP_Geo_Block_Admin_Tab {
 
 	public static function tab_setup( $context ) {
-		$plugin_slug = IP_Geo_Block::PLUGIN_SLUG;
 		$option_slug = $context->option_slug['settings'];
 		$option_name = $context->option_name['settings'];
 		$settings = IP_Geo_Block::get_option( 'settings' );
@@ -20,7 +19,7 @@ if ( $settings['validation']['reclogs'] ) :
 		/*----------------------------------------*
 		 * Validation logs
 		 *----------------------------------------*/
-		$section = $plugin_slug . '-accesslog';
+		$section = IP_Geo_Block::PLUGIN_SLUG . '-accesslog';
 		add_settings_section(
 			$section,
 			__( 'Validation logs', IP_Geo_Block::TEXT_DOMAIN ),
@@ -40,7 +39,21 @@ if ( $settings['validation']['reclogs'] ) :
 				'option' => $option_name,
 				'field' => $field,
 				'value' => __( 'Clear now', IP_Geo_Block::TEXT_DOMAIN ),
-				'after' => '<div id="'.$plugin_slug.'-logs"></div>',
+				'after' => '<div id="ip-geo-block-logs"></div>',
+			)
+		);
+
+		$field = 'export_logs';
+		add_settings_field(
+			$option_name.'_'.$field,
+			__( 'Export logs', IP_Geo_Block::TEXT_DOMAIN ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'none',
+				'before' => '<a class="button button-secondary" id="ip-geo-block-export-logs" title="' . __( 'Export to the local file',   IP_Geo_Block::TEXT_DOMAIN ) . '" href="javascript:void(0)">'. __( 'Export csv', IP_Geo_Block::TEXT_DOMAIN ) . '</a>',
+				'after' => '<div id="ip-geo-block-export"></div>',
 			)
 		);
 
@@ -49,7 +62,7 @@ else:
 		/*----------------------------------------*
 		 * Warning
 		 *----------------------------------------*/
-		$section = $plugin_slug . '-accesslog';
+		$section = IP_Geo_Block::PLUGIN_SLUG . '-accesslog';
 		add_settings_section(
 			$section,
 			__( 'Validation logs', IP_Geo_Block::TEXT_DOMAIN ),
@@ -81,11 +94,11 @@ endif;
 		// same as in tab-settings.php
 		$dfn = __( '<dfn title="Validate request to %s.">%s</dfn>', IP_Geo_Block::TEXT_DOMAIN );
 		$target = array(
-			'comment' => sprintf( $dfn, 'wp-comments-post.php', __( 'Comment post', IP_Geo_Block::TEXT_DOMAIN ) ),
-			'xmlrpc'  => sprintf( $dfn, 'xmlrpc.php',           __( 'XML-RPC',      IP_Geo_Block::TEXT_DOMAIN ) ),
-			'login'   => sprintf( $dfn, 'wp-login.php',         __( 'Login form',   IP_Geo_Block::TEXT_DOMAIN ) ),
-			'admin'   => sprintf( $dfn, 'wp-admin/*.php',       __( 'Admin area',   IP_Geo_Block::TEXT_DOMAIN ) ),
-			'public'  => sprintf( $dfn, 'public facing pages',  __( 'Public pages', IP_Geo_Block::TEXT_DOMAIN ) ),
+			'comment' => sprintf( $dfn, 'wp-comments-post.php', __( 'Comment post',       IP_Geo_Block::TEXT_DOMAIN ) ),
+			'xmlrpc'  => sprintf( $dfn, 'xmlrpc.php',           __( 'XML-RPC',            IP_Geo_Block::TEXT_DOMAIN ) ),
+			'login'   => sprintf( $dfn, 'wp-login.php',         __( 'Login form',         IP_Geo_Block::TEXT_DOMAIN ) ),
+			'admin'   => sprintf( $dfn, 'wp-admin/*.php',       __( 'Admin area',         IP_Geo_Block::TEXT_DOMAIN ) ),
+			'public'  => sprintf( $dfn, 'public facing pages',  __( 'Pubic facing pages', IP_Geo_Block::TEXT_DOMAIN ) ),
 		);
 
 		foreach ( $target as $key => $val ) {

@@ -91,18 +91,18 @@ class IP_Geo_Block_Admin_Tab {
 		);
 
 		$rule_desc = array(
+			__( 'Please select either &#8220;Whitelist&#8221; or &#8220;Blacklist&#8221;.', IP_Geo_Block::TEXT_DOMAIN ),
 			__( '<dfn title="&#8220;Block by country&#8221; will be bypassed in case of empty. All the countries will be blocked in case you put &#8220;XX&#8221; only.">Whitelist of country code</dfn>', IP_Geo_Block::TEXT_DOMAIN ) . '<br/>(<a class="ip-geo-block-link" href="http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements" title="ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia" target=_blank>ISO 3166-1 alpha-2</a>)',
 			__( '<dfn title="&#8220;Block by country&#8221; will be bypassed in case of empty. Please consider to include &#8220;ZZ&#8221; which means UNKNOWN country.">Blacklist of country code</dfn>', IP_Geo_Block::TEXT_DOMAIN ) . '<br/>(<a class="ip-geo-block-link" href="http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements" title="ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia" target=_blank>ISO 3166-1 alpha-2</a>)',
 		);
 
 		$comma = '<span class="ip-geo-block-sup">' . __( '(comma separated)', IP_Geo_Block::TEXT_DOMAIN ) . '</span>';
-		$desc = __( 'Please select either &#8220;Whitelist&#8221; or &#8220;Blacklist&#8221;.', IP_Geo_Block::TEXT_DOMAIN );
 
 		// Matching rule
 		$field = 'matching_rule';
 		add_settings_field(
 			$option_name.'_'.$field,
-			'<dfn title="' . $desc . '">' . __( 'Matching rule', IP_Geo_Block::TEXT_DOMAIN ) . '</dfn>',
+			'<dfn title="' . $rule_desc[0] . '">' . __( 'Matching rule', IP_Geo_Block::TEXT_DOMAIN ) . '</dfn>',
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -113,7 +113,7 @@ class IP_Geo_Block_Admin_Tab {
 				'value' => $options[ $field ],
 				'list' => $rule,
 				'desc' => array(
-					-1 => $desc,
+					-1 => $rule_desc[0],
 					 0 => __( 'A request from which the country code or IP address is <strong>NOT</strong> in the whitelist will be blocked.', IP_Geo_Block::TEXT_DOMAIN ),
 					 1 => __( 'A request from which the country code or IP address is in the blacklist will be blocked.', IP_Geo_Block::TEXT_DOMAIN ),
 				),
@@ -126,7 +126,7 @@ class IP_Geo_Block_Admin_Tab {
 		$field = 'white_list';
 		add_settings_field(
 			$option_name.'_'.$field,
-			$rule_desc[0],
+			$rule_desc[1],
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -142,7 +142,7 @@ class IP_Geo_Block_Admin_Tab {
 		$field = 'black_list';
 		add_settings_field(
 			$option_name.'_'.$field,
-			$rule_desc[1],
+			$rule_desc[2],
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -600,7 +600,7 @@ class IP_Geo_Block_Admin_Tab {
 		$key = 'matching_rule';
 		add_settings_field(
 			$option_name.'_'.$field.'_'.$key,
-			__( 'Matching rule', IP_Geo_Block::TEXT_DOMAIN ),
+			'<dfn title="' . $rule_desc[0] . '">' . __( 'Matching rule', IP_Geo_Block::TEXT_DOMAIN ) . '</dfn>',
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -618,7 +618,7 @@ class IP_Geo_Block_Admin_Tab {
 		$key = 'white_list';
 		add_settings_field(
 			$option_name.'_'.$field.'_'.$key,
-			$rule_desc[0],
+			$rule_desc[1],
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -635,7 +635,7 @@ class IP_Geo_Block_Admin_Tab {
 		$key = 'black_list';
 		add_settings_field(
 			$option_name.'_'.$field.'_'.$key,
-			$rule_desc[1],
+			$rule_desc[2],
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
