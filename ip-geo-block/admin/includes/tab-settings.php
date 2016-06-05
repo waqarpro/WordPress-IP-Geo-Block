@@ -562,7 +562,7 @@ class IP_Geo_Block_Admin_Tab {
 			array(
 				'type' => 'html',
 				'value' => $tmp,
-				'before' => '<p class="ip-geo-block-desc">' . __( 'WordPress core does not directly request the PHP files in the following directories. This feature inhibits a direct access to the file such as PHP, CGI and SSI in order to provide against your site being compromised.', IP_Geo_Block::TEXT_DOMAIN ) . '</p>',
+				'before' => '<p class="ip-geo-block-desc">' . __( 'WordPress core does not directly request the PHP files in the following directories. This feature inhibits a direct access to the file such as PHP, CGI and SSI in order to prevent your site being compromised.', IP_Geo_Block::TEXT_DOMAIN ) . '</p>',
 			)
 		);
 

@@ -408,6 +408,7 @@ class IP_Geo_Block_Admin {
 <?php if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ) {
 	echo '<p>', get_num_queries(), ' queries. ', timer_stop(0), ' seconds. ', memory_get_usage(), " bytes.</p>\n";
 } ?>
+	<p style="text-align:right">[ <a href="#"><?php _e( 'Back to top', IP_Geo_Block::TEXT_DOMAIN ); ?></a> ]</p>
 </div>
 <?php
 	}
@@ -759,7 +760,7 @@ class IP_Geo_Block_Admin {
 	}
 
 	/**
-	 * Sanitize options.
+	 * Sanitize options before saving them into DB.
 	 *
 	 */
 	public function validate_settings( $input = array() ) {
@@ -773,11 +774,21 @@ class IP_Geo_Block_Admin {
 		include_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php' );
 		$stat = IP_Geo_Block_Admin_Rewrite::activate_rewrite_all( $options['rewrite'] );
 		$diff = array_diff( $options['rewrite'], $stat );
+
 		if ( ! empty( $diff ) ) {
 			$options['rewrite'] = $stat;
+
+			$file = array();
+			$dirs = IP_Geo_Block_Admin_Rewrite::get_dirs();
+
+			// show which file would be the issue
+			foreach ( array_keys( $diff ) as $key ) {
+				$file[] = '<code>' . $dirs[ $key ] . '.htaccess</code>';
+			}
+
 			$this->show_setting_notice( 'settings', 'error', sprintf(
 				__( 'Unable to write %s. Please check permission.', IP_Geo_Block::TEXT_DOMAIN ),
-				'<code>.htaccess</code>'
+				implode( ', ', $file )
 			) );
 		}
 

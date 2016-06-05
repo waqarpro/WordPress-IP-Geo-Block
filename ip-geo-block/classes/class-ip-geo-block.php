@@ -102,10 +102,10 @@ class IP_Geo_Block {
 
 		// wp-admin/*.php, wp-includes, wp-content/(plugins|themes|language|uploads)
 		if ( $this->target_type ) {
-			if ( 'admin' === $this->target_type )
-				add_action( 'wp_loaded', array( $this, 'validate_admin'  ), $priority );
+			if ( 'admin' !== $this->target_type )
+				add_action( 'init', array( $this, 'validate_direct' ), $priority );
 			else
-				add_action( 'init',      array( $this, 'validate_direct' ), $priority );
+				add_action( 'wp_loaded', array( $this, 'validate_admin' ), $priority );
 		}
 
 		// analize core validation target (comment|xmlrpc|login|public)
