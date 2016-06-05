@@ -782,7 +782,7 @@ class IP_Geo_Block_Admin {
 			$dirs = IP_Geo_Block_Admin_Rewrite::get_dirs();
 
 			// show which file would be the issue
-			foreach ( array_keys( $diff ) as $key ) {
+			foreach ( $diff as $key => $stat ) {
 				$file[] = '<code>' . $dirs[ $key ] . '.htaccess</code>';
 			}
 
@@ -842,7 +842,8 @@ class IP_Geo_Block_Admin {
 
 		  case 'clear-cache':
 			// Delete cache of IP address
-			delete_transient( IP_Geo_Block::CACHE_KEY ); // @since 2.8
+			include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
+			IP_Geo_Block_API_Cache::clear_cache();
 			$res = array(
 				'page' => 'options-general.php?page=' . IP_Geo_Block::PLUGIN_SLUG,
 				'tab' => 'tab=1'

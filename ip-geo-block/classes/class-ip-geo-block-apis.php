@@ -489,10 +489,72 @@ class IP_Geo_Block_API_IPInfoDB extends IP_Geo_Block_API {
  * Input type  : IP address (IPv4, IPv6)
  * Output type : array
  */
+if ( 1 ) :
+class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
+
+	public function __construct( $api_key = NULL ) {
+		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+	}
+
+	public static function update_cache( $hook, $validate, $settings ) {
+		IP_Geo_Block_Logs::delete_expired_cache( $settings['cache_time'] );
+		$cache = IP_Geo_Block_Logs::search_cache( $ip = $validate['ip'] );
+
+		// if new cache then reset these values
+		if ( empty( $cache ) ) {
+			$call = 1;
+			$fail = 0;
+		} else {
+			$fail = $cache['fail'] + (int)isset( $validate['fail'] );
+			$call = $cache['call'] + (int)empty( $validate['fail'] );
+		}
+
+		// update elements
+		IP_Geo_Block_Logs::update_cache( $cache = array(
+			'time' => $_SERVER['REQUEST_TIME'],
+			'ip'   => $ip,
+			'hook' => $hook,
+			'code' => $validate['code'],
+			'auth' => $validate['auth'], // get_current_user_id() > 0
+			'fail' => $validate['auth'] ? 0 : $fail,
+			'call' => $settings['save_statistics'] ? $call : 0,
+			'host' => isset( $validate['host'] ) ? $validate['host'] : NULL,
+		) );
+
+		return $cache;
+	}
+
+	public static function clear_cache() {
+		IP_Geo_Block_Logs::clear_cache();
+	}
+
+	public static function get_cache_all() {
+		return IP_Geo_Block_Logs::restore_cache();
+	}
+
+	public static function get_cache( $ip ) {
+		$cache = IP_Geo_Block_Logs::search_cache( $ip );
+		return ! empty( $cache ) ? $cache : NULL;
+	}
+
+	public function get_location( $ip, $args = array() ) {
+		if ( $cache = self::get_cache( $ip ) )
+			return array( 'countryCode' => $cache['code'] );
+		else
+			return array( 'errorMessage' => 'not in the cache' );
+	}
+
+	public function get_country( $ip, $args = array() ) {
+		return ( $cache = self::get_cache( $ip ) ) ? $cache['code'] : NULL;
+	}
+}
+
+else:
+
 class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 
 	public static function update_cache( $hook, $validate, $settings ) {
-		$time = time();
+		$time = $_SERVER['REQUEST_TIME']; // time();
 		$num = ! empty( $settings['cache_hold'] ) ? $settings['cache_hold'] : 10;
 		$exp = ! empty( $settings['cache_time'] ) ? $settings['cache_time'] : HOUR_IN_SECONDS;
 
@@ -542,8 +604,12 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 		return $cache[ $ip ];
 	}
 
-	public static function delete_cache() {
+	public static function clear_cache() {
 		delete_transient( IP_Geo_Block::CACHE_KEY ); // @since 2.8
+	}
+
+	public static function get_cache_all() {
+		return get_transient( IP_Geo_Block::CACHE_KEY );
 	}
 
 	public static function get_cache( $ip ) {
@@ -555,16 +621,17 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 	}
 
 	public function get_location( $ip, $args = array() ) {
-		if ( $cache = $this->get_cache( $ip ) )
+		if ( $cache = self::get_cache( $ip ) )
 			return array( 'countryCode' => $cache['code'] );
 		else
 			return array( 'errorMessage' => 'not in the cache' );
 	}
 
 	public function get_country( $ip, $args = array() ) {
-		return ( $cache = $this->get_cache( $ip ) ) ? $cache['code'] : NULL;
+		return ( $cache = self::get_cache( $ip ) ) ? $cache['code'] : NULL;
 	}
 }
+endif;
 
 /**
  * Provider support class

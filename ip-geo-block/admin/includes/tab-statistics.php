@@ -1,6 +1,7 @@
 <?php
 include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php' );
+include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
 
 class IP_Geo_Block_Admin_Tab {
 
@@ -139,7 +140,7 @@ if ( $options['save_statistics'] ) :
 		foreach ( $statistics['providers'] as $key => $val ) {
 			$html .= '<tr><td>' . esc_html( $key ) . '</td>';
 			$html .= '<td>' . sprintf( '%5d', (int)$val['count'] ) . '</td><td>';
-			$html .= sprintf( '%5d', (int)(1000.0 * $val['time'] / $val['count']) );
+			$html .= sprintf( '%4.1f', (float)(1000.0 * $val['time'] / $val['count']) );
 			$html .= '</td></tr>';
 		}
 		$html .= "</tbody></table>";
@@ -222,10 +223,10 @@ endif;
 		$html .= '<th>' . __( 'Elapsed [sec] / Calls', IP_Geo_Block::TEXT_DOMAIN ) . '</th>';
 		$html .= '</tr></thead><tbody>';
 
-		if ( $transient = get_transient( IP_Geo_Block::CACHE_KEY ) ) {
+		if ( $cache = IP_Geo_Block_API_Cache::get_cache_all() ) {
 			$time = time();
 			$debug = defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG;
-			foreach ( $transient as $key => $val ) {
+			foreach ( $cache as $key => $val ) {
 				if ( $options['anonymize'] )
 					$key = preg_replace( '/\d{1,3}$/', '***', $key );
 				if ( empty( $val['auth'] ) || $debug ) { // hide authenticated user
