@@ -721,7 +721,7 @@ class IP_Geo_Block_Admin {
 
 		// exception : convert associative array to simple array
 		foreach ( array( 'plugins', 'themes' ) as $key )
-			$output['exception'][ $key ] = array_keys( $output['exception'][ $key ] );;
+			$output['exception'][ $key ] = array_keys( $output['exception'][ $key ] );
 
 		foreach ( array( 'includes', 'uploads', 'languages' ) as $key )
 			$output['exception'][ $key ] = $default['exception'][ $key ];

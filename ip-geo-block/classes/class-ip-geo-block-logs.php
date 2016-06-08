@@ -582,7 +582,7 @@ class IP_Geo_Block_Logs {
 			"SELECT * FROM `$table` WHERE `ip` = '%s'", $ip
 		) and $result = $wpdb->get_results( $sql, ARRAY_A ) or self::error( __LINE__ );
 
-		return ! empty( $result[0] ) ? $result[0] : array();
+		return ! empty( $result[0] ) ? $result[0] : NULL;
 	}
 
 	/**

@@ -149,10 +149,28 @@ class IP_Geo_Block_Cron {
 	 * Kick off a cron job to download database immediately on background.
 	 *
 	 */
-	public static function spawn_job( $immediate = TRUE, $ip_adrs ) {
+	public static function start_update_db( $immediate = TRUE, $ip_adrs ) {
 		set_transient( IP_Geo_Block::CRON_NAME, $ip_adrs, 2 * MINUTE_IN_SECONDS );
 		$settings = IP_Geo_Block::get_option( 'settings' );
 		self::schedule_cron_job( $settings['update'], NULL, $immediate );
+	}
+
+	public static function stop_update_db() {
+		wp_clear_scheduled_hook( IP_Geo_Block::CRON_NAME, array( FALSE ) ); // @since 2.1.0
+	}
+
+	/**
+	 * Kick off a cron job to garbage collection for IP address cache.
+	 *
+	 */
+	public static function start_cache_gc() {
+		if ( ! wp_next_scheduled ( IP_Geo_Block::CACHE_KEY ) ) {
+			wp_schedule_event( time(), 'hourly', IP_Geo_Block::CACHE_KEY );
+    	}
+	}
+
+	public static function stop_cache_gc() {
+		wp_clear_scheduled_hook( IP_Geo_Block::CACHE_KEY ); // @since 2.1.0
 	}
 
 }

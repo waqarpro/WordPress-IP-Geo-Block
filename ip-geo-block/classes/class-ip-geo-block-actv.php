@@ -49,7 +49,8 @@ class IP_Geo_Block_Activate {
 			include_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php' );
 
 			// kick off a cron job to download database immediately
-			IP_Geo_Block_Cron::spawn_job( TRUE, IP_Geo_Block::get_ip_address() );
+			IP_Geo_Block_Cron::start_update_db( TRUE, IP_Geo_Block::get_ip_address() );
+			IP_Geo_Block_Cron::start_cache_gc();
 
 			// activate rewrite rules
 			$settings = IP_Geo_Block::get_option( 'settings' );
@@ -62,11 +63,14 @@ class IP_Geo_Block_Activate {
 	 *
 	 */
 	public static function deactivate( $network_wide = FALSE ) {
+		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-cron.php' );
+		include_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php' );
+
 		// cancel schedule
-		wp_clear_scheduled_hook( IP_Geo_Block::CRON_NAME, array( FALSE ) ); // @since 2.1.0
+		IP_Geo_Block_Cron::stop_update_db();
+		IP_Geo_Block_Cron::stop_cache_gc();
 
 		// deactivate rewrite rules
-		include_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php' );
 		IP_Geo_Block_Admin_Rewrite::deactivate_rewrite_all();
 	}
 

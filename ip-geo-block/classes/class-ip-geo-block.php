@@ -50,9 +50,12 @@ class IP_Geo_Block {
 		$priority = $settings['priority'];
 		$validate = $settings['validation'];
 
+		// Garbage collection for IP address cache
+		add_action( IP_Geo_Block::CACHE_KEY, array( $this, 'exec_cache_gc' ) );
+
 		// the action hook which will be fired by cron job
 		if ( $settings['update']['auto'] )
-			add_action( self::CRON_NAME, array( __CLASS__, 'update_database' ) );
+			add_action( self::CRON_NAME, array( $this, 'update_database' ) );
 
 		// check the package version and upgrade if needed
 		if ( version_compare( $settings['version'], self::VERSION ) < 0 || $settings['matching_rule'] < 0 )
@@ -789,12 +792,18 @@ class IP_Geo_Block {
 	}
 
 	/**
-	 * Database auto updater.
+	 * Handlers of cron job
 	 *
 	 */
-	public static function update_database( $immediate = FALSE ) {
+	public function update_database( $immediate = FALSE ) {
 		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-cron.php' );
 		return IP_Geo_Block_Cron::exec_job( $immediate );
+	}
+
+	public function exec_cache_gc() {
+		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+		$settings = self::get_option( 'settings' );
+		IP_Geo_Block_Logs::delete_expired_cache( $settings['cache_time'] );
 	}
 
 }
