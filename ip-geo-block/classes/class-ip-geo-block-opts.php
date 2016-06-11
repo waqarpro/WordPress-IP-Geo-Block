@@ -31,7 +31,7 @@ class IP_Geo_Block_Opts {
 			'black_list'      => 'ZZ',    // Comma separeted country code
 			'timeout'         => 5,       // Timeout in second
 			'response_code'   => 403,     // Response code
-			'save_statistics' => TRUE,    // The number of days to save statistics
+			'save_statistics' => TRUE,    // Record validation statistics
 			'clean_uninstall' => FALSE,   // Remove all savings from DB
 			// since version 1.1
 			'cache_hold'      => 10,      // Max entries in cache
@@ -45,7 +45,7 @@ class IP_Geo_Block_Opts {
 			    'ajax'        => 0,       // Validate on ajax/post (1:country 2:ZEP)
 			    'xmlrpc'      => 1,       // Validate on xmlrpc (1:country 2:close)
 			    'proxy'       => NULL,    // $_SERVER variables for IPs
-			    'reclogs'     => 3,       // 1:blocked 2:passed 3:unauth 4:auth 5:all
+			    'reclogs'     => 1,       // 1:blocked 2:passed 3:unauth 4:auth 5:all
 			    'postkey'     => NULL,    // Keys in $_POST
 			    // since version 1.3.1
 			    'maxlogs'     => 100,     // Max number of rows of log

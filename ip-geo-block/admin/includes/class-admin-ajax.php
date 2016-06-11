@@ -254,6 +254,10 @@ class IP_Geo_Block_Admin_Ajax {
 			'[exception][includes][*]',  // 2.3.0
 		    '[exception][uploads][*]',   // 2.3.0
 			'[exception][languages][*]', // 2.3.0
+			'[public][matching_rule]',   // 3.0.0
+			'[public][white_list]',      // 3.0.0
+			'[public][black_list]',      // 3.0.0
+			'[public][ua_list]',         // 3.0.0
 			'[providers][Maxmind]',
 			'[providers][IP2Location]',
 			'[providers][freegeoip.net]',
@@ -329,7 +333,7 @@ class IP_Geo_Block_Admin_Ajax {
 				    'admin'       => 3,       // Validate on admin (1:country 2:ZEP)
 				    'ajax'        => 3,       // Validate on ajax/post (1:country 2:ZEP)
 				    'xmlrpc'      => 1,       // Validate on xmlrpc (1:country 2:close)
-				    'reclogs'     => 3,       // 1:blocked 2:passed 3:unauth 4:auth 5:all
+				    'reclogs'     => 1,       // 1:blocked 2:passed 3:unauth 4:auth 5:all
 				    'postkey'     => 'action,comment,log,pwd', // Keys in $_POST
 				    'plugins'     => 2,       // Validate on wp-content/plugins
 				    'themes'      => 2,       // Validate on wp-content/themes
