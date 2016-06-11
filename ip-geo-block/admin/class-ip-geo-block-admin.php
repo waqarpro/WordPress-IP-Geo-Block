@@ -760,8 +760,7 @@ class IP_Geo_Block_Admin {
 		if ( ! current_user_can( 'manage_options' ) || empty( $_POST ) || ! $nonce ) {
 			status_header( 403 );
 			wp_die(
-				__( 'You do not have sufficient permissions to access this page.' ),
-				'',
+				__( 'You do not have sufficient permissions to access this page.' ), '',
 				array( 'response' => 403, 'back_link' => true )
 			);
 		}

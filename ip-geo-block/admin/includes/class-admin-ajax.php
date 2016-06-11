@@ -118,6 +118,7 @@ class IP_Geo_Block_Admin_Ajax {
 		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 
 		// if js is slow then limit the number of rows
+		$list = array();
 		$limit = IP_Geo_Block_Logs::limit_rows( @$_POST['time'] );
 
 		foreach ( IP_Geo_Block_Logs::restore_logs( $which ) as $row ) {

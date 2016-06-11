@@ -380,7 +380,6 @@ class IP_Geo_Block_Admin_Tab {
 			1 => __( 'Block by country', IP_Geo_Block::TEXT_DOMAIN ),
 			2 => __( 'Prevent Zero-day Exploit', IP_Geo_Block::TEXT_DOMAIN ),
 		);
-
 		$desc = array(
 			1 => __( 'It will block a request related to the services for both public facing pages and the dashboard.', IP_Geo_Block::TEXT_DOMAIN ),
 			2 => __( 'Regardless of the country code, it will block a malicious request related to the services only for the dashboard.', IP_Geo_Block::TEXT_DOMAIN ),
@@ -563,7 +562,7 @@ class IP_Geo_Block_Admin_Tab {
 			array(
 				'type' => 'html',
 				'value' => $tmp,
-				'before' => '<p class="ip-geo-block-desc">' . __( 'WordPress core does not directly request the PHP files in the following directories. This feature inhibits a direct access to the file such as PHP, CGI and SSI in order to prevent your site being compromised.', IP_Geo_Block::TEXT_DOMAIN ) . '</p>',
+				'before' => '<p class="ip-geo-block-desc">' . __( 'WordPress core does not request PHP files directly except for the few in the following directories. This feature prevents attackers accessing to the compromised files such as PHP, CGI and SSI.', IP_Geo_Block::TEXT_DOMAIN ) . '</p>',
 			)
 		);
 
@@ -574,7 +573,7 @@ class IP_Geo_Block_Admin_Tab {
 		add_settings_section(
 			$section,
 			__( 'Frontend settings', IP_Geo_Block::TEXT_DOMAIN ),
-			array( __CLASS__, 'note_public' ),
+			NULL,
 			$option_slug
 		);
 
@@ -654,7 +653,7 @@ class IP_Geo_Block_Admin_Tab {
 		$key = 'ua_list';
 		add_settings_field(
 			$option_name.'_'.$field.'_'.$key,
-			__( 'Permitted pair of user agent string : country code', IP_Geo_Block::TEXT_DOMAIN ),
+			'<dfn title="' . __( 'User agent string can not contain spaces.', IP_Geo_Block::TEXT_DOMAIN ) . '">' . __( 'Permitted user agent string : country code', IP_Geo_Block::TEXT_DOMAIN ) . '</dfn>',
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -1055,13 +1054,6 @@ endif;
 			'<ul class="ip-geo-block-note">', "\n",
 				'<li>', __('While Maxmind and IP2Location will fetch the local database, others will pass an IP address to the APIs via HTTP.', IP_Geo_Block::TEXT_DOMAIN ), '</li>', "\n",
 				'<li>', __('Please select the appropriate APIs to fit the privacy law in your country.', IP_Geo_Block::TEXT_DOMAIN ), '</li>', "\n",
-			'</ul>', "\n";
-	}
-
-	public static function note_public() {
-		echo
-			'<ul class="ip-geo-block-note">', "\n",
-				'<li>', '</li>', "\n",
 			'</ul>', "\n";
 	}
 

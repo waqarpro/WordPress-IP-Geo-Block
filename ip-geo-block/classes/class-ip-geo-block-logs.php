@@ -40,8 +40,9 @@ class IP_Geo_Block_Logs {
 		// Default charset
 		$charset = 'utf8'; // MySQL 5.0+
 		if ( preg_match( '/CHARACTER SET (\w+)/i', $wpdb->get_charset_collate(), $table ) &&
-		     FALSE !== strpos( $table[1], 'utf8' ) )
+		     FALSE !== strpos( $table[1], 'utf8' ) ) {
 			$charset = $table[1]; // ex) utf8mb4 MySQL 5.5+
+		}
 
 		// for logs
 		$table = $wpdb->prefix . self::TABLE_LOGS;
@@ -464,6 +465,7 @@ class IP_Geo_Block_Logs {
 		$posts = self::get_post_data( $hook, $validate, $settings );
 		$method = $_SERVER['REQUEST_METHOD'] . '[' . $_SERVER['SERVER_PORT'] . ']:' . $_SERVER['REQUEST_URI'];
 
+		// anonymize ip address
 		if ( ! empty( $settings['anonymize'] ) )
 			$validate['ip'] = preg_replace( '/\d{1,3}$/', '***', $validate['ip'] );
 
