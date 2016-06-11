@@ -96,7 +96,10 @@ class IP_Geo_Block_Admin_Tab {
 			__( '<dfn title="&#8220;Block by country&#8221; will be bypassed in case of empty. Please consider to include &#8220;ZZ&#8221; which means UNKNOWN country.">Blacklist of country code</dfn>', IP_Geo_Block::TEXT_DOMAIN ) . '<br/>(<a class="ip-geo-block-link" href="http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements" title="ISO 3166-1 alpha-2 - Wikipedia, the free encyclopedia" target=_blank>ISO 3166-1 alpha-2</a>)',
 		);
 
-		$comma = '<span class="ip-geo-block-sup">' . __( '(comma separated)', IP_Geo_Block::TEXT_DOMAIN ) . '</span>';
+		$comma = array(
+			'<span class="ip-geo-block-sup">' . __( '(comma separated)', IP_Geo_Block::TEXT_DOMAIN ) . '</span>',
+			'<span class="ip-geo-block-sup">' . __( '(comma or RET separated)', IP_Geo_Block::TEXT_DOMAIN ) . '</span>',
+		);
 
 		// Matching rule
 		$field = 'matching_rule';
@@ -135,7 +138,7 @@ class IP_Geo_Block_Admin_Tab {
 				'option' => $option_name,
 				'field' => $field,
 				'value' => $options[ $field ],
-				'after' => $comma,
+				'after' => $comma[0],
 			)
 		);
 
@@ -151,11 +154,9 @@ class IP_Geo_Block_Admin_Tab {
 				'option' => $option_name,
 				'field' => $field,
 				'value' => $options[ $field ],
-				'after' => $comma,
+				'after' => $comma[0],
 			)
 		);
-
-		$desc = '<span class="ip-geo-block-sup">' . __( '(comma or RET separated)', IP_Geo_Block::TEXT_DOMAIN ) . '</span>';
 
 		// White list of extra IP addresses prior to country code (CIDR)
 		$field = 'extra_ips';
@@ -173,7 +174,7 @@ class IP_Geo_Block_Admin_Tab {
 				'field' => $field,
 				'sub-field' => $key,
 				'value' => $options[ $field ][ $key ],
-				'after' => $desc,
+				'after' => $comma[1],
 			)
 		);
 
@@ -192,7 +193,7 @@ class IP_Geo_Block_Admin_Tab {
 				'field' => $field,
 				'sub-field' => $key,
 				'value' => $options[ $field ][ $key ],
-				'after' => $desc,
+				'after' => $comma[1],
 			)
 		);
 
@@ -211,7 +212,7 @@ class IP_Geo_Block_Admin_Tab {
 				'field' => $field,
 				'sub-field' => $key,
 				'value' => $options[ $field ][ $key ],
-				'after' => $comma,
+				'after' => $comma[0],
 			)
 		);
 
@@ -228,7 +229,7 @@ class IP_Geo_Block_Admin_Tab {
 				'option' => $option_name,
 				'field' => $field,
 				'value' => $options[ $field ],
-				'after' => $desc,
+				'after' => $comma[1],
 			)
 		);
 
@@ -628,7 +629,7 @@ class IP_Geo_Block_Admin_Tab {
 				'field' => $field,
 				'sub-field' => $key,
 				'value' => $options[ $field ][ $key ],
-				'after' => $comma,
+				'after' => $comma[0],
 			)
 		);
 
@@ -645,7 +646,25 @@ class IP_Geo_Block_Admin_Tab {
 				'field' => $field,
 				'sub-field' => $key,
 				'value' => $options[ $field ][ $key ],
-				'after' => $comma,
+				'after' => $comma[0],
+			)
+		);
+
+		// Permitted pair of user agent : country code
+		$key = 'ua_list';
+		add_settings_field(
+			$option_name.'_'.$field.'_'.$key,
+			__( 'Permitted pair of user agent string : country code', IP_Geo_Block::TEXT_DOMAIN ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'textarea',
+				'option' => $option_name,
+				'field' => $field,
+				'sub-field' => $key,
+				'value' => $options[ $field ][ $key ],
+				'after' => $comma[1],
 			)
 		);
 
@@ -816,7 +835,7 @@ class IP_Geo_Block_Admin_Tab {
 				'field' => $field,
 				'sub-field' => 'postkey',
 				'value' => $options[ $field ]['postkey'],
-				'after' => $comma,
+				'after' => $comma[0],
 			)
 		);
 

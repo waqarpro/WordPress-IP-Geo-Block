@@ -755,40 +755,22 @@ class IP_Geo_Block {
 	}
 
 	public function check_bots( $validate, $settings ) {
-		// pass when access to feed
-		if ( $this->is_feed() )
-			$validate['result'] = 'passed'; // can overwrite existing result
-
-		// pass when the host name is available
-		elseif ( $this->is_bot( $settings['public']['ua_list'] ) ) {
-			include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php' );
-
-			if ( empty( $validate['host'] ) )
-				$validate['host'] = IP_Geo_Block_Util::gethostbyaddr( $validate['ip'] );
-
-			if ( $validate['host'] !== $validate['ip'] )
-				$validate['result'] = 'passed'; // can overwrite existing result
-		}
-
-		return apply_filters( self::PLUGIN_SLUG . '-bypass-public', $validate, $settings );
-	}
-
-	private function is_feed() {
-		return 'feed' === basename( $this->request_uri ) || (
-			isset( $_GET['feed'] ) && in_array( $_GET['feed'], array( 'rss', 'rss2', 'rdf', 'atom' ) )
-		) ? TRUE : FALSE;
-	}
-
-	private function is_bot( $list ) {
 		if ( isset( $_SERVER['HTTP_USER_AGENT'] ) ) {
-			$ua = strtolower( $_SERVER['HTTP_USER_AGENT'] );
-			foreach ( $list as $bot ) {
-				if ( FALSE !== strpos( $ua, $bot ) )
-					return TRUE;
+			$ua = $_SERVER['HTTP_USER_AGENT'];
+			$co = $validate['code'];
+
+			foreach ( $this->multiexplode( array( ',', ' ' ), $settings['public']['ua_list'] ) as $bot ) {
+				list( $name, $code ) = explode( ':', $bot, 2 );
+
+				if ( $name && FALSE !== strpos( $ua, $name ) &&
+				     $code && FALSE !== strpos( $co, $code ) ) {
+					$validate['result'] = 'passed'; // can overwrite existing result
+					break;
+				}
 			}
 		}
 
-		return FALSE;
+		return apply_filters( self::PLUGIN_SLUG . '-bypass-public', $validate, $settings );
 	}
 
 	/**

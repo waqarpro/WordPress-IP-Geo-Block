@@ -685,7 +685,7 @@ class IP_Geo_Block_Admin {
 						else {
 							$output[ $key ][ $sub ] = ( is_int( $default[ $key ][ $sub ] ) ?
 								(int)$input[ $key ][ $sub ] :
-								sanitize_text_field( preg_replace( '/[^\w\.\/\n,]/', '', $input[ $key ][ $sub ] ) )
+								sanitize_text_field( preg_replace( '/[^\w\.\/\n,:!]/', '', $input[ $key ][ $sub ] ) )
 							);
 						}
 					}
@@ -705,10 +705,14 @@ class IP_Geo_Block_Admin {
 		$output['extra_ips']['white_list'] = preg_replace( $key, $val, $output['extra_ips']['white_list'] );
 		$output['extra_ips']['black_list'] = preg_replace( $key, $val, $output['extra_ips']['black_list'] );
 
-		// format signature
+		// format signature, ua_list (text area)
 		array_shift( $key );
 		array_shift( $val );
 		$output['signature'] = preg_replace( $key, $val, $output['signature'] );
+
+		// convert country code to upper case
+		$output['public']['ua_list'] = preg_replace( $key, $val, $output['public']['ua_list'] );
+		$output['public']['ua_list'] = preg_replace_callback( '/:\w+/', array( $this, 'strtoupper' ), $output['public']['ua_list'] );
 
 		// reject invalid signature which potentially blocks itself
 		$key = array();
@@ -731,6 +735,10 @@ class IP_Geo_Block_Admin {
 			$output['public'][ $key ] = strtoupper( $output['public'][ $key ] );
 
 		return $output;
+	}
+
+	public function strtoupper( $matches ) {
+		return strtoupper( $matches[0] );
 	}
 
 	/**
@@ -815,7 +823,8 @@ class IP_Geo_Block_Admin {
 		$which = isset( $_POST['which'] ) ? $_POST['which'] : NULL;
 		switch ( isset( $_POST['cmd'  ] ) ? $_POST['cmd'  ] : NULL ) {
 		  case 'download':
-			$res = IP_Geo_Block::update_database();
+			$res = IP_Geo_Block::get_instance();
+			$res = $res->update_database();
 			break;
 
 		  case 'search':
