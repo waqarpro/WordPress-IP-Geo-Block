@@ -685,7 +685,7 @@ class IP_Geo_Block_Admin {
 						else {
 							$output[ $key ][ $sub ] = ( is_int( $default[ $key ][ $sub ] ) ?
 								(int)$input[ $key ][ $sub ] :
-								sanitize_text_field( preg_replace( '/[^\w\.\/\n,:!]/', '', $input[ $key ][ $sub ] ) )
+								sanitize_text_field( preg_replace( '/[^\w\s\.\/,:!]/', '', $input[ $key ][ $sub ] ) )
 							);
 						}
 					}
@@ -700,8 +700,8 @@ class IP_Geo_Block_Admin {
 		);
 
 		// sanitize and format ip address
-		$key = array( '/[^\d\.\/ ,]/', '/([ ,])+/', '/(?:^,|,$)/' );
-		$val = array( '',              '$1',        ''            );
+		$key = array( '/[^\d\s\.\/,]/', '/([\s,])+/', '/(?:^,|,$)/' );
+		$val = array( '',               '$1',         ''            );
 		$output['extra_ips']['white_list'] = preg_replace( $key, $val, $output['extra_ips']['white_list'] );
 		$output['extra_ips']['black_list'] = preg_replace( $key, $val, $output['extra_ips']['black_list'] );
 

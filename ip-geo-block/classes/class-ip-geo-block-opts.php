@@ -116,7 +116,7 @@ class IP_Geo_Block_Opts {
 			    'matching_rule' => 0,       // -1:neither, 0:white list, 1:black list
 			    'white_list'    => NULL,    // Comma separeted country code
 			    'black_list'    => 'ZZ',    // Comma separeted country code
-			    'ua_list' => 'Googlebot:US,Yahoo!:US,bingbot:US Feedfetcher:US,FeedBurner:US,Feedly:US',
+			    'ua_list' => "Googlebot:US,Yahoo!:US,bingbot:US\nFeedfetcher:US,FeedBurner:US,Feedspot:US\nAol:US,Pinterest:US",
 			),
 		),
 	);
