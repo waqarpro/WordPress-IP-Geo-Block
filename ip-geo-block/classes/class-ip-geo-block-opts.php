@@ -36,6 +36,8 @@ class IP_Geo_Block_Opts {
 			// since version 1.1
 			'cache_hold'      => 10,      // Max entries in cache
 			'cache_time'      => HOUR_IN_SECONDS, // @since 3.5
+			// since version 3.0.0
+			'cache_time_gc'   => 900,     // Cache garbage collection time
 			// since version 1.2, 1.3
 			'login_fails'     => 5,       // Limited number of login attempts
 			'validation'      => array(   // Action hook for validation
@@ -185,6 +187,7 @@ class IP_Geo_Block_Opts {
 				$tmp['daystats'] = array();
 				IP_Geo_Block_Logs::record_stat( $tmp );
 				delete_option( 'ip_geo_block_statistics' ); // @since 1.2.0
+
 				foreach ( array( 'maxmind', 'ip2location' ) as $tmp ) {
 					unset( $settings[ $tmp ] );
 				}
@@ -196,12 +199,14 @@ class IP_Geo_Block_Opts {
 			if ( version_compare( $version, '2.2.5' ) < 0 ) {
 				// https://wordpress.org/support/topic/compatibility-with-ag-custom-admin
 				$arr = array();
+
 				foreach ( explode( ',', $settings['signature'] ) as $tmp ) {
 					$tmp = trim( $tmp );
 					if ( 'wp-config.php' === $tmp || 'passwd' === $tmp )
 						$tmp = '/' . $tmp;
 					array_push( $arr, $tmp );
 				}
+
 				$settings['signature'] = implode( ',', $arr );
 
 				foreach ( array( 'plugins', 'themes' ) as $tmp ) {
@@ -218,8 +223,9 @@ class IP_Geo_Block_Opts {
 			}
 
 			if ( version_compare( $version, '3.0' ) < 0 ) {
+				$settings['cache_time_gc']        = $default[ $key[0] ]['cache_time_gc'];
 				$settings['validation']['public'] = $default[ $key[0] ]['validation']['public'];
-				$settings['public'] = $default[ $key[0] ]['public'];
+				$settings['public']               = $default[ $key[0] ]['public'];
 			}
 
 			// save package version number

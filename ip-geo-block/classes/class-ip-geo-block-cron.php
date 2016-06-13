@@ -163,9 +163,19 @@ class IP_Geo_Block_Cron {
 	 * Kick off a cron job to garbage collection for IP address cache.
 	 *
 	 */
-	public static function start_cache_gc() {
-		if ( ! wp_next_scheduled ( IP_Geo_Block::CACHE_KEY ) ) {
-			wp_schedule_event( time(), 'hourly', IP_Geo_Block::CACHE_KEY );
+	public static function exec_cache_gc( $settings ) {
+		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+
+		wp_clear_scheduled_hook( IP_Geo_Block::CACHE_KEY );
+
+		IP_Geo_Block_Logs::delete_expired_cache( $settings['cache_time'] );
+
+		wp_schedule_single_event( time() + $settings['cache_time_gc'], IP_Geo_Block::CACHE_KEY );
+	}
+
+	public static function start_cache_gc( $settings ) {
+		if ( ! wp_next_scheduled( IP_Geo_Block::CACHE_KEY ) ) {
+			wp_schedule_single_event( time() + $settings['cache_time_gc'], IP_Geo_Block::CACHE_KEY );
     	}
 	}
 

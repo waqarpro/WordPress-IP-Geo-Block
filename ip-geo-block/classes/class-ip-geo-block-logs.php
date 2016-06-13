@@ -649,13 +649,13 @@ class IP_Geo_Block_Logs {
 	 * Delete expired cache
 	 *
 	 */
-	public static function delete_expired_cache( $settings ) {
+	public static function delete_expired_cache( $cache_time ) {
 		global $wpdb;
 		$table = $wpdb->prefix . IP_Geo_Block::CACHE_KEY;
 
 		$sql = $wpdb->prepare(
 			"DELETE FROM `$table` WHERE `time` < %d",
-			$_SERVER['REQUEST_TIME'] - $settings['cache_time']
+			$_SERVER['REQUEST_TIME'] - $cache_time
 		) and $result = $wpdb->query( $sql ) or self::error( __LINE__ );
 
 		return $result;

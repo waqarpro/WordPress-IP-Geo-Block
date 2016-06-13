@@ -897,6 +897,22 @@ class IP_Geo_Block_Admin_Tab {
 			)
 		);
 
+		// Garbage collection period [sec]
+		$field = 'cache_time_gc';
+		add_settings_field(
+			$option_name.'_'.$field,
+			__( 'Garbage collection period [sec]', IP_Geo_Block::TEXT_DOMAIN ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'text',
+				'option' => $option_name,
+				'field' => $field,
+				'value' => $options[ $field ],
+			)
+		);
+
 		/*----------------------------------------*
 		 * Submission settings
 		 *----------------------------------------*/

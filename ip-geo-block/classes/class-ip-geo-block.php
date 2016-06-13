@@ -783,8 +783,8 @@ class IP_Geo_Block {
 	}
 
 	public function exec_cache_gc() {
-		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
-		IP_Geo_Block_Logs::delete_expired_cache( self::get_option( 'settings' ) );
+		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-cron.php' );
+		IP_Geo_Block_Cron::exec_cache_gc( self::get_option( 'settings' ) );
 	}
 
 }
