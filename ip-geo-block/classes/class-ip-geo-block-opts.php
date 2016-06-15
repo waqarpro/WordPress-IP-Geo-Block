@@ -118,7 +118,7 @@ class IP_Geo_Block_Opts {
 			    'matching_rule' => 0,       // -1:neither, 0:white list, 1:black list
 			    'white_list'    => NULL,    // Comma separeted country code
 			    'black_list'    => 'ZZ',    // Comma separeted country code
-			    'ua_list' => "Googlebot:US,Yahoo!:US,bingbot:US\nFeedfetcher:US,FeedBurner:US,Feedspot:US\nAol:US,Pinterest:US",
+			    'ua_list' => "Google:US,Yahoo!:US,bingbot:US\nFeedBurner:US,Feedspot:US\nAol:US,Pinterest:US",
 			),
 		),
 	);
@@ -215,6 +215,10 @@ class IP_Geo_Block_Opts {
 			}
 
 			if ( version_compare( $version, '2.3.0' ) < 0 ) {
+				$settings['signature'] = str_replace( " ", "\n", $settings['signature'] );
+				foreach ( array( 'white_list', 'black_list' ) as $tmp ) {
+					$settings['extra_ips'][ $tmp ] = str_replace( " ", "\n", $settings['extra_ips'][ $tmp ] );
+				}
 				foreach ( array( 'includes', 'uploads', 'languages' ) as $tmp ) {
 					$settings['validation'][ $tmp ] = $default[ $key[0] ]['validation'][ $tmp ];
 					$settings['rewrite'   ][ $tmp ] = $default[ $key[0] ]['rewrite'   ][ $tmp ];

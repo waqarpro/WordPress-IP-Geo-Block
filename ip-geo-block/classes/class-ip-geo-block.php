@@ -50,9 +50,6 @@ class IP_Geo_Block {
 		$priority = $settings['priority'];
 		$validate = $settings['validation'];
 
-		// Garbage collection for IP address cache
-		add_action( IP_Geo_Block::CACHE_KEY, array( $this, 'exec_cache_gc' ) );
-
 		// the action hook which will be fired by cron job
 		if ( $settings['update']['auto'] )
 			add_action( self::CRON_NAME, array( $this, 'update_database' ) );
@@ -60,6 +57,9 @@ class IP_Geo_Block {
 		// check the package version and upgrade if needed
 		if ( version_compare( $settings['version'], self::VERSION ) < 0 || $settings['matching_rule'] < 0 )
 			add_action( 'init', array( __CLASS__, 'activate' ), $priority );
+
+		// Garbage collection for IP address cache
+		add_action( IP_Geo_Block::CACHE_KEY, array( $this, 'exec_cache_gc' ) );
 
 		// normalize requested uri
 		$this->pagenow = ! empty( $GLOBALS['pagenow'] ) ? $GLOBALS['pagenow'] : 'index.php';
@@ -719,7 +719,7 @@ class IP_Geo_Block {
 		if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ) {
 			include_once( IP_GEO_BLOCK_PATH . 'includes/Net/IPv4.php' );
 
-			foreach ( $this->multiexplode( array( ',', ' ' ), $ips ) as $i ) {
+			foreach ( $this->multiexplode( array( ",", "\n" ), $ips ) as $i ) {
 				$j = explode( '/', $i, 2 );
 
 				if ( filter_var( $j[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) &&
@@ -732,7 +732,7 @@ class IP_Geo_Block {
 		elseif ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) ) {
 			include_once( IP_GEO_BLOCK_PATH . 'includes/Net/IPv6.php' );
 
-			foreach ( $this->multiexplode( array( ',', ' ' ), $ips ) as $i ) {
+			foreach ( $this->multiexplode( array( ",", "\n" ), $ips ) as $i ) {
 				$j = explode( '/', $i, 2 );
 
 				if ( filter_var( $j[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) &&
@@ -759,7 +759,7 @@ class IP_Geo_Block {
 			$ua = $_SERVER['HTTP_USER_AGENT'];
 			$co = $validate['code'];
 
-			foreach ( $this->multiexplode( array( ',', ' ' ), $settings['public']['ua_list'] ) as $bot ) {
+			foreach ( $this->multiexplode( array( ",", "\n" ), $settings['public']['ua_list'] ) as $bot ) {
 				list( $name, $code ) = explode( ':', $bot, 2 );
 
 				if ( $name && FALSE !== strpos( $ua, $name ) &&

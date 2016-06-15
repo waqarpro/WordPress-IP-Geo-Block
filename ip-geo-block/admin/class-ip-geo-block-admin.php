@@ -529,7 +529,7 @@ class IP_Geo_Block_Admin {
 
 		  case 'textarea': ?>
 <textarea class="regular-text code" id="<?php echo $id, $sub_id; ?>" name="<?php echo $name, $sub_name; ?>"
-<?php disabled( ! empty( $args['disabled'] ), TRUE ); ?>><?php echo str_replace( ' ', "\n", esc_html( $args['value'] ) ); ?></textarea>
+<?php disabled( ! empty( $args['disabled'] ), TRUE ); ?>><?php echo esc_html( $args['value'] ); ?></textarea>
 <?php
 			break;
 
@@ -651,7 +651,7 @@ class IP_Geo_Block_Admin {
 					elseif ( isset( $input[ $key ] ) ) {
 						$output[ $key ] = is_int( $default[ $key ] ) ?
 							(int)$input[ $key ] :
-							sanitize_text_field( trim( $input[ $key ] ) );
+							wp_kses( trim( $input[ $key ] ), array() );
 					}
 				}
 
@@ -685,7 +685,7 @@ class IP_Geo_Block_Admin {
 						else {
 							$output[ $key ][ $sub ] = ( is_int( $default[ $key ][ $sub ] ) ?
 								(int)$input[ $key ][ $sub ] :
-								sanitize_text_field( preg_replace( '/[^\w\s\.\/,:!]/', '', $input[ $key ][ $sub ] ) )
+								wp_kses( preg_replace( '/[^\w\s\.\/,:!]/', '', $input[ $key ][ $sub ] ), array() )
 							);
 						}
 					}
@@ -700,7 +700,7 @@ class IP_Geo_Block_Admin {
 		);
 
 		// sanitize and format ip address
-		$key = array( '/[^\d\s\.\/,]/', '/([\s,])+/', '/(?:^,|,$)/' );
+		$key = array( '/[^\d\n\.\/,]/', '/([\s,])+/', '/(?:^,|,$)/' );
 		$val = array( '',               '$1',         ''            );
 		$output['extra_ips']['white_list'] = preg_replace( $key, $val, $output['extra_ips']['white_list'] );
 		$output['extra_ips']['black_list'] = preg_replace( $key, $val, $output['extra_ips']['black_list'] );
