@@ -727,6 +727,7 @@ class IP_Geo_Block_Admin {
 		foreach ( array( 'plugins', 'themes' ) as $key )
 			$output['exception'][ $key ] = array_keys( $output['exception'][ $key ] );
 
+		// exception : set default factors
 		foreach ( array( 'includes', 'uploads', 'languages' ) as $key )
 			$output['exception'][ $key ] = $default['exception'][ $key ];
 
@@ -737,6 +738,10 @@ class IP_Geo_Block_Admin {
 		return $output;
 	}
 
+	/**
+	 * For preg_replace_callback()
+	 *
+	 */
 	public function strtoupper( $matches ) {
 		return strtoupper( $matches[0] );
 	}
@@ -914,7 +919,6 @@ class IP_Geo_Block_Admin {
 			$res = array(
 				'page' => 'options-general.php?page=' . IP_Geo_Block::PLUGIN_SLUG,
 			);
-			break;
 		}
 
 		if ( isset( $res ) ) // wp_send_json_{success,error}() @since 3.5.0

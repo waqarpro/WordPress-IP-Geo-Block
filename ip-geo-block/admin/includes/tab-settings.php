@@ -547,7 +547,7 @@ class IP_Geo_Block_Admin_Tab {
 		// Other area
 		$key = IP_Geo_Block_Admin_Rewrite::get_dirs();
 		$tmp  = '<ul style="margin-top:0.25em">' . "\n";
-		$tmp .= '<li><input type="checkbox" id="ip_geo_block_settings_rewrite_includes"  name="ip_geo_block_settings[rewrite][includes]"  value="1"' . checked( $options['rewrite']['includes' ], TRUE, FALSE ) . ' /><label for="ip_geo_block_settings_rewrite_includes"><dfn title="' . __( 'except &#8220;wp-includes/ms-files.php&#8221;', IP_Geo_Block::TEXT_DOMAIN ) . '">' . substr( $key['includes' ], 1 ) . "</dfn></label></li>\n";
+		$tmp .= '<li><input type="checkbox" id="ip_geo_block_settings_rewrite_includes"  name="ip_geo_block_settings[rewrite][includes]"  value="1"' . checked( $options['rewrite']['includes' ], TRUE, FALSE ) . ' /><label for="ip_geo_block_settings_rewrite_includes"><dfn title="' . __( 'except &#8220;wp-includes/ms-files.php&#8221;', IP_Geo_Block::TEXT_DOMAIN ) . '">' . substr( $key['includes'], 1 ) . "</dfn></label></li>\n";
 		$tmp .= '<li><input type="checkbox" id="ip_geo_block_settings_rewrite_uploads"   name="ip_geo_block_settings[rewrite][uploads]"   value="1"' . checked( $options['rewrite']['uploads'  ], TRUE, FALSE ) . ' /><label for="ip_geo_block_settings_rewrite_uploads">'   . substr( $key['uploads'  ], 1 ) . "</label></li>\n";
 		$tmp .= '<li><input type="checkbox" id="ip_geo_block_settings_rewrite_languages" name="ip_geo_block_settings[rewrite][languages]" value="1"' . checked( $options['rewrite']['languages'], TRUE, FALSE ) . ' /><label for="ip_geo_block_settings_rewrite_languages">' . substr( $key['languages'], 1 ) . "</label></li>\n";
 		$tmp .= '</ul>' . "\n";

@@ -78,9 +78,8 @@ class IP_Geo_Block {
 		// analize the validation target (admin|plugins|themes|includes)
 		foreach ( $list as $key => $val ) {
 			self::$wp_path[ $key ] = trailingslashit( substr( parse_url( call_user_func( $val ), PHP_URL_PATH ), $len ) );
-			if ( ! $this->target_type && FALSE !== strpos( $this->request_uri, self::$wp_path[ $key ] ) ) {
+			if ( ! $this->target_type && FALSE !== strpos( $this->request_uri, self::$wp_path[ $key ] ) )
 				$this->target_type = $key;
-			}
 		}
 
 		// analize additional validation target (uploads|languages)
@@ -107,7 +106,7 @@ class IP_Geo_Block {
 		if ( $this->target_type ) {
 			if ( 'admin' !== $this->target_type )
 				add_action( 'init', array( $this, 'validate_direct' ), $priority );
-			else
+			else // some plugin needs 'widget_init' for admin dashboard
 				add_action( 'wp_loaded', array( $this, 'validate_admin' ), $priority );
 		}
 
@@ -300,13 +299,6 @@ class IP_Geo_Block {
 	 *
 	 */
 	public static function validate_country( $hook, $validate, $settings, $block = TRUE ) {
-		// replace matching rule and while/black list
-		if ( 'public' === $hook ) {
-			$settings['matching_rule'] = $settings['public']['matching_rule'];
-			$settings['white_list'   ] = $settings['public']['white_list'   ];
-			$settings['black_list'   ] = $settings['public']['black_list'   ];
-		}
-
 		if ( $block && 0 === (int)$settings['matching_rule'] ) {
 			// 'ZZ' will be blocked if it's not in the $list.
 			if ( ( $list = $settings['white_list'] ) && FALSE === strpos( $list, $validate['code'] ) )
@@ -701,20 +693,20 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function check_ips_white( $validate, $settings ) {
-		return $this->check_ips( $validate, $settings, 0 );
+		return $this->check_ips( $validate, $settings['extra_ips'], 0 );
 	}
 
 	public function check_ips_black( $validate, $settings ) {
-		return $this->check_ips( $validate, $settings, 1 );
+		return $this->check_ips( $validate, $settings['extra_ips'], 1 );
 	}
 
 	private function multiexplode ( $delimiters, $string ) {
 		return array_filter( explode( $delimiters[0], str_replace( $delimiters, $delimiters[0], $string ) ) );
 	}
 
-	private function check_ips( $validate, $settings, $which ) {
+	private function check_ips( $validate, $list, $which ) {
 		$ip = $validate['ip'];
-		$ips = $settings['extra_ips'][ $which ? 'black_list' : 'white_list' ];
+		$ips = $list[ $which ? 'black_list' : 'white_list' ];
 
 		if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ) {
 			include_once( IP_GEO_BLOCK_PATH . 'includes/Net/IPv4.php' );
@@ -750,8 +742,14 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function validate_public() {
+		// replace matching rule and while/black list
+		$settings = self::get_option( 'settings' );
+		$settings['matching_rule'] = $settings['public']['matching_rule'];
+		$settings['white_list'   ] = $settings['public']['white_list'   ];
+		$settings['black_list'   ] = $settings['public']['black_list'   ];
+
 		add_filter( self::PLUGIN_SLUG . '-public', array( $this, 'check_bots' ), 10, 2 );
-		$this->validate_ip( 'public', self::get_option( 'settings' ) );
+		$this->validate_ip( 'public', $settings );
 	}
 
 	public function check_bots( $validate, $settings ) {

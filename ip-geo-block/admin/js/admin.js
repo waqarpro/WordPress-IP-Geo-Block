@@ -297,8 +297,8 @@ var ip_geo_block_time = new Date();
 
 		// Get tab number and check wpCookies in wp-includes/js/utils.js
 		var cookie = ('undefined' !== typeof wpCookies && wpCookies.getHash(ID('admin'))) || {},
-		    tabNum = /&tab=(\d)/.exec(window.location.href);
-		tabNum = Number(tabNum && tabNum[1]);
+		    maxTabs = 9, tabNo = /&tab=(\d)/.exec(window.location.href);
+		tabNo = Number(tabNo && tabNo[1]);
 
 		// Make form style with fieldset and legend
 		var fieldset = $('<fieldset class="' + ID('field') + '"></fieldset>'),
@@ -317,8 +317,8 @@ var ip_geo_block_time = new Date();
 			notes.insertBefore($this);
 
 			// Initialize show/hide form-table on tab 0, 1
-			if (tabNum <= 1) {
-				index += (tabNum ? 9 : 0);
+			if (tabNo <= 1) {
+				index += (tabNo ? maxTabs : 0);
 				if ('undefined' === typeof cookie[index] || cookie[index]) { // 'undefined' or 'o'
 					title.addClass(ID('dropdown')).parent().nextAll().show();
 				} else {
@@ -328,7 +328,7 @@ var ip_geo_block_time = new Date();
 		});
 
 		// Click event handler to show/hide form-table
-		if (tabNum <= 1) {
+		if (tabNo <= 1) {
 			$('form').on('click', 'h2,h3', function (event) {
 				var title = $(this),
 				    index = title.closest('fieldset').data('ip-geo-block');
@@ -339,7 +339,7 @@ var ip_geo_block_time = new Date();
 
 				// Save cookie
 				if ('undefined' !== typeof wpCookies) {
-					cookie[index + (tabNum ? 9 : 0)] = title.hasClass(ID('dropdown')) ? 'o' : '';
+					cookie[index + (tabNo ? maxTabs : 0)] = title.hasClass(ID('dropdown')) ? 'o' : '';
 					wpCookies.setHash(ID('admin'), cookie, new Date(Date.now() + 2592000000));
 				}
 
@@ -358,7 +358,7 @@ var ip_geo_block_time = new Date();
 		});
 
 		// Register event handler at specific tab
-		switch (tabNum) {
+		switch (tabNo) {
 		  /*----------------------------------------
 		   * Settings
 		   *----------------------------------------*/

@@ -215,10 +215,10 @@ class IP_Geo_Block_Opts {
 			}
 
 			if ( version_compare( $version, '2.3.0' ) < 0 ) {
-				$settings['signature'] = str_replace( " ", "\n", $settings['signature'] );
-				foreach ( array( 'white_list', 'black_list' ) as $tmp ) {
-					$settings['extra_ips'][ $tmp ] = str_replace( " ", "\n", $settings['extra_ips'][ $tmp ] );
-				}
+				$settings['signature']               = str_replace( " ", "\n", $settings['signature'] );
+				$settings['extra_ips']['white_list'] = str_replace( " ", "\n", $settings['extra_ips']['white_list'] );
+				$settings['extra_ips']['black_list'] = str_replace( " ", "\n", $settings['extra_ips']['black_list'] );
+
 				foreach ( array( 'includes', 'uploads', 'languages' ) as $tmp ) {
 					$settings['validation'][ $tmp ] = $default[ $key[0] ]['validation'][ $tmp ];
 					$settings['rewrite'   ][ $tmp ] = $default[ $key[0] ]['rewrite'   ][ $tmp ];
