@@ -214,11 +214,20 @@ class IP_Geo_Block_Opts {
 				}
 			}
 
-			if ( version_compare( $version, '2.3.0' ) < 0 ) {
+			if ( version_compare( $version, '2.2.6' ) < 0 ) {
 				$settings['signature']               = str_replace( " ", "\n", $settings['signature'] );
 				$settings['extra_ips']['white_list'] = str_replace( " ", "\n", $settings['extra_ips']['white_list'] );
 				$settings['extra_ips']['black_list'] = str_replace( " ", "\n", $settings['extra_ips']['black_list'] );
 
+				foreach ( array( 'plugins', 'themes' ) as $tmp ) {
+					$arr = array_keys( $settings['exception'][ $tmp ] );
+					if ( ! empty( $arr ) && ! is_numeric( $arr[0] ) ) {
+						$settings['exception'][ $tmp ] = $arr;
+					}
+				}
+			}
+
+			if ( version_compare( $version, '2.3.0' ) < 0 ) {
 				foreach ( array( 'includes', 'uploads', 'languages' ) as $tmp ) {
 					$settings['validation'][ $tmp ] = $default[ $key[0] ]['validation'][ $tmp ];
 					$settings['rewrite'   ][ $tmp ] = $default[ $key[0] ]['rewrite'   ][ $tmp ];

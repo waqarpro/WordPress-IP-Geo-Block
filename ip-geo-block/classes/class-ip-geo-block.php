@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '2.2.5';
+	const VERSION = '2.2.6';
 	const GEOAPI_NAME = 'ip-geo-api';
 	const TEXT_DOMAIN = 'ip-geo-block';
 	const PLUGIN_SLUG = 'ip-geo-block';
@@ -102,11 +102,11 @@ class IP_Geo_Block {
 			'index.php'            => 'public',
 		);
 
-		// wp-admin/*.php, wp-includes, wp-content/(plugins|themes|language|uploads)
+		// wp-admin, wp-includes, wp-content/(plugins|themes|language|uploads)
 		if ( $this->target_type ) {
 			if ( 'admin' !== $this->target_type )
 				add_action( 'init', array( $this, 'validate_direct' ), $priority );
-			else // some plugin needs 'widget_init' for admin dashboard
+			else // 'widget_init' for admin dashboard
 				add_action( 'wp_loaded', array( $this, 'validate_admin' ), $priority );
 		}
 
@@ -541,7 +541,7 @@ class IP_Geo_Block {
 		}
 
 		// register validation by malicious signature
-		if ( ! is_user_logged_in() || ! in_array( $GLOBALS['pagenow'], array( 'comment.php', 'post.php' ), TRUE ) )
+		if ( ! is_user_logged_in() || ! in_array( $this->pagenow, array( 'comment.php', 'post.php' ), TRUE ) )
 			add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_signature' ), 6, 2 );
 
 		// validate country by IP address (1: Block by country)
