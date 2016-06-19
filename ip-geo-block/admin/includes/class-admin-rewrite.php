@@ -34,42 +34,6 @@ class IP_Geo_Block_Admin_Rewrite {
 				'</IfModule>',
 				'# END IP Geo Block',
 			),
-			'includes' => array(
-				'# BEGIN IP Geo Block',
-				'<IfModule mod_rewrite.c>',
-				'RewriteEngine on',
-				'RewriteBase %REWRITE_BASE%',
-				'RewriteRule ^.*\.php$ rewrite.php [L]',
-				'</IfModule>',
-				'<FilesMatch "\.(phtml|php3|pl|py|jsp|asp|htm|shtml|sh|cgi)$">',
-				'deny from all', // 'Options -ExecCGI',
-				'</FilesMatch>',
-				'# END IP Geo Block',
-			),
-			'uploads' => array(
-				'# BEGIN IP Geo Block',
-				'<IfModule mod_rewrite.c>',
-				'RewriteEngine on',
-				'RewriteBase %REWRITE_BASE%',
-				'RewriteRule ^.*\.php$ rewrite.php [L]',
-				'</IfModule>',
-				'<FilesMatch "\.(phtml|php3|pl|py|jsp|asp|htm|shtml|sh|cgi)$">',
-				'deny from all', // 'Options -ExecCGI',
-				'</FilesMatch>',
-				'# END IP Geo Block',
-			),
-			'languages' => array(
-				'# BEGIN IP Geo Block',
-				'<IfModule mod_rewrite.c>',
-				'RewriteEngine on',
-				'RewriteBase %REWRITE_BASE%',
-				'RewriteRule ^.*\.php$ rewrite.php [L]',
-				'</IfModule>',
-				'<FilesMatch "\.(phtml|php3|pl|py|jsp|asp|htm|shtml|sh|cgi)$">',
-				'deny from all', // 'Options -ExecCGI',
-				'</FilesMatch>',
-				'# END IP Geo Block',
-			),
 		),
 		'nginx' => array(
 			'plugins' => array(
@@ -87,9 +51,6 @@ class IP_Geo_Block_Admin_Rewrite {
 				'}',
 				'# END IP Geo Block',
 			),
-			'includes'  => array(),
-			'uploads'   => array(),
-			'languages' => array(),
 		),
 	);
 
@@ -100,15 +61,11 @@ class IP_Geo_Block_Admin_Rewrite {
 		$this->base_uri = str_replace( $this->doc_root, '', IP_GEO_BLOCK_PATH );
 
 		$condir = str_replace( $this->doc_root, '', WP_CONTENT_DIR );
-		$upload = wp_upload_dir(); // @since 2.2.0
 
 		// target directories
 		$this->wp_dirs = array(
 			'plugins'   => $condir . '/plugins/',
 			'themes'    => $condir . '/themes/',
-			'languages' => $condir . '/languages/',
-			'includes'  => str_replace( $this->doc_root, '', ABSPATH ) . 'wp-includes/',
-			'uploads'   => str_replace( $this->doc_root, '', $upload['basedir'] ) . '/',
 		);
 	}
 

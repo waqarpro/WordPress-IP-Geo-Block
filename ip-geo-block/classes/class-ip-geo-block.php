@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '2.2.5';
+	const VERSION = '2.2.6';
 	const GEOAPI_NAME = 'ip-geo-api';
 	const TEXT_DOMAIN = 'ip-geo-block';
 	const PLUGIN_SLUG = 'ip-geo-block';
@@ -58,9 +58,6 @@ class IP_Geo_Block {
 		if ( version_compare( $settings['version'], self::VERSION ) < 0 || $settings['matching_rule'] < 0 )
 			add_action( 'init', array( __CLASS__, 'activate' ), $priority );
 
-		// Garbage collection for IP address cache
-		add_action( IP_Geo_Block::CACHE_KEY, array( $this, 'exec_cache_gc' ) );
-
 		// normalize requested uri
 		$this->pagenow = ! empty( $GLOBALS['pagenow'] ) ? $GLOBALS['pagenow'] : 'index.php';
 		$this->request_uri = strtolower( preg_replace( array( '!\.+/!', '!//+!' ), '/', $_SERVER['REQUEST_URI'] ) );
@@ -72,7 +69,6 @@ class IP_Geo_Block {
 			'admin'     => 'admin_url',          // @since 2.6.0
 			'plugins'   => 'plugins_url',        // @since 2.6.0
 			'themes'    => 'get_theme_root_uri', // @since 1.5.0
-			'includes'  => 'includes_url',       // @since 2.6.0
 		);
 
 		// analize the validation target (admin|plugins|themes|includes)
@@ -82,16 +78,6 @@ class IP_Geo_Block {
 				$this->target_type = $key;
 		}
 
-		// analize additional validation target (uploads|languages)
-		if ( ! $this->target_type ) {
-			$key = wp_upload_dir(); // @since 2.2.0
-			if ( $this->target_type =
-				FALSE !== strpos( $this->request_uri, parse_url( $key['baseurl'], PHP_URL_PATH ) . '/'           ) ? 'uploads'   : (
-				FALSE !== strpos( $this->request_uri, str_replace( ABSPATH, '', WP_CONTENT_DIR ) . '/languages/' ) ? 'languages' : NULL ) ) {
-				self::$wp_path[ $this->target_type ] = $this->request_uri;
-			}
-		}
-
 		// WordPress core files
 		$key = array(
 			'wp-comments-post.php' => 'comment',
@@ -99,14 +85,13 @@ class IP_Geo_Block {
 			'xmlrpc.php'           => 'xmlrpc',
 			'wp-login.php'         => 'login',
 			'wp-signup.php'        => 'login',
-			'index.php'            => 'public',
 		);
 
-		// wp-admin/*.php, wp-includes, wp-content/(plugins|themes|language|uploads)
+		// wp-admin, wp-includes, wp-content/(plugins|themes|language|uploads)
 		if ( $this->target_type ) {
 			if ( 'admin' !== $this->target_type )
 				add_action( 'init', array( $this, 'validate_direct' ), $priority );
-			else // some plugin needs 'widget_init' for admin dashboard
+			else // 'widget_init' for admin dashboard
 				add_action( 'wp_loaded', array( $this, 'validate_admin' ), $priority );
 		}
 
@@ -541,7 +526,7 @@ class IP_Geo_Block {
 		}
 
 		// register validation by malicious signature
-		if ( ! is_user_logged_in() || ! in_array( $GLOBALS['pagenow'], array( 'comment.php', 'post.php' ), TRUE ) )
+		if ( ! is_user_logged_in() || ! in_array( $this->pagenow, array( 'comment.php', 'post.php' ), TRUE ) )
 			add_filter( self::PLUGIN_SLUG . '-admin', array( $this, 'check_signature' ), 6, 2 );
 
 		// validate country by IP address (1: Block by country)
@@ -738,51 +723,12 @@ class IP_Geo_Block {
 	}
 
 	/**
-	 * Validate at public facing pages.
-	 *
-	 */
-	public function validate_public() {
-		// replace matching rule and while/black list
-		$settings = self::get_option( 'settings' );
-		$settings['matching_rule'] = $settings['public']['matching_rule'];
-		$settings['white_list'   ] = $settings['public']['white_list'   ];
-		$settings['black_list'   ] = $settings['public']['black_list'   ];
-
-		add_filter( self::PLUGIN_SLUG . '-public', array( $this, 'check_bots' ), 10, 2 );
-		$this->validate_ip( 'public', $settings );
-	}
-
-	public function check_bots( $validate, $settings ) {
-		if ( isset( $_SERVER['HTTP_USER_AGENT'] ) ) {
-			$ua = $_SERVER['HTTP_USER_AGENT'];
-			$co = $validate['code'];
-
-			foreach ( $this->multiexplode( array( ",", "\n" ), $settings['public']['ua_list'] ) as $bot ) {
-				list( $name, $code ) = explode( ':', $bot, 2 );
-
-				if ( $name && FALSE !== strpos( $ua, $name ) &&
-				     $code && FALSE !== strpos( $co, $code ) ) {
-					$validate['result'] = 'passed'; // can overwrite existing result
-					break;
-				}
-			}
-		}
-
-		return apply_filters( self::PLUGIN_SLUG . '-bypass-public', $validate, $settings );
-	}
-
-	/**
 	 * Handlers of cron job
 	 *
 	 */
 	public function update_database( $immediate = FALSE ) {
 		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-cron.php' );
 		return IP_Geo_Block_Cron::exec_job( $immediate );
-	}
-
-	public function exec_cache_gc() {
-		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-cron.php' );
-		IP_Geo_Block_Cron::exec_cache_gc( self::get_option( 'settings' ) );
 	}
 
 }

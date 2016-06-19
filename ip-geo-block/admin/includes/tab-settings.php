@@ -305,8 +305,6 @@ class IP_Geo_Block_Admin_Tab {
 			'xmlrpc'  => sprintf( $dfn, 'xmlrpc.php',           __( 'XML-RPC',            IP_Geo_Block::TEXT_DOMAIN ) ),
 			'login'   => sprintf( $dfn, 'wp-login.php',         __( 'Login form',         IP_Geo_Block::TEXT_DOMAIN ) ),
 			'admin'   => sprintf( $dfn, 'wp-admin/*.php',       __( 'Admin area',         IP_Geo_Block::TEXT_DOMAIN ) ),
-			'others'  => sprintf( $dfn, 'hacked PHP files',     __( 'Other areas',        IP_Geo_Block::TEXT_DOMAIN ) ),
-			'public'  => sprintf( $dfn, 'public facing pages',  __( 'Pubic facing pages', IP_Geo_Block::TEXT_DOMAIN ) ),
 		);
 
 		// Comment post
@@ -544,129 +542,6 @@ class IP_Geo_Block_Admin_Tab {
 			)
 		);
 
-		// Other area
-		$key = IP_Geo_Block_Admin_Rewrite::get_dirs();
-		$tmp  = '<ul style="margin-top:0.25em">' . "\n";
-		$tmp .= '<li><input type="checkbox" id="ip_geo_block_settings_rewrite_includes"  name="ip_geo_block_settings[rewrite][includes]"  value="1"' . checked( $options['rewrite']['includes' ], TRUE, FALSE ) . ' /><label for="ip_geo_block_settings_rewrite_includes"><dfn title="' . __( 'except &#8220;wp-includes/ms-files.php&#8221;', IP_Geo_Block::TEXT_DOMAIN ) . '">' . substr( $key['includes'], 1 ) . "</dfn></label></li>\n";
-		$tmp .= '<li><input type="checkbox" id="ip_geo_block_settings_rewrite_uploads"   name="ip_geo_block_settings[rewrite][uploads]"   value="1"' . checked( $options['rewrite']['uploads'  ], TRUE, FALSE ) . ' /><label for="ip_geo_block_settings_rewrite_uploads">'   . substr( $key['uploads'  ], 1 ) . "</label></li>\n";
-		$tmp .= '<li><input type="checkbox" id="ip_geo_block_settings_rewrite_languages" name="ip_geo_block_settings[rewrite][languages]" value="1"' . checked( $options['rewrite']['languages'], TRUE, FALSE ) . ' /><label for="ip_geo_block_settings_rewrite_languages">' . substr( $key['languages'], 1 ) . "</label></li>\n";
-		$tmp .= '</ul>' . "\n";
-
-		$key = 'others';
-		add_settings_field(
-			$option_name.'_'.$field.'_'.$key,
-			$target[ $key ],
-			array( $context, 'callback_field' ),
-			$option_slug,
-			$section,
-			array(
-				'type' => 'html',
-				'value' => $tmp,
-				'before' => '<p class="ip-geo-block-desc">' . __( 'WordPress core does not request PHP files directly except for the few in the following directories. This feature prevents attackers accessing to the compromised files such as PHP, CGI and SSI.', IP_Geo_Block::TEXT_DOMAIN ) . '</p>',
-			)
-		);
-
-		/*----------------------------------------*
-		 * Frontend settings
-		 *----------------------------------------*/
-		$section = $plugin_slug . '-public';
-		add_settings_section(
-			$section,
-			__( 'Frontend settings', IP_Geo_Block::TEXT_DOMAIN ),
-			NULL,
-			$option_slug
-		);
-
-		// Public facing pages
-		$key = 'public';
-		add_settings_field(
-			$option_name.'_'.$field.'_'.$key,
-			$target[ $key ],
-			array( $context, 'callback_field' ),
-			$option_slug,
-			$section,
-			array(
-				'type' => 'checkbox',
-				'option' => $option_name,
-				'field' => $field,
-				'sub-field' => $key,
-				'value' => $options[ $field ][ $key ],
-				'text' => __( 'Block by country', IP_Geo_Block::TEXT_DOMAIN ),
-			)
-		);
-
-		// Matching rule
-		$field = 'public';
-		$key = 'matching_rule';
-		add_settings_field(
-			$option_name.'_'.$field.'_'.$key,
-			'<dfn title="' . $rule_desc[0] . '">' . __( 'Matching rule', IP_Geo_Block::TEXT_DOMAIN ) . '</dfn>',
-			array( $context, 'callback_field' ),
-			$option_slug,
-			$section,
-			array(
-				'type' => 'select',
-				'option' => $option_name,
-				'field' => $field,
-				'sub-field' => $key,
-				'value' => $options[ $field ][ $key ],
-				'list' => $rule,
-			)
-		);
-
-		// Country code for matching rule (ISO 3166-1 alpha-2)
-		$key = 'white_list';
-		add_settings_field(
-			$option_name.'_'.$field.'_'.$key,
-			$rule_desc[1],
-			array( $context, 'callback_field' ),
-			$option_slug,
-			$section,
-			array(
-				'type' => 'text',
-				'option' => $option_name,
-				'field' => $field,
-				'sub-field' => $key,
-				'value' => $options[ $field ][ $key ],
-				'after' => $comma[0],
-			)
-		);
-
-		$key = 'black_list';
-		add_settings_field(
-			$option_name.'_'.$field.'_'.$key,
-			$rule_desc[2],
-			array( $context, 'callback_field' ),
-			$option_slug,
-			$section,
-			array(
-				'type' => 'text',
-				'option' => $option_name,
-				'field' => $field,
-				'sub-field' => $key,
-				'value' => $options[ $field ][ $key ],
-				'after' => $comma[0],
-			)
-		);
-
-		// Permitted pair of user agent : country code
-		$key = 'ua_list';
-		add_settings_field(
-			$option_name.'_'.$field.'_'.$key,
-			'<dfn title="' . __( 'User agent string can not contain spaces.', IP_Geo_Block::TEXT_DOMAIN ) . '">' . __( 'Permitted user agent string : country code', IP_Geo_Block::TEXT_DOMAIN ) . '</dfn>',
-			array( $context, 'callback_field' ),
-			$option_slug,
-			$section,
-			array(
-				'type' => 'textarea',
-				'option' => $option_name,
-				'field' => $field,
-				'sub-field' => $key,
-				'value' => $options[ $field ][ $key ],
-				'after' => $comma[1],
-			)
-		);
-
 		/*----------------------------------------*
 		 * Geolocation service settings
 		 *----------------------------------------*/
@@ -886,22 +761,6 @@ class IP_Geo_Block_Admin_Tab {
 		add_settings_field(
 			$option_name.'_'.$field,
 			sprintf( __( '<dfn title="If user authentication fails consecutively %d times, subsequent login will also be prohibited for this period.">Expiration time [sec]</dfn>', IP_Geo_Block::TEXT_DOMAIN ), (int)$options['login_fails'] ),
-			array( $context, 'callback_field' ),
-			$option_slug,
-			$section,
-			array(
-				'type' => 'text',
-				'option' => $option_name,
-				'field' => $field,
-				'value' => $options[ $field ],
-			)
-		);
-
-		// Garbage collection period [sec]
-		$field = 'cache_time_gc';
-		add_settings_field(
-			$option_name.'_'.$field,
-			__( 'Garbage collection period [sec]', IP_Geo_Block::TEXT_DOMAIN ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,

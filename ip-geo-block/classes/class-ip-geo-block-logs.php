@@ -79,24 +79,7 @@ class IP_Geo_Block_Logs {
 			ON DUPLICATE KEY UPDATE No = No", 1, serialize( self::$default )
 		) and $wpdb->query( $sql );
 
-		// for IP address cache
-		$table = $wpdb->prefix . IP_Geo_Block::CACHE_KEY;
-		$cache = $wpdb->query( "CREATE TABLE IF NOT EXISTS `$table` (
-			`No` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-			`time` int(10) unsigned NOT NULL DEFAULT 0,
-			`ip` varchar(40) NOT NULL,
-			`hook` varchar(8) NOT NULL,
-			`auth` int(10) unsigned NOT NULL DEFAULT 0,
-			`code` varchar(2) NOT NULL DEFAULT 'ZZ',
-			`fail` int(10) unsigned NOT NULL DEFAULT 0,
-			`call` int(10) unsigned NOT NULL DEFAULT 0,
-			`host` tinytext NOT NULL,
-			PRIMARY KEY (`No`),
-			UNIQUE (`ip`)
-			) CHARACTER SET " . $charset
-		) or self::error( __LINE__ ); // utf8mb4 ENGINE=InnoDB or MyISAM
-
-		return (FALSE !== $logs) && (FALSE !== $stat) && (FALSE !== $cache);
+		return (FALSE !== $logs) && (FALSE !== $stat);
 	}
 
 	/**
@@ -570,95 +553,6 @@ class IP_Geo_Block_Logs {
 			// Record statistics.
 			self::record_stat( $statistics );
 		}
-	}
-
-	/**
-	 * Search cache
-	 *
-	 */
-	public static function search_cache( $ip ) {
-		global $wpdb;
-		$table = $wpdb->prefix . IP_Geo_Block::CACHE_KEY;
-
-		$sql = $wpdb->prepare(
-			"SELECT * FROM `$table` WHERE `ip` = '%s'", $ip
-		) and $result = $wpdb->get_results( $sql, ARRAY_A ) or self::error( __LINE__ );
-
-		return ! empty( $result[0] ) ? $result[0] : NULL;
-	}
-
-	/**
-	 * Restore cache
-	 *
-	 */
-	public static function restore_cache() {
-		global $wpdb;
-		$table = $wpdb->prefix . IP_Geo_Block::CACHE_KEY;
-
-		$result = $wpdb->get_results( "SELECT * FROM `$table`", ARRAY_A ) or self::error( __LINE__ );
-
-		// transform
-		foreach ( $result as $key => $val ) {
-			$ip = $val['ip'];
-			unset( $val['ip'] );
-			$cache[ $ip ] = $val;
-		}
-
-		// sort by 'time'
-		foreach ( $cache as $key => $val )
-			$hash[ $key ] = $val['time'];
-		array_multisort( $hash, SORT_DESC, $cache );
-
-		return $cache;
-	}
-
-	/**
-	 * Update cache
-	 *
-	 */
-	public static function update_cache( $cache ) {
-		global $wpdb;
-		$table = $wpdb->prefix . IP_Geo_Block::CACHE_KEY;
-
-		$sql = $wpdb->prepare(
-			"INSERT INTO `$table`
-			(`time`, `ip`, `hook`, `auth`, `code`, `fail`, `call`, `host`)
-			VALUES (%d, %s, %s, %d, %s, %d, %d, %s)
-			ON DUPLICATE KEY UPDATE 
-			`time` = VALUES(`time`),
-			`hook` = VALUES(`hook`),
-			`auth` = VALUES(`auth`),
-			`code` = VALUES(`code`),
-			`fail` = VALUES(`fail`),
-			`call` = VALUES(`call`),
-			`host` = VALUES(`host`)",
-			$cache['time'],
-			$cache['ip'  ],
-			$cache['hook'],
-			$cache['auth'],
-			$cache['code'],
-			$cache['fail'],
-			$cache['call'],
-			$cache['host']
-		) and $result = $wpdb->query( $sql ) or self::error( __LINE__ );
-
-		return $result;
-	}
-
-	/**
-	 * Delete expired cache
-	 *
-	 */
-	public static function delete_expired_cache( $cache_time ) {
-		global $wpdb;
-		$table = $wpdb->prefix . IP_Geo_Block::CACHE_KEY;
-
-		$sql = $wpdb->prepare(
-			"DELETE FROM `$table` WHERE `time` < %d",
-			$_SERVER['REQUEST_TIME'] - $cache_time
-		) and $result = $wpdb->query( $sql ) or self::error( __LINE__ );
-
-		return $result;
 	}
 
 	/**

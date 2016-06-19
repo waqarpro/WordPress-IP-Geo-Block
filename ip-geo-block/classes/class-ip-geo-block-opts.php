@@ -36,8 +36,6 @@ class IP_Geo_Block_Opts {
 			// since version 1.1
 			'cache_hold'      => 10,      // Max entries in cache
 			'cache_time'      => HOUR_IN_SECONDS, // @since 3.5
-			// since version 3.0.0
-			'cache_time_gc'   => 900,     // Cache garbage collection time
 			// since version 1.2, 1.3
 			'login_fails'     => 5,       // Limited number of login attempts
 			'validation'      => array(   // Action hook for validation
@@ -59,8 +57,6 @@ class IP_Geo_Block_Opts {
 			    'includes'    => 3,       // for wp-includes/
 			    'uploads'     => 3,       // for UPLOADS/uploads
 			    'languages'   => 3,       // for wp-content/language
-			    // since version 3.0.0
-			    'public'      => 0,       // Validate on public facing pages
 			),
 			'update'          => array(   // Updating IP address DB
 			    'auto'        => TRUE,    // Auto updating of DB file
@@ -79,10 +75,6 @@ class IP_Geo_Block_Opts {
 			'rewrite'         => array(   // Apply rewrite rule
 			    'plugins'     => FALSE,   // for wp-content/plugins
 			    'themes'      => FALSE,   // for wp-content/themes
-			    // since version 2.3.0
-			    'includes'    => FALSE,   // for wp-includes/
-			    'uploads'     => FALSE,   // for UPLOADS/uploads
-			    'languages'   => FALSE,   // for wp-content/language
 			),
 			'Maxmind'         => array(   // Maxmind
 			    // since version 2.2.2
@@ -106,19 +98,6 @@ class IP_Geo_Block_Opts {
 			'exception'       => array(   // list of exceptional
 			    'plugins'     => array(), // for pliugins
 			    'themes'      => array(), // for themes
-			    // since version 2.3.0
-			    'includes'    => array(   // for wp-includes/
-			        'ms-files.php', 'js/tinymce/wp-tinymce.php'
-			     ),
-			    'uploads'     => array(), // for UPLOADS/uploads
-			    'languages'   => array(), // for wp-content/language
-			),
-			// since version 3.0.0
-			'public'          => array(
-			    'matching_rule' => 0,       // -1:neither, 0:white list, 1:black list
-			    'white_list'    => NULL,    // Comma separeted country code
-			    'black_list'    => 'ZZ',    // Comma separeted country code
-			    'ua_list' => "Google:US,Yahoo!:US,bingbot:US\nFeedBurner:US,Feedspot:US\nAol:US,Pinterest:US",
 			),
 		),
 	);
@@ -214,22 +193,17 @@ class IP_Geo_Block_Opts {
 				}
 			}
 
-			if ( version_compare( $version, '2.3.0' ) < 0 ) {
+			if ( version_compare( $version, '2.2.6' ) < 0 ) {
 				$settings['signature']               = str_replace( " ", "\n", $settings['signature'] );
 				$settings['extra_ips']['white_list'] = str_replace( " ", "\n", $settings['extra_ips']['white_list'] );
 				$settings['extra_ips']['black_list'] = str_replace( " ", "\n", $settings['extra_ips']['black_list'] );
 
-				foreach ( array( 'includes', 'uploads', 'languages' ) as $tmp ) {
-					$settings['validation'][ $tmp ] = $default[ $key[0] ]['validation'][ $tmp ];
-					$settings['rewrite'   ][ $tmp ] = $default[ $key[0] ]['rewrite'   ][ $tmp ];
-					$settings['exception' ][ $tmp ] = $default[ $key[0] ]['exception' ][ $tmp ];
+				foreach ( array( 'plugins', 'themes' ) as $tmp ) {
+					$arr = array_keys( $settings['exception'][ $tmp ] );
+					if ( ! empty( $arr ) && ! is_numeric( $arr[0] ) ) {
+						$settings['exception'][ $tmp ] = $arr;
+					}
 				}
-			}
-
-			if ( version_compare( $version, '3.0' ) < 0 ) {
-				$settings['cache_time_gc']        = $default[ $key[0] ]['cache_time_gc'];
-				$settings['validation']['public'] = $default[ $key[0] ]['validation']['public'];
-				$settings['public']               = $default[ $key[0] ]['public'];
 			}
 
 			// save package version number

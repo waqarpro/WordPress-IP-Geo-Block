@@ -297,7 +297,7 @@ var ip_geo_block_time = new Date();
 
 		// Get tab number and check wpCookies in wp-includes/js/utils.js
 		var cookie = ('undefined' !== typeof wpCookies && wpCookies.getHash(ID('admin'))) || {},
-		    maxTabs = 9, tabNo = /&tab=(\d)/.exec(window.location.href);
+		    maxTabs = 8, tabNo = /&tab=(\d)/.exec(window.location.href);
 		tabNo = Number(tabNo && tabNo[1]);
 
 		// Make form style with fieldset and legend

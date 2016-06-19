@@ -569,7 +569,7 @@ class IP_Geo_Block_Admin {
 		foreach ( array( 'anonymize' ) as $key )
 			$output[ $key ] = 0;
 
-		foreach ( array( 'admin', 'ajax', 'plugins', 'themes', 'public' ) as $key )
+		foreach ( array( 'admin', 'ajax', 'plugins', 'themes' ) as $key )
 			$output['validation'][ $key ] = 0;
 
 		// restore the 'signature' that might be transformed to avoid self blocking
@@ -710,10 +710,6 @@ class IP_Geo_Block_Admin {
 		array_shift( $val );
 		$output['signature'] = preg_replace( $key, $val, $output['signature'] );
 
-		// convert country code to upper case
-		$output['public']['ua_list'] = preg_replace( $key, $val, $output['public']['ua_list'] );
-		$output['public']['ua_list'] = preg_replace_callback( '/:\w+/', array( $this, 'strtoupper' ), $output['public']['ua_list'] );
-
 		// reject invalid signature which potentially blocks itself
 		$key = array();
 		foreach ( explode( ',', $output['signature'] ) as $val ) {
@@ -726,14 +722,6 @@ class IP_Geo_Block_Admin {
 		// exception : convert associative array to simple array
 		foreach ( array( 'plugins', 'themes' ) as $key )
 			$output['exception'][ $key ] = array_keys( $output['exception'][ $key ] );
-
-		// exception : set default factors
-		foreach ( array( 'includes', 'uploads', 'languages' ) as $key )
-			$output['exception'][ $key ] = $default['exception'][ $key ];
-
-		// public : convert country code to upper case
-		foreach ( array( 'white_list', 'black_list' ) as $key )
-			$output['public'][ $key ] = strtoupper( $output['public'][ $key ] );
 
 		return $output;
 	}
