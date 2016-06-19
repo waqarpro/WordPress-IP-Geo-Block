@@ -66,7 +66,7 @@ class IP_Geo_Block_Cron {
 
 		// update option settings
 //		update_option( IP_Geo_Block::$option_keys['settings'], $settings );
-		self::update_settings( $settings, array( 'update' ) + $providers );
+		self::update_settings( $settings, array_merge( array( 'update' ), $providers ) );
 
 		// update matching rule immediately
 		if ( $immediate && FALSE !== get_transient( IP_Geo_Block::CRON_NAME ) ) {
