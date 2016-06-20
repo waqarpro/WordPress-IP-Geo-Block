@@ -693,6 +693,10 @@ class IP_Geo_Block_Admin {
 			}
 		}
 
+		//----------------------------------------
+		// Check and format each setting data
+		//----------------------------------------
+
 		// sanitize proxy
 		$output['validation']['proxy'] = preg_replace(
 			'/[^\w,]/', '',
@@ -719,7 +723,7 @@ class IP_Geo_Block_Admin {
 		}
 		$output['signature'] = implode( ',', $key );
 
-		// exception : convert associative array to simple array
+		// 2.2.5 exception : convert associative array to simple array
 		foreach ( array( 'plugins', 'themes' ) as $key )
 			$output['exception'][ $key ] = array_keys( $output['exception'][ $key ] );
 

@@ -36,6 +36,7 @@ class IP_Geo_Block_Logs {
 	 */
 	public static function create_tables() {
 		global $wpdb;
+		$result = TRUE;
 
 		// Default charset
 		$charset = 'utf8'; // MySQL 5.0+
@@ -46,7 +47,7 @@ class IP_Geo_Block_Logs {
 
 		// for logs
 		$table = $wpdb->prefix . self::TABLE_LOGS;
-		$logs = $wpdb->query( "CREATE TABLE IF NOT EXISTS `$table` (
+		$result &= ( FALSE !== $wpdb->query( "CREATE TABLE IF NOT EXISTS `$table` (
 			`No` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 			`time` int(10) unsigned NOT NULL DEFAULT 0,
 			`ip` varchar(40) NOT NULL,
@@ -62,16 +63,16 @@ class IP_Geo_Block_Logs {
 			KEY `time` (`time`),
 			KEY `hook` (`hook`)
 			) CHARACTER SET " . $charset
-		) or self::error( __LINE__ ); // utf8mb4 ENGINE=InnoDB or MyISAM
+		) ) or self::error( __LINE__ ); // utf8mb4 ENGINE=InnoDB or MyISAM
 
 		// for statistics
 		$table = $wpdb->prefix . self::TABLE_STAT;
-		$stat = $wpdb->query( "CREATE TABLE IF NOT EXISTS `$table` (
+		$result &= ( FALSE !== $wpdb->query( "CREATE TABLE IF NOT EXISTS `$table` (
 			`No` tinyint(4) unsigned NOT NULL AUTO_INCREMENT,
 			`data` longtext NULL,
 			PRIMARY KEY (`No`)
 			) CHARACTER SET " . $charset
-		) or self::error( __LINE__ ); // utf8mb4 ENGINE=InnoDB or MyISAM
+		) ) or self::error( __LINE__ ); // utf8mb4 ENGINE=InnoDB or MyISAM
 
 		// Create 1 record if not exists
 		$sql = $wpdb->prepare(
@@ -79,7 +80,7 @@ class IP_Geo_Block_Logs {
 			ON DUPLICATE KEY UPDATE No = No", 1, serialize( self::$default )
 		) and $wpdb->query( $sql );
 
-		return (FALSE !== $logs) && (FALSE !== $stat);
+		return $result;
 	}
 
 	/**

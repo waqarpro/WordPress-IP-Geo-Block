@@ -65,7 +65,6 @@ class IP_Geo_Block_Cron {
 			self::schedule_cron_job( $settings['update'], $settings[ $providers[0] ], FALSE );
 
 		// update option settings
-//		update_option( IP_Geo_Block::$option_keys['settings'], $settings );
 		self::update_settings( $settings, array_merge( array( 'update' ), $providers ) );
 
 		// update matching rule immediately
@@ -88,7 +87,6 @@ class IP_Geo_Block_Cron {
 			}
 
 			// update option settings
-//			update_option( IP_Geo_Block::$option_keys['settings'], $settings );
 			self::update_settings( $settings, array( 'matching_rule', 'white_list', 'black_list' ) );
 
 			// finished to update matching rule
