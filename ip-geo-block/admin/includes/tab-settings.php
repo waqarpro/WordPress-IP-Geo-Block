@@ -546,11 +546,15 @@ class IP_Geo_Block_Admin_Tab {
 
 		// Other area
 		$key = IP_Geo_Block_Admin_Rewrite::get_dirs();
-		$tmp  = '<ul style="margin-top:0.25em">' . "\n";
-		$tmp .= '<li><input type="checkbox" id="ip_geo_block_settings_rewrite_includes"  name="ip_geo_block_settings[rewrite][includes]"  value="1"' . checked( $options['rewrite']['includes' ], TRUE, FALSE ) . ' /><label for="ip_geo_block_settings_rewrite_includes"><dfn title="' . __( 'except &#8220;wp-includes/ms-files.php&#8221;', IP_Geo_Block::TEXT_DOMAIN ) . '">' . substr( $key['includes'], 1 ) . "</dfn></label></li>\n";
-		$tmp .= '<li><input type="checkbox" id="ip_geo_block_settings_rewrite_uploads"   name="ip_geo_block_settings[rewrite][uploads]"   value="1"' . checked( $options['rewrite']['uploads'  ], TRUE, FALSE ) . ' /><label for="ip_geo_block_settings_rewrite_uploads">'   . substr( $key['uploads'  ], 1 ) . "</label></li>\n";
-		$tmp .= '<li><input type="checkbox" id="ip_geo_block_settings_rewrite_languages" name="ip_geo_block_settings[rewrite][languages]" value="1"' . checked( $options['rewrite']['languages'], TRUE, FALSE ) . ' /><label for="ip_geo_block_settings_rewrite_languages">' . substr( $key['languages'], 1 ) . "</label></li>\n";
-		$tmp .= '</ul>' . "\n";
+		$tmp = '';
+
+		foreach ( array( 'includes', 'uploads', 'languages' ) as $val ) {
+			$tmp .= '<li><input type="checkbox" id="ip_geo_block_settings_rewrite_'.$val.'" name="ip_geo_block_settings[rewrite]['.$val.']" value="1"' . checked( $options['rewrite'][ $val ], TRUE, FALSE ) . ' />';
+			$tmp .= '<label for="ip_geo_block_settings_rewrite_'.$val.'">';
+			if ( ! empty( $options['exception'][ $val ] ) )
+				$tmp .= '<dfn title="' . sprintf( __( 'except &#8220;%s&#8221;', IP_Geo_Block::TEXT_DOMAIN ), esc_attr( implode( '&#8221;, &#8220;', $options['exception'][ $val ] ) ) ) . '"></dfn>';
+			$tmp .= esc_html( substr( $key[ $val ], 1 ) ) . "</label></li>\n";
+		}
 
 		$key = 'others';
 		add_settings_field(
@@ -561,7 +565,7 @@ class IP_Geo_Block_Admin_Tab {
 			$section,
 			array(
 				'type' => 'html',
-				'value' => $tmp,
+				'value' => '<ul style="margin-top:0.25em">' . "\n" . $tmp . "\n</ul>\n",
 				'before' => '<p class="ip-geo-block-desc">' . __( 'WordPress core does not request PHP files directly except for the few in the following directories. This feature prevents attackers accessing to the compromised files such as PHP, CGI and SSI.', IP_Geo_Block::TEXT_DOMAIN ) . '</p>',
 			)
 		);

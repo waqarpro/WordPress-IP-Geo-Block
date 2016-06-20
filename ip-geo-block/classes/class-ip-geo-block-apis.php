@@ -634,6 +634,7 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 		return ( $cache = self::get_cache( $ip ) ) ? $cache['code'] : NULL;
 	}
 }
+
 endif; /* IP_GEO_BLOCK_CACHE_USE_TRANSIENT */
 
 /**

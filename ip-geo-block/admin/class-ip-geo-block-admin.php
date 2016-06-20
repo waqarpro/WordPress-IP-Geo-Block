@@ -693,6 +693,10 @@ class IP_Geo_Block_Admin {
 			}
 		}
 
+		//----------------------------------------
+		// Check and format each setting data
+		//----------------------------------------
+
 		// sanitize proxy
 		$output['validation']['proxy'] = preg_replace(
 			'/[^\w,]/', '',
@@ -710,7 +714,7 @@ class IP_Geo_Block_Admin {
 		array_shift( $val );
 		$output['signature'] = preg_replace( $key, $val, $output['signature'] );
 
-		// convert country code to upper case
+		// 3.0.0 convert country code to upper case
 		$output['public']['ua_list'] = preg_replace( $key, $val, $output['public']['ua_list'] );
 		$output['public']['ua_list'] = preg_replace_callback( '/:\w+/', array( $this, 'strtoupper' ), $output['public']['ua_list'] );
 
@@ -723,15 +727,15 @@ class IP_Geo_Block_Admin {
 		}
 		$output['signature'] = implode( ',', $key );
 
-		// exception : convert associative array to simple array
+		// 2.2.5 exception : convert associative array to simple array
 		foreach ( array( 'plugins', 'themes' ) as $key )
 			$output['exception'][ $key ] = array_keys( $output['exception'][ $key ] );
 
-		// exception : set default factors
+		// 2.3.0 exception : set default factors
 		foreach ( array( 'includes', 'uploads', 'languages' ) as $key )
 			$output['exception'][ $key ] = $default['exception'][ $key ];
 
-		// public : convert country code to upper case
+		// 3.0.0 public : convert country code to upper case
 		foreach ( array( 'white_list', 'black_list' ) as $key )
 			$output['public'][ $key ] = strtoupper( $output['public'][ $key ] );
 

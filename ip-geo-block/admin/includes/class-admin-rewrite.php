@@ -10,7 +10,7 @@ class IP_Geo_Block_Admin_Rewrite {
 	private $doc_root = NULL; // document root
 	private $site_uri = NULL; // network site uri
 	private $base_uri = NULL; // plugins base uri
-	private $wp_dirs;
+	private $wp_dirs  = array();
 
 	// template of rewrite rule in wp-content/(plugins|themes)/
 	private $rewrite_rule = array(
@@ -46,30 +46,8 @@ class IP_Geo_Block_Admin_Rewrite {
 				'</FilesMatch>',
 				'# END IP Geo Block',
 			),
-			'uploads' => array(
-				'# BEGIN IP Geo Block',
-				'<IfModule mod_rewrite.c>',
-				'RewriteEngine on',
-				'RewriteBase %REWRITE_BASE%',
-				'RewriteRule ^.*\.php$ rewrite.php [L]',
-				'</IfModule>',
-				'<FilesMatch "\.(phtml|php3|pl|py|jsp|asp|htm|shtml|sh|cgi)$">',
-				'deny from all', // 'Options -ExecCGI',
-				'</FilesMatch>',
-				'# END IP Geo Block',
-			),
-			'languages' => array(
-				'# BEGIN IP Geo Block',
-				'<IfModule mod_rewrite.c>',
-				'RewriteEngine on',
-				'RewriteBase %REWRITE_BASE%',
-				'RewriteRule ^.*\.php$ rewrite.php [L]',
-				'</IfModule>',
-				'<FilesMatch "\.(phtml|php3|pl|py|jsp|asp|htm|shtml|sh|cgi)$">',
-				'deny from all', // 'Options -ExecCGI',
-				'</FilesMatch>',
-				'# END IP Geo Block',
-			),
+			'uploads'   => array(), // same as 'includes'
+			'languages' => array(), // same as 'includes'
 		),
 		'nginx' => array(
 			'plugins' => array(
@@ -94,15 +72,18 @@ class IP_Geo_Block_Admin_Rewrite {
 	);
 
 	public function __construct() {
+		// copy same rule
+		$this->rewrite_rule['apache']['uploads'  ] = 
+		$this->rewrite_rule['apache']['languages'] = $this->rewrite_rule['apache']['includes'];
+
 		// http://stackoverflow.com/questions/25017381/setting-php-document-root-on-webserver
 		$this->doc_root = str_replace( $_SERVER['SCRIPT_NAME'], '', $_SERVER['SCRIPT_FILENAME'] );
 		$this->site_uri = untrailingslashit( parse_url( network_site_url(), PHP_URL_PATH ) );
 		$this->base_uri = str_replace( $this->doc_root, '', IP_GEO_BLOCK_PATH );
 
-		$condir = str_replace( $this->doc_root, '', WP_CONTENT_DIR );
-		$upload = wp_upload_dir(); // @since 2.2.0
-
 		// target directories
+		$upload = wp_upload_dir(); // @since 2.2.0
+		$condir = str_replace( $this->doc_root, '', WP_CONTENT_DIR );
 		$this->wp_dirs = array(
 			'plugins'   => $condir . '/plugins/',
 			'themes'    => $condir . '/themes/',

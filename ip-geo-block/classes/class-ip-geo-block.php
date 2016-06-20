@@ -693,20 +693,19 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function check_ips_white( $validate, $settings ) {
-		return $this->check_ips( $validate, $settings['extra_ips'], 0 );
+		return $this->check_ips( $validate, $settings['extra_ips']['white_list'], 0 );
 	}
 
 	public function check_ips_black( $validate, $settings ) {
-		return $this->check_ips( $validate, $settings['extra_ips'], 1 );
+		return $this->check_ips( $validate, $settings['extra_ips']['black_list'], 1 );
 	}
 
 	private function multiexplode ( $delimiters, $string ) {
 		return array_filter( explode( $delimiters[0], str_replace( $delimiters, $delimiters[0], $string ) ) );
 	}
 
-	private function check_ips( $validate, $list, $which ) {
+	private function check_ips( $validate, $ips, $which ) {
 		$ip = $validate['ip'];
-		$ips = $list[ $which ? 'black_list' : 'white_list' ];
 
 		if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ) {
 			include_once( IP_GEO_BLOCK_PATH . 'includes/Net/IPv4.php' );
@@ -760,10 +759,19 @@ class IP_Geo_Block {
 			foreach ( $this->multiexplode( array( ",", "\n" ), $settings['public']['ua_list'] ) as $bot ) {
 				list( $name, $code ) = explode( ':', $bot, 2 );
 
-				if ( $name && FALSE !== strpos( $ua, $name ) &&
-				     $code && FALSE !== strpos( $co, $code ) ) {
-					$validate['result'] = 'passed'; // can overwrite existing result
-					break;
+				if ( $name && FALSE !== strpos( $ua, $name ) ) {
+					if ( ctype_alpha( $code ) ) {
+						if ( $co === $code ) ) {
+							$validate['result'] = 'passed'; // can overwrite existing result
+							break;
+						}
+					}
+
+					else {
+						$validate = $this->check_ips( $validate, $code, 0 ); // only 'white_list'
+						if ( isset( $validate['result'] ) )
+							break;
+					}
 				}
 			}
 		}

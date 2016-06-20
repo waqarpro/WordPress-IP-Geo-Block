@@ -438,7 +438,7 @@ msgid "Themes area"
 msgstr ""
 
 #: admin/includes/tab-settings.php:550
-msgid "except &#8220;wp-includes/ms-files.php&#8221;"
+msgid "except &#8220;%s&#8221;"
 msgstr ""
 
 #: admin/includes/tab-settings.php:565

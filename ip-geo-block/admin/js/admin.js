@@ -153,7 +153,7 @@ var ip_geo_block_time = new Date();
 					name = decodeURIComponent(key);
 					value = decodeURIComponent(json[key]);
 
-					if (!(name in data)) {
+					if (!(name in data)) { // !data.hasOwnProperty(name)
 						data[name] = [];
 					}
 
