@@ -491,71 +491,7 @@ class IP_Geo_Block_API_IPInfoDB extends IP_Geo_Block_API {
  */
 define( 'IP_GEO_BLOCK_CACHE_USE_TRANSIENT', FALSE );
 
-if ( ! IP_GEO_BLOCK_CACHE_USE_TRANSIENT ) :
-
-class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
-
-	public function __construct( $api_key = NULL ) {
-		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
-	}
-
-	public static function update_cache( $hook, $validate, $settings ) {
-		$cache = IP_Geo_Block_Logs::search_cache( $ip = $validate['ip'] );
-
-		if ( $cache ) {
-			$fail = $cache['fail'] + (int)isset( $validate['fail'] );
-			$call = $cache['call'] + (int)empty( $validate['fail'] );
-		} else { // if new cache then reset these values
-			$call = 1;
-			$fail = 0;
-		}
-
-		// update elements
-		IP_Geo_Block_Logs::update_cache( $cache = array(
-			'time' => $_SERVER['REQUEST_TIME'],
-			'ip'   => $ip,
-			'hook' => $hook,
-			'code' => $validate['code'],
-			'auth' => $validate['auth'], // get_current_user_id() > 0
-			'fail' => $validate['auth'] ? 0 : $fail,
-			'call' => $settings['save_statistics'] ? $call : 0,
-			'host' => isset( $validate['host'] ) ? $validate['host'] : NULL,
-		) );
-
-		// also update cache by cookie
-		IP_Geo_Block_API_Cookie::update_cache( $cache, $settings );
-
-		return $cache;
-	}
-
-	public static function clear_cache() {
-		IP_Geo_Block_Logs::clear_cache();
-	}
-
-	public static function get_cache_all() {
-		return IP_Geo_Block_Logs::restore_cache();
-	}
-
-	public static function get_cache( $ip ) {
-		if ( $cache = IP_Geo_Block_API_Cookie::get_cache( $ip ) )
-			return $cache;
-
-		return IP_Geo_Block_Logs::search_cache( $ip );
-	}
-
-	public function get_location( $ip, $args = array() ) {
-		if ( $cache = self::get_cache( $ip ) )
-			return array( 'countryCode' => $cache['code'] );
-		else
-			return array( 'errorMessage' => 'not in the cache' );
-	}
-
-	public function get_country( $ip, $args = array() ) {
-		return ( $cache = self::get_cache( $ip ) ) ? $cache['code'] : NULL;
-	}
-}
-
-else: /* IP_GEO_BLOCK_CACHE_USE_TRANSIENT */
+if ( IP_GEO_BLOCK_CACHE_USE_TRANSIENT ) :
 
 class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 
@@ -621,6 +557,70 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 	public static function get_cache( $ip ) {
 		$cache = get_transient( IP_Geo_Block::CACHE_KEY );
 		return $cache && isset( $cache[ $ip ] ) ? $cache[ $ip ] : NULL;
+	}
+
+	public function get_location( $ip, $args = array() ) {
+		if ( $cache = self::get_cache( $ip ) )
+			return array( 'countryCode' => $cache['code'] );
+		else
+			return array( 'errorMessage' => 'not in the cache' );
+	}
+
+	public function get_country( $ip, $args = array() ) {
+		return ( $cache = self::get_cache( $ip ) ) ? $cache['code'] : NULL;
+	}
+}
+
+else: /* IP_GEO_BLOCK_CACHE_USE_TRANSIENT */
+
+class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
+
+	public function __construct( $api_key = NULL ) {
+		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+	}
+
+	public static function update_cache( $hook, $validate, $settings ) {
+		$cache = IP_Geo_Block_Logs::search_cache( $ip = $validate['ip'] );
+
+		if ( $cache ) {
+			$fail = $cache['fail'] + (int)isset( $validate['fail'] );
+			$call = $cache['call'] + (int)empty( $validate['fail'] );
+		} else { // if new cache then reset these values
+			$call = 1;
+			$fail = 0;
+		}
+
+		// update elements
+		IP_Geo_Block_Logs::update_cache( $cache = array(
+			'time' => $_SERVER['REQUEST_TIME'],
+			'ip'   => $ip,
+			'hook' => $hook,
+			'code' => $validate['code'],
+			'auth' => $validate['auth'], // get_current_user_id() > 0
+			'fail' => $validate['auth'] ? 0 : $fail,
+			'call' => $settings['save_statistics'] ? $call : 0,
+			'host' => isset( $validate['host'] ) ? $validate['host'] : NULL,
+		) );
+
+		// also update cache by cookie
+		IP_Geo_Block_API_Cookie::update_cache( $cache, $settings );
+
+		return $cache;
+	}
+
+	public static function clear_cache() {
+		IP_Geo_Block_Logs::clear_cache();
+	}
+
+	public static function get_cache_all() {
+		return IP_Geo_Block_Logs::restore_cache();
+	}
+
+	public static function get_cache( $ip ) {
+		if ( $cache = IP_Geo_Block_API_Cookie::get_cache( $ip ) )
+			return $cache;
+
+		return IP_Geo_Block_Logs::search_cache( $ip );
 	}
 
 	public function get_location( $ip, $args = array() ) {

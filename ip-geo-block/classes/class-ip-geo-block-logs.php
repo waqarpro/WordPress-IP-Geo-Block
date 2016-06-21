@@ -595,10 +595,10 @@ class IP_Geo_Block_Logs {
 	public static function restore_cache() {
 		global $wpdb;
 		$table = $wpdb->prefix . IP_Geo_Block::CACHE_KEY;
-
 		$result = $wpdb->get_results( "SELECT * FROM `$table`", ARRAY_A ) or self::error( __LINE__ );
 
-		// transform
+		// transform DB to cache format
+		$cache = array();
 		foreach ( $result as $key => $val ) {
 			$ip = $val['ip'];
 			unset( $val['ip'] );
