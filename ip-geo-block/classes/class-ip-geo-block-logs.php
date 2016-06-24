@@ -126,7 +126,7 @@ class IP_Geo_Block_Logs {
 			$table = $wpdb->prefix . $table;
 			if ( $wpdb->get_var( "SHOW TABLES LIKE '$table'" ) !== $table ) {
 				return  sprintf(
-					__( 'Creating a DB table %s had failed. Once de-activate this plugin, and then activate again.', IP_Geo_Block::TEXT_DOMAIN ),
+					__( 'Creating a DB table %s had failed. Once de-activate this plugin, and then activate again.', 'ip-geo-block' ),
 					$table
 				);
 			}

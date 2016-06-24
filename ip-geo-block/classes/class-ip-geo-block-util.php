@@ -74,7 +74,7 @@ class IP_Geo_Block_Util {
 		if ( 304 == $code )
 			return array(
 				'code' => $code,
-				'message' => __( 'Your database file is up-to-date.', IP_Geo_Block::TEXT_DOMAIN ),
+				'message' => __( 'Your database file is up-to-date.', 'ip-geo-block' ),
 				'filename' => $filename,
 				'modified' => $modified,
 			);
@@ -103,7 +103,7 @@ class IP_Geo_Block_Util {
 				if ( FALSE === ( $gz = gzopen( $src, 'r' ) ) )
 					throw new Exception(
 						sprintf(
-							__( 'Unable to read %s. Please check permission.', IP_Geo_Block::TEXT_DOMAIN ),
+							__( 'Unable to read %s. Please check permission.', 'ip-geo-block' ),
 							$src
 						)
 					);
@@ -111,7 +111,7 @@ class IP_Geo_Block_Util {
 				if ( FALSE === ( $fp = @fopen( $filename, 'wb' ) ) )
 					throw new Exception(
 						sprintf(
-							__( 'Unable to write %s. Please check permission.', IP_Geo_Block::TEXT_DOMAIN ),
+							__( 'Unable to write %s. Please check permission.', 'ip-geo-block' ),
 							$filename
 						)
 					);
@@ -156,7 +156,7 @@ class IP_Geo_Block_Util {
 		return array(
 			'code' => $code,
 			'message' => sprintf(
-				__( 'Last update: %s', IP_Geo_Block::TEXT_DOMAIN ),
+				__( 'Last update: %s', 'ip-geo-block' ),
 				self::localdate( $modified )
 			),
 			'filename' => $filename,

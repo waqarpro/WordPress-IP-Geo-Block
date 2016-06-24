@@ -25,7 +25,7 @@ if ( $options['save_statistics'] ) :
 		$section = $plugin_slug . '-statistics';
 		add_settings_section(
 			$section,
-			__( 'Statistics of validation', IP_Geo_Block::TEXT_DOMAIN ),
+			__( 'Statistics of validation', 'ip-geo-block' ),
 			NULL,
 			$option_slug
 		);
@@ -34,7 +34,7 @@ if ( $options['save_statistics'] ) :
 		$field = 'blocked';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( 'Blocked', IP_Geo_Block::TEXT_DOMAIN ),
+			__( 'Blocked', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -60,7 +60,7 @@ if ( $options['save_statistics'] ) :
 
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( 'Blocked by countries', IP_Geo_Block::TEXT_DOMAIN ),
+			__( 'Blocked by countries', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -98,7 +98,7 @@ if ( $options['save_statistics'] ) :
 
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( 'Blocked per day', IP_Geo_Block::TEXT_DOMAIN ),
+			__( 'Blocked per day', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -114,7 +114,7 @@ if ( $options['save_statistics'] ) :
 		$field = 'type';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( 'Blocked by type of IP address', IP_Geo_Block::TEXT_DOMAIN ),
+			__( 'Blocked by type of IP address', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -132,9 +132,9 @@ if ( $options['save_statistics'] ) :
 
 		$field = 'service';
 		$html  = '<table class="'.$option_slug.'-'.$field.'"><thead><tr>';
-		$html .= '<th>' . __( 'Name of API',     IP_Geo_Block::TEXT_DOMAIN ) . '</th>';
-		$html .= '<th>' . __( 'Calls',           IP_Geo_Block::TEXT_DOMAIN ) . '</th>';
-		$html .= '<th>' . __( 'Response [msec]', IP_Geo_Block::TEXT_DOMAIN ) . '</th>';
+		$html .= '<th>' . __( 'Name of API',     'ip-geo-block' ) . '</th>';
+		$html .= '<th>' . __( 'Calls',           'ip-geo-block' ) . '</th>';
+		$html .= '<th>' . __( 'Response [msec]', 'ip-geo-block' ) . '</th>';
 		$html .= '</tr></thead><tbody>';
 
 		foreach ( $statistics['providers'] as $key => $val ) {
@@ -148,7 +148,7 @@ if ( $options['save_statistics'] ) :
 		// Average response time of each API
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( 'Average response time of each API', IP_Geo_Block::TEXT_DOMAIN ),
+			__( 'Average response time of each API', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -164,7 +164,7 @@ if ( $options['save_statistics'] ) :
 		$field = 'clear_statistics';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( 'Clear statistics', IP_Geo_Block::TEXT_DOMAIN ),
+			__( 'Clear statistics', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -172,7 +172,7 @@ if ( $options['save_statistics'] ) :
 				'type' => 'button',
 				'option' => $option_name,
 				'field' => $field,
-				'value' => __( 'Clear now', IP_Geo_Block::TEXT_DOMAIN ),
+				'value' => __( 'Clear now', 'ip-geo-block' ),
 				'after' => '<div id="'.$plugin_slug.'-statistics"></div>',
 			)
 		);
@@ -185,7 +185,7 @@ else:
 		$section = $plugin_slug . '-statistics';
 		add_settings_section(
 			$section,
-			__( 'Statistics of validation', IP_Geo_Block::TEXT_DOMAIN ),
+			__( 'Statistics of validation', 'ip-geo-block' ),
 			array( __CLASS__, 'warn_statistics' ),
 			$option_slug
 		);
@@ -211,16 +211,16 @@ endif;
 		$section = $plugin_slug . '-cache';
 		add_settings_section(
 			$section,
-			__( 'Statistics of cache', IP_Geo_Block::TEXT_DOMAIN ),
+			__( 'Statistics of cache', 'ip-geo-block' ),
 			NULL, // array( $context, 'callback_cache_stat' ),
 			$option_slug
 		);
 
 		$field = 'cache';
 		$html  = '<table class="'.$option_slug.'-'.$field.'"><thead><tr>';
-		$html .= '<th>' . __( 'IP address',            IP_Geo_Block::TEXT_DOMAIN ) . '</th>';
-		$html .= '<th>' . __( 'Country code / Access', IP_Geo_Block::TEXT_DOMAIN ) . '</th>';
-		$html .= '<th>' . __( 'Elapsed [sec] / Calls', IP_Geo_Block::TEXT_DOMAIN ) . '</th>';
+		$html .= '<th>' . __( 'IP address',            'ip-geo-block' ) . '</th>';
+		$html .= '<th>' . __( 'Country code / Access', 'ip-geo-block' ) . '</th>';
+		$html .= '<th>' . __( 'Elapsed [sec] / Calls', 'ip-geo-block' ) . '</th>';
 		$html .= '</tr></thead><tbody>';
 
 		if ( $cache = IP_Geo_Block_API_Cache::get_cache_all() ) {
@@ -248,7 +248,7 @@ endif;
 
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( 'IP address in cache', IP_Geo_Block::TEXT_DOMAIN ),
+			__( 'IP address in cache', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -263,7 +263,7 @@ endif;
 		$field = 'clear_cache';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( 'Clear cache', IP_Geo_Block::TEXT_DOMAIN ),
+			__( 'Clear cache', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -271,7 +271,7 @@ endif;
 				'type' => 'button',
 				'option' => $option_name,
 				'field' => $field,
-				'value' => __( 'Clear now', IP_Geo_Block::TEXT_DOMAIN ),
+				'value' => __( 'Clear now', 'ip-geo-block' ),
 				'after' => '<div id="'.$plugin_slug.'-cache"></div>',
 			)
 		);
@@ -282,8 +282,8 @@ endif;
 	 *
 	 */
 	public static function warn_statistics() {
-		echo '<p>', __( 'Current setting of [<strong>Record validation statistics</strong>] on [<strong>Settings</strong>] tab is not selected [<strong>Enable</strong>].', IP_Geo_Block::TEXT_DOMAIN ), '</p>', "\n";
-		echo '<p>', __( 'Please set the proper condition to record and analyze the validation statistics.', IP_Geo_Block::TEXT_DOMAIN ), '</p>', "\n";
+		echo '<p>', __( 'Current setting of [<strong>Record validation statistics</strong>] on [<strong>Settings</strong>] tab is not selected [<strong>Enable</strong>].', 'ip-geo-block' ), '</p>', "\n";
+		echo '<p>', __( 'Please set the proper condition to record and analyze the validation statistics.', 'ip-geo-block' ), '</p>', "\n";
 	}
 
 }

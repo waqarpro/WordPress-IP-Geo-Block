@@ -16,7 +16,7 @@ class IP_Geo_Block_Admin_Tab {
 		$section = $plugin_slug . '-attribution';
 		add_settings_section(
 			$section,
-			__( 'Attribution links', IP_Geo_Block::TEXT_DOMAIN ),
+			__( 'Attribution links', 'ip-geo-block' ),
 			NULL,
 			$option_slug
 		);

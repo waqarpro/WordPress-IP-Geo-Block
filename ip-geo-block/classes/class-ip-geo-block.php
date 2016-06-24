@@ -188,7 +188,10 @@ class IP_Geo_Block {
 	public static function enqueue_nonce() {
 		if ( is_user_logged_in() ) {
 			$handle = self::PLUGIN_SLUG . '-auth-nonce';
-			$script = plugins_url( 'admin/js/authenticate.min.js', IP_GEO_BLOCK_BASE );
+			$script = plugins_url(
+				! defined( 'IP_GEO_BLOCK_DEBUG' ) || ! IP_GEO_BLOCK_DEBUG ?
+				'admin/js/authenticate.min.js' : 'admin/js/authenticate.js', IP_GEO_BLOCK_BASE
+			);
 			$nonce = array( 'nonce' => wp_create_nonce( $handle ) ) + self::$wp_path;
 			wp_enqueue_script( $handle, $script, array( 'jquery' ), self::VERSION );
 			wp_localize_script( $handle, 'IP_GEO_BLOCK_AUTH', $nonce );
