@@ -206,7 +206,7 @@ class IP_Geo_Block_Admin_Ajax {
 							$settings[ $m[1] ][ $m[2] ] = 0;
 						$settings[ $m[1] ][ $m[2] ] |= $val;
 					} else {
-						$settings[ $m[1] ][ $m[2] ][] = $m[3];
+						$settings[ $m[1] ][ $m[2] ][ $m[3] ] = $val;
 					}
 					break;
 				}
