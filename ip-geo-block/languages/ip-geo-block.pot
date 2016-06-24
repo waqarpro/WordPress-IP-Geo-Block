@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 2.2.6\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2016-06-21 19:41+0900\n"
-"PO-Revision-Date: 2016-06-21 19:41+0900\n"
+"POT-Creation-Date: 2016-06-24 10:46+0900\n"
+"PO-Revision-Date: 2016-06-24 10:46+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -25,25 +25,25 @@ msgid ""
 "posted from outside your nation, and also prevents zero-day exploit."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:195
+#: admin/class-ip-geo-block-admin.php:197
 msgid "Contribute at GitHub"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:212
-#: admin/class-ip-geo-block-admin.php:368
+#: admin/class-ip-geo-block-admin.php:214
+#: admin/class-ip-geo-block-admin.php:370
 msgid "Settings"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:258
-#: admin/class-ip-geo-block-admin.php:259
+#: admin/class-ip-geo-block-admin.php:260
+#: admin/class-ip-geo-block-admin.php:261
 msgid "IP Geo Block"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:280
+#: admin/class-ip-geo-block-admin.php:282
 msgid "You need WordPress 3.7+."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:288
+#: admin/class-ip-geo-block-admin.php:290
 #, php-format
 msgid ""
 "Now downloading geolocation databases in background. After a little while, "
@@ -51,70 +51,70 @@ msgid ""
 "strong>&#8221; at <a href=\"%s\">Validation rule settings</a>."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:294
+#: admin/class-ip-geo-block-admin.php:296
 #, php-format
 msgid ""
 "The &#8220;<strong>Matching rule</strong>&#8221; is not set properly. Please "
 "confirm it at <a href=\"%s\">Validation rule settings</a>."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:303
+#: admin/class-ip-geo-block-admin.php:305
 msgid "Downloading geolocation databases was successfully done."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:314
+#: admin/class-ip-geo-block-admin.php:316
 msgid ""
 "Once you logout, you will be unable to login again because your country code "
 "or IP address is in the blacklist."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:315
+#: admin/class-ip-geo-block-admin.php:317
 msgid ""
 "Once you logout, you will be unable to login again because your country code "
 "or IP address is not in the whitelist."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:318
+#: admin/class-ip-geo-block-admin.php:320
 #, php-format
 msgid "Please check your <a href=\"%s\">Validation rule settings</a>."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:369
+#: admin/class-ip-geo-block-admin.php:371
 msgid "Statistics"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:370
+#: admin/class-ip-geo-block-admin.php:372
 msgid "Logs"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:371
+#: admin/class-ip-geo-block-admin.php:373
 msgid "Search"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:372
+#: admin/class-ip-geo-block-admin.php:374
 msgid "Attribution"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:395
+#: admin/class-ip-geo-block-admin.php:397
 msgid "Thanks for providing these great services for free."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:396
+#: admin/class-ip-geo-block-admin.php:398
 msgid ""
 "(Most browsers will redirect you to each site <a href=\"http://www."
 "ipgeoblock.com/etc/referer.html\" title=\"Referer Checker\">without referrer "
 "when you click the link</a>.)"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:411
+#: admin/class-ip-geo-block-admin.php:413
 msgid "Back to top"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:503
+#: admin/class-ip-geo-block-admin.php:505
 msgid "Enable"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:794
+#: admin/class-ip-geo-block-admin.php:796
 #: classes/class-ip-geo-block-util.php:114
 #, php-format
 msgid "Unable to write %s. Please check permission."

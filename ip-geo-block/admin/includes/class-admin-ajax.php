@@ -50,10 +50,10 @@ class IP_Geo_Block_Admin_Ajax {
 				$res[ $provider ] = array(
 					'type' => $type[ $provider ],
 					'code' => esc_html(
-						FALSE === $ret ? __( 'n/a', IP_Geo_Block::TEXT_DOMAIN ) : (
+						FALSE === $ret ? __( 'n/a', 'ip-geo-block' ) : (
 						! empty( $ret['errorMessage'] ) ? $ret['errorMessage'] : (
 						! empty( $ret['countryCode' ] ) ? $ret['countryCode' ] :
-						__( 'UNKNOWN', IP_Geo_Block::TEXT_DOMAIN ) ) )
+						__( 'UNKNOWN', 'ip-geo-block' ) ) )
 					),
 				);
 			}

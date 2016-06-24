@@ -156,7 +156,9 @@ class IP_Geo_Block_Admin {
 		// js for IP Geo Block admin page
 		wp_register_script(
 			$handle = IP_Geo_Block::PLUGIN_SLUG . '-admin-script',
-			plugins_url( 'js/admin.min.js', __FILE__ ),
+			plugins_url( ! defined( 'IP_GEO_BLOCK_DEBUG' ) || ! IP_GEO_BLOCK_DEBUG ?
+				'js/admin.min.js' : 'js/admin.js', __FILE__
+			),
 			$dependency + ( isset( $addon ) ? array( $addon ) : array() ),
 			IP_Geo_Block::VERSION,
 			$footer
@@ -192,7 +194,7 @@ class IP_Geo_Block_Admin {
 	 */
 	public function add_plugin_meta_links( $links, $file ) {
 		if ( $file === IP_GEO_BLOCK_BASE ) {
-			$title = __( 'Contribute at GitHub', IP_Geo_Block::TEXT_DOMAIN );
+			$title = __( 'Contribute at GitHub', 'ip-geo-block' );
 			array_push(
 				$links,
 				"<a href=\"http://www.ipgeoblock.com\" title=\"$title\" target=_blank>$title</a>"
@@ -255,8 +257,8 @@ class IP_Geo_Block_Admin {
 	private function add_plugin_admin_page() {
 		// Add a settings page for this plugin to the Settings menu.
 		$hook = add_options_page(
-			__( 'IP Geo Block', IP_Geo_Block::TEXT_DOMAIN ),
-			__( 'IP Geo Block', IP_Geo_Block::TEXT_DOMAIN ),
+			__( 'IP Geo Block', 'ip-geo-block' ),
+			__( 'IP Geo Block', 'ip-geo-block' ),
 			'manage_options',
 			IP_Geo_Block::PLUGIN_SLUG,
 			array( $this, 'display_plugin_admin_page' )
@@ -277,7 +279,7 @@ class IP_Geo_Block_Admin {
 
 		// Check version and compatibility
 		if ( version_compare( get_bloginfo( 'version' ), '3.7' ) < 0 )
-			self::add_admin_notice( 'error', __( 'You need WordPress 3.7+.', IP_Geo_Block::TEXT_DOMAIN ) );
+			self::add_admin_notice( 'error', __( 'You need WordPress 3.7+.', 'ip-geo-block' ) );
 
 		$settings = IP_Geo_Block::get_option( 'settings' );
 
@@ -285,13 +287,13 @@ class IP_Geo_Block_Admin {
 		if ( -1 === (int)$settings['matching_rule'] ) {
 			if ( FALSE !== get_transient( IP_Geo_Block::CRON_NAME ) ) {
 				self::add_admin_notice( 'notice-warning', sprintf(
-					__( 'Now downloading geolocation databases in background. After a little while, please check your country code and &#8220;<strong>Matching rule</strong>&#8221; at <a href="%s">Validation rule settings</a>.', IP_Geo_Block::TEXT_DOMAIN ),
+					__( 'Now downloading geolocation databases in background. After a little while, please check your country code and &#8220;<strong>Matching rule</strong>&#8221; at <a href="%s">Validation rule settings</a>.', 'ip-geo-block' ),
 					admin_url( 'options-general.php?page=' . IP_Geo_Block::PLUGIN_SLUG )
 				) );
 			}
 			else {
 				self::add_admin_notice( 'error', sprintf(
-					__( 'The &#8220;<strong>Matching rule</strong>&#8221; is not set properly. Please confirm it at <a href="%s">Validation rule settings</a>.', IP_Geo_Block::TEXT_DOMAIN ),
+					__( 'The &#8220;<strong>Matching rule</strong>&#8221; is not set properly. Please confirm it at <a href="%s">Validation rule settings</a>.', 'ip-geo-block' ),
 					admin_url( 'options-general.php?page=' . IP_Geo_Block::PLUGIN_SLUG )
 				) );
 			}
@@ -300,7 +302,7 @@ class IP_Geo_Block_Admin {
 		// Check to finish downloading
 		elseif ( 'done' === get_transient( IP_Geo_Block::CRON_NAME ) ) {
 			delete_transient( IP_Geo_Block::CRON_NAME );
-			self::add_admin_notice( 'updated', __( 'Downloading geolocation databases was successfully done.', IP_Geo_Block::TEXT_DOMAIN ) );
+			self::add_admin_notice( 'updated', __( 'Downloading geolocation databases was successfully done.', 'ip-geo-block' ) );
 		}
 
 		// Check self blocking
@@ -311,11 +313,11 @@ class IP_Geo_Block_Admin {
 			if ( 'passed' !== $validate['result'] ) {
 				self::add_admin_notice( 'error',
 					( $settings['matching_rule'] ?
-						__( 'Once you logout, you will be unable to login again because your country code or IP address is in the blacklist.', IP_Geo_Block::TEXT_DOMAIN ) :
-						__( 'Once you logout, you will be unable to login again because your country code or IP address is not in the whitelist.', IP_Geo_Block::TEXT_DOMAIN )
+						__( 'Once you logout, you will be unable to login again because your country code or IP address is in the blacklist.', 'ip-geo-block' ) :
+						__( 'Once you logout, you will be unable to login again because your country code or IP address is not in the whitelist.', 'ip-geo-block' )
 					) .
 					sprintf(
-						__( 'Please check your <a href="%s">Validation rule settings</a>.', IP_Geo_Block::TEXT_DOMAIN ),
+						__( 'Please check your <a href="%s">Validation rule settings</a>.', 'ip-geo-block' ),
 						admin_url( 'options-general.php?page=' . IP_Geo_Block::PLUGIN_SLUG . '#' . IP_Geo_Block::PLUGIN_SLUG . '-settings-0' )
 					)
 				);
@@ -365,11 +367,11 @@ class IP_Geo_Block_Admin {
 	 */
 	public function display_plugin_admin_page() {
 		$tabs = array(
-			0 => __( 'Settings',    IP_Geo_Block::TEXT_DOMAIN ),
-			1 => __( 'Statistics',  IP_Geo_Block::TEXT_DOMAIN ),
-			4 => __( 'Logs',        IP_Geo_Block::TEXT_DOMAIN ),
-			2 => __( 'Search',      IP_Geo_Block::TEXT_DOMAIN ),
-			3 => __( 'Attribution', IP_Geo_Block::TEXT_DOMAIN ),
+			0 => __( 'Settings',    'ip-geo-block' ),
+			1 => __( 'Statistics',  'ip-geo-block' ),
+			4 => __( 'Logs',        'ip-geo-block' ),
+			2 => __( 'Search',      'ip-geo-block' ),
+			3 => __( 'Attribution', 'ip-geo-block' ),
 		);
 		$tab = $this->admin_tab;
 		$option_slug = $this->option_slug[ 1 === $tab ? 'statistics': 'settings' ];
@@ -392,8 +394,8 @@ class IP_Geo_Block_Admin {
 <?php if ( 2 === $tab ) { ?>
 	<div id="ip-geo-block-map"></div>
 <?php } elseif ( 3 === $tab ) {
-	echo '<p>', __( 'Thanks for providing these great services for free.', IP_Geo_Block::TEXT_DOMAIN ), '<br />';
-	echo __( '(Most browsers will redirect you to each site <a href="http://www.ipgeoblock.com/etc/referer.html" title="Referer Checker">without referrer when you click the link</a>.)', IP_Geo_Block::TEXT_DOMAIN ), '</p>';
+	echo '<p>', __( 'Thanks for providing these great services for free.', 'ip-geo-block' ), '<br />';
+	echo __( '(Most browsers will redirect you to each site <a href="http://www.ipgeoblock.com/etc/referer.html" title="Referer Checker">without referrer when you click the link</a>.)', 'ip-geo-block' ), '</p>';
 
 	// show attribution (higher priority order)
 	$providers = IP_Geo_Block_Provider::get_addons();
@@ -408,7 +410,7 @@ class IP_Geo_Block_Admin {
 <?php if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ) {
 	echo '<p>', get_num_queries(), ' queries. ', timer_stop(0), ' seconds. ', memory_get_usage(), " bytes.</p>\n";
 } ?>
-	<p style="text-align:right">[ <a href="#"><?php _e( 'Back to top', IP_Geo_Block::TEXT_DOMAIN ); ?></a> ]</p>
+	<p style="text-align:right">[ <a href="#"><?php _e( 'Back to top', 'ip-geo-block' ); ?></a> ]</p>
 </div>
 <?php
 	}
@@ -500,7 +502,7 @@ class IP_Geo_Block_Admin {
 <input type="checkbox" id="<?php echo $id, $sub_id; ?>" name="<?php echo $name, $sub_name; ?>" value="1"<?php
 	checked( esc_attr( $args['value'] ) );
 	disabled( ! empty( $args['disabled'] ), TRUE ); ?> />
-<label for="<?php echo $id, $sub_id; ?>"><?php echo esc_attr( isset( $args['text'] ) ? $args['text'] : __( 'Enable', IP_Geo_Block::TEXT_DOMAIN ) ); ?></label>
+<label for="<?php echo $id, $sub_id; ?>"><?php echo esc_attr( isset( $args['text'] ) ? $args['text'] : __( 'Enable', 'ip-geo-block' ) ); ?></label>
 <?php
 			break;
 
@@ -791,7 +793,7 @@ class IP_Geo_Block_Admin {
 			}
 
 			$this->show_setting_notice( 'settings', 'error', sprintf(
-				__( 'Unable to write %s. Please check permission.', IP_Geo_Block::TEXT_DOMAIN ),
+				__( 'Unable to write %s. Please check permission.', 'ip-geo-block' ),
 				implode( ', ', $file )
 			) );
 		}
