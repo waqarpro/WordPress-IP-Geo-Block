@@ -246,7 +246,7 @@ class IP_Geo_Block_Opts {
 		}
 
 		// install addons for IP Geolocation database API
-		if ( ! $settings['api_dir'] || version_compare( $version, '2.2.2' ) < 0 )
+		if ( ! $settings['api_dir'] || version_compare( $version, '2.2.6' ) < 0 )
 			$settings['api_dir'] = self::install_api( $settings );
 
 		// update option table
