@@ -657,7 +657,7 @@ class IP_Geo_Block_Admin_Tab {
 		$key = 'ua_list';
 		add_settings_field(
 			$option_name.'_'.$field.'_'.$key,
-			'<dfn title="' . __( 'User agent string can not contain spaces.', 'ip-geo-block' ) . '">' . __( 'Permitted user agent string : country code', 'ip-geo-block' ) . '</dfn>',
+			'<dfn title="' . __( 'Where the &#8221;condition&#8220; can be country code, IP address with CIDR or &#8221;DNS&#8220;', 'ip-geo-block' ) . '">' . __( 'Permitted user agent string : condition', 'ip-geo-block' ) . '</dfn>',
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,

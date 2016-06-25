@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2016-06-24 11:10+0900\n"
-"PO-Revision-Date: 2016-06-24 11:17+0900\n"
+"POT-Creation-Date: 2016-06-25 18:47+0900\n"
+"PO-Revision-Date: 2016-06-25 19:12+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -27,25 +27,25 @@ msgstr ""
 "自国以外から投稿されるスパム、ログインフォーム、さらにゼロデイ攻撃を含む管理"
 "領域への悪意あるアクセスからサイトを守ります。"
 
-#: admin/class-ip-geo-block-admin.php:195
+#: admin/class-ip-geo-block-admin.php:197
 msgid "Contribute at GitHub"
 msgstr "開発に参加"
 
-#: admin/class-ip-geo-block-admin.php:212
-#: admin/class-ip-geo-block-admin.php:368
+#: admin/class-ip-geo-block-admin.php:214
+#: admin/class-ip-geo-block-admin.php:370
 msgid "Settings"
 msgstr "設定"
 
-#: admin/class-ip-geo-block-admin.php:258
-#: admin/class-ip-geo-block-admin.php:259
+#: admin/class-ip-geo-block-admin.php:260
+#: admin/class-ip-geo-block-admin.php:261
 msgid "IP Geo Block"
 msgstr "IP Geo Block"
 
-#: admin/class-ip-geo-block-admin.php:280
+#: admin/class-ip-geo-block-admin.php:282
 msgid "You need WordPress 3.7+."
 msgstr "WordPress 3.7&thinsp;以上が必要です。"
 
-#: admin/class-ip-geo-block-admin.php:288
+#: admin/class-ip-geo-block-admin.php:290
 #, php-format
 msgid ""
 "Now downloading geolocation databases in background. After a little while, "
@@ -56,7 +56,7 @@ msgstr ""
 "いた後、あなたの国コードと「<strong>マッチング規則</strong>」を「<a href=\"%s"
 "\">検証ルールの設定</a>」で確認して下さい。"
 
-#: admin/class-ip-geo-block-admin.php:294
+#: admin/class-ip-geo-block-admin.php:296
 #, php-format
 msgid ""
 "The &#8220;<strong>Matching rule</strong>&#8221; is not set properly. Please "
@@ -65,11 +65,11 @@ msgstr ""
 "「<strong>マッチング規則</strong>」が正しく設定されていません。「<a href=\"%s"
 "\">検証ルールの設定</a>」を確認して下さい。"
 
-#: admin/class-ip-geo-block-admin.php:303
+#: admin/class-ip-geo-block-admin.php:305
 msgid "Downloading geolocation databases was successfully done."
 msgstr "位置情報データベースは正常にダウンロードされました。"
 
-#: admin/class-ip-geo-block-admin.php:314
+#: admin/class-ip-geo-block-admin.php:316
 msgid ""
 "Once you logout, you will be unable to login again because your country code "
 "or IP address is in the blacklist."
@@ -77,7 +77,7 @@ msgstr ""
 "あなたの国コードまたはIPアドレスがブラックリストに含まれているため、ログアウ"
 "トすると再びログインする事が出来なくなります。"
 
-#: admin/class-ip-geo-block-admin.php:315
+#: admin/class-ip-geo-block-admin.php:317
 msgid ""
 "Once you logout, you will be unable to login again because your country code "
 "or IP address is not in the whitelist."
@@ -85,32 +85,32 @@ msgstr ""
 "あなたの国コードまたはIPアドレスがホワイトリストに含まれていないため、ログア"
 "ウトすると再びログインする事が出来なくなります。"
 
-#: admin/class-ip-geo-block-admin.php:318
+#: admin/class-ip-geo-block-admin.php:320
 #, php-format
 msgid "Please check your <a href=\"%s\">Validation rule settings</a>."
 msgstr "「<a href=\"%s\">検証ルールの設定</a>」を確認して下さい。"
 
-#: admin/class-ip-geo-block-admin.php:369
+#: admin/class-ip-geo-block-admin.php:371
 msgid "Statistics"
 msgstr "統計"
 
-#: admin/class-ip-geo-block-admin.php:370
+#: admin/class-ip-geo-block-admin.php:372
 msgid "Logs"
 msgstr "ログ"
 
-#: admin/class-ip-geo-block-admin.php:371
+#: admin/class-ip-geo-block-admin.php:373
 msgid "Search"
 msgstr "検索"
 
-#: admin/class-ip-geo-block-admin.php:372
+#: admin/class-ip-geo-block-admin.php:374
 msgid "Attribution"
 msgstr "リンク"
 
-#: admin/class-ip-geo-block-admin.php:395
+#: admin/class-ip-geo-block-admin.php:397
 msgid "Thanks for providing these great services for free."
 msgstr "これらのすばらしいサービスの提供元に、敬意と感謝の意を表します！"
 
-#: admin/class-ip-geo-block-admin.php:396
+#: admin/class-ip-geo-block-admin.php:398
 msgid ""
 "(Most browsers will redirect you to each site <a href=\"http://www."
 "ipgeoblock.com/etc/referer.html\" title=\"Referer Checker\">without referrer "
@@ -120,15 +120,15 @@ msgstr ""
 "html\" title=\"Referer Checker\">参照元を残さずにリンク先にリダイレクトできま"
 "す</a>。）"
 
-#: admin/class-ip-geo-block-admin.php:411
+#: admin/class-ip-geo-block-admin.php:413
 msgid "Back to top"
 msgstr "トップに戻る"
 
-#: admin/class-ip-geo-block-admin.php:503
+#: admin/class-ip-geo-block-admin.php:505
 msgid "Enable"
 msgstr "有効"
 
-#: admin/class-ip-geo-block-admin.php:806
+#: admin/class-ip-geo-block-admin.php:808
 #: classes/class-ip-geo-block-util.php:114
 #, php-format
 msgid "Unable to write %s. Please check permission."
@@ -509,12 +509,16 @@ msgid "Frontend settings"
 msgstr "フロントエンドの設定"
 
 #: admin/includes/tab-settings.php:660
-msgid "User agent string can not contain spaces."
-msgstr "ユーザーエージェント文字列に空白を含める事は出来ません。"
+msgid ""
+"Where the &#8221;condition&#8220; can be country code, IP address with CIDR "
+"or &#8221;DNS&#8220;"
+msgstr ""
+"&#8221;条件&#8220;は次のうちの1つ：国コード、CIDR記法IPアドレス、または&nbsp;"
+"&#8221;DNS&#8220;"
 
 #: admin/includes/tab-settings.php:660
-msgid "Permitted user agent string : country code"
-msgstr "許可するユーザーエージェント文字列 : 国コード"
+msgid "Permitted user agent string : condition"
+msgstr "許可するユーザーエージェント文字列 : 条件"
 
 #: admin/includes/tab-settings.php:680
 msgid "Geolocation API settings"

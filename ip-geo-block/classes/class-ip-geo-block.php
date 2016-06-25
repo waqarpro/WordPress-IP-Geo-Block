@@ -754,8 +754,6 @@ class IP_Geo_Block {
 	}
 
 	public function check_bots( $validate, $settings ) {
-		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php' );
-
 		if ( isset( $_SERVER['HTTP_USER_AGENT'] ) ) {
 			$ua = $_SERVER['HTTP_USER_AGENT'];
 			$co = $validate['code'];
@@ -765,7 +763,12 @@ class IP_Geo_Block {
 
 				if ( $name && FALSE !== strpos( $ua, $name ) ) {
 					if ( 'DNS' === $code ) {
-						if ( ( $co = $validate['ip'] ) !== IP_Geo_Block_Util::gethostbyaddr( $co ) ) {
+						static $DNS = -1;
+						if ( -1 === $DNS ) {
+							include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php' );
+							$DNS = $validate['ip'] !== IP_Geo_Block_Util::gethostbyaddr( $validate['ip'] );
+						}
+						if ( $DNS ) {
 							$validate['result'] = 'passed'; // can overwrite existing result
 							break;
 						}
