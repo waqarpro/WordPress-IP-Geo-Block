@@ -158,9 +158,8 @@ class IP_Geo_Block_Admin_Ajax {
 			isset( $_POST['data'] ) ? $_POST['data'] : ''
 		);
 
-		if ( NULL === ( $data = json_decode( $json, TRUE ) ) ) {
+		if ( NULL === ( $data = json_decode( $json, TRUE ) ) )
 			wp_die( 'Illegal JSON format.', '', array( 'response' => 500, 'back_link' => TRUE ) ); // @Since 2.0.4
-		}
 
 		// Sanitize to fit the type of each field
 		$temp = self::json_to_settings( $data );
@@ -197,9 +196,11 @@ class IP_Geo_Block_Admin_Ajax {
 				  case 2:
 					$settings[ $m[1] ] = $val;
 					break;
+
 				  case 3:
 					$settings[ $m[1] ][ $m[2] ] = $val;
 					break;
+
 				  case 4:
 					if ( is_numeric( $m[3] ) ) {
 						if ( empty( $settings[ $m[1] ][ $m[2] ] ) )
