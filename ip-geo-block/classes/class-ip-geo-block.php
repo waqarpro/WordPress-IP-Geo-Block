@@ -17,7 +17,6 @@ class IP_Geo_Block {
 	 */
 	const VERSION = '2.2.6';
 	const GEOAPI_NAME = 'ip-geo-api';
-	const TEXT_DOMAIN = 'ip-geo-block';
 	const PLUGIN_SLUG = 'ip-geo-block';
 	const CACHE_KEY   = 'ip_geo_block_cache';
 	const CRON_NAME   = 'ip_geo_block_cron';
@@ -755,6 +754,8 @@ class IP_Geo_Block {
 	}
 
 	public function check_bots( $validate, $settings ) {
+		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php' );
+
 		if ( isset( $_SERVER['HTTP_USER_AGENT'] ) ) {
 			$ua = $_SERVER['HTTP_USER_AGENT'];
 			$co = $validate['code'];
@@ -763,14 +764,19 @@ class IP_Geo_Block {
 				list( $name, $code ) = explode( ':', $bot, 2 );
 
 				if ( $name && FALSE !== strpos( $ua, $name ) ) {
-					if ( ctype_alpha( $code ) ) {
-						if ( $co === $code ) ) {
+					if ( 'DNS' === $code ) {
+						if ( ( $co = $validate['ip'] ) !== IP_Geo_Block_Util::gethostbyaddr( $co ) ) {
 							$validate['result'] = 'passed'; // can overwrite existing result
 							break;
 						}
 					}
 
-					else {
+					elseif ( $co === $code ) {
+						$validate['result'] = 'passed'; // can overwrite existing result
+						break;
+					}
+
+					elseif ( filter_var( $code, FILTER_VALIDATE_IP ) ) {
 						$validate = $this->check_ips( $validate, $code, 0 ); // only 'white_list'
 						if ( isset( $validate['result'] ) )
 							break;

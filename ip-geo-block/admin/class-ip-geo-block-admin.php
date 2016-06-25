@@ -69,7 +69,7 @@ class IP_Geo_Block_Admin {
 	 *
 	 */
 	public function load_plugin_textdomain() {
-		load_plugin_textdomain( IP_Geo_Block::TEXT_DOMAIN, FALSE, dirname( IP_GEO_BLOCK_BASE ) . '/languages/' );
+		load_plugin_textdomain( IP_Geo_Block::PLUGIN_SLUG, FALSE, dirname( IP_GEO_BLOCK_BASE ) . '/languages/' );
 	}
 
 	/**
@@ -156,7 +156,9 @@ class IP_Geo_Block_Admin {
 		// js for IP Geo Block admin page
 		wp_register_script(
 			$handle = IP_Geo_Block::PLUGIN_SLUG . '-admin-script',
-			plugins_url( 'js/admin.min.js', __FILE__ ),
+			plugins_url( ! defined( 'IP_GEO_BLOCK_DEBUG' ) || ! IP_GEO_BLOCK_DEBUG ?
+				'js/admin.min.js' : 'js/admin.js', __FILE__
+			),
 			$dependency + ( isset( $addon ) ? array( $addon ) : array() ),
 			IP_Geo_Block::VERSION,
 			$footer
@@ -712,10 +714,10 @@ class IP_Geo_Block_Admin {
 		// format signature, ua_list (text area)
 		array_shift( $key );
 		array_shift( $val );
-		$output['signature'] = preg_replace( $key, $val, $output['signature'] );
+		$output['signature'] = trim( preg_replace( $key, $val, $output['signature'] ) );
 
 		// 3.0.0 convert country code to upper case
-		$output['public']['ua_list'] = preg_replace( $key, $val, $output['public']['ua_list'] );
+		$output['public']['ua_list'] = trim( preg_replace( $key, $val, $output['public']['ua_list'] ) );
 		$output['public']['ua_list'] = preg_replace_callback( '/:\w+/', array( $this, 'strtoupper' ), $output['public']['ua_list'] );
 
 		// reject invalid signature which potentially blocks itself
@@ -737,7 +739,7 @@ class IP_Geo_Block_Admin {
 
 		// 3.0.0 public : convert country code to upper case
 		foreach ( array( 'white_list', 'black_list' ) as $key )
-			$output['public'][ $key ] = strtoupper( $output['public'][ $key ] );
+			$output['public'][ $key ] = strtoupper( preg_replace( '/\s/', '', $output['public'][ $key ] ) );
 
 		return $output;
 	}
