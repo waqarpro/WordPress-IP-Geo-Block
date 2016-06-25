@@ -17,7 +17,6 @@ class IP_Geo_Block {
 	 */
 	const VERSION = '2.2.6';
 	const GEOAPI_NAME = 'ip-geo-api';
-	const TEXT_DOMAIN = 'ip-geo-block';
 	const PLUGIN_SLUG = 'ip-geo-block';
 	const CACHE_KEY   = 'ip_geo_block_cache';
 	const CRON_NAME   = 'ip_geo_block_cron';

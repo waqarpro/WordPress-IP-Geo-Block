@@ -69,7 +69,7 @@ class IP_Geo_Block_Admin {
 	 *
 	 */
 	public function load_plugin_textdomain() {
-		load_plugin_textdomain( IP_Geo_Block::TEXT_DOMAIN, FALSE, dirname( IP_GEO_BLOCK_BASE ) . '/languages/' );
+		load_plugin_textdomain( IP_Geo_Block::PLUGIN_SLUG, FALSE, dirname( IP_GEO_BLOCK_BASE ) . '/languages/' );
 	}
 
 	/**
@@ -708,13 +708,13 @@ class IP_Geo_Block_Admin {
 		// sanitize and format ip address
 		$key = array( '/[^\d\n\.\/,]/', '/([\s,])+/', '/(?:^,|,$)/' );
 		$val = array( '',               '$1',         ''            );
-		$output['extra_ips']['white_list'] = preg_replace( $key, $val, $output['extra_ips']['white_list'] );
-		$output['extra_ips']['black_list'] = preg_replace( $key, $val, $output['extra_ips']['black_list'] );
+		$output['extra_ips']['white_list'] = preg_replace( $key, $val, trim( $output['extra_ips']['white_list'] ) );
+		$output['extra_ips']['black_list'] = preg_replace( $key, $val, trim( $output['extra_ips']['black_list'] ) );
 
 		// format signature, ua_list (text area)
 		array_shift( $key );
 		array_shift( $val );
-		$output['signature'] = preg_replace( $key, $val, $output['signature'] );
+		$output['signature'] = preg_replace( $key, $val, trim( $output['signature'] ) );
 
 		// reject invalid signature which potentially blocks itself
 		$key = array();
