@@ -386,28 +386,29 @@ function my_geolocation() {
 
 
 /**
- * Example 18: Usage of 'ip-geo-block-record-log'
+ * Example 18: Usage of 'ip-geo-block-record-logs'
  * Use case: Prevent recording logs when it requested from own country
  *
- * @param  int   $record   0:none 1:blocked 2:passed 3:unauth 4:auth 5:all
- * @param  array $request
- *  'ip'       => string   ip address
- *  'auth'     => int      authenticated or not
- *  'code'     => string   country code
- *  'time'     => unsinged processing time
- *  'provider' => string   IP geolocation service provider
- *  'result'   => string   'passed' or the reason of blocking
- * @return int   $record or 0
+ * @param  int    $record   0:none 1:blocked 2:passed 3:unauth 4:auth 5:all
+ * @param  string $hook     'comment', 'xmlrpc', 'login' or 'admin'
+ * @param  array  $validate the result of validation which contains:
+ *  'ip'       => string    ip address
+ *  'auth'     => int       authenticated (>= 1) or not (0)
+ *  'code'     => string    country code
+ *  'time'     => unsinged  processing time for examining the country code
+ *  'provider' => string    IP geolocation service provider
+ *  'result'   => string    'passed' or the reason of blocking
+ * @return int    $record   modified condition
  */
-function my_record_log( $record, $request ) {
-	/* if request is from my country and passed then no record */
-	if ( 'JP' === $request['code'] && 'passed' === $request['result'] )
+function my_record_logs( $record, $hook, $validate ) {
+	/* if request is from my country and passed, then no record */
+	if ( 'JP' === $validate['code'] && 'passed' === $validate['result'] )
 		$record = 0;
 
 	return $record;
 }
 
-add_filter( 'ip-geo-block-record-log', 'my_record_log', 10, 2 );
+add_filter( 'ip-geo-block-record-logs', 'my_record_logs', 10, 3 );
 
 endif; /* class_exists( 'IP_Geo_Block' ) */
 
