@@ -395,7 +395,7 @@ Yes, here is the list of all hooks to extend the feature of this plugin.
 * `ip-geo-block-maxmind-zip-ipv6` : url to Maxmind GeoLite DB zip file for IPv6.
 * `ip-geo-block-ip2location-dir`  : full path where IP2Location LITE DB files should be saved.
 * `ip-geo-block-ip2location-path` : full path to IP2Location LITE DB file (IPv4).
-* `ip-geo-block-record-log`       : change condition of recording log
+* `ip-geo-block-record-logs`      : change the condition of recording logs
 
 For more details, see 
 [the documents](http://www.ipgeoblock.com/codex/ "Codex | IP Geo Block").
