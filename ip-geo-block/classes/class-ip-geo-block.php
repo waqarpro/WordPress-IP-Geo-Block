@@ -58,8 +58,9 @@ class IP_Geo_Block {
 			add_action( 'init', array( __CLASS__, 'activate' ), $priority );
 
 		// normalize requested uri
-		$this->pagenow = ! empty( $GLOBALS['pagenow'] ) ? $GLOBALS['pagenow'] : 'index.php';
 		$this->request_uri = strtolower( preg_replace( array( '!\.+/!', '!//+!' ), '/', $_SERVER['REQUEST_URI'] ) );
+		if ( substr( $this->pagenow = basename( parse_url( $this->request_uri, PHP_URL_PATH ) ), -4 ) !== '.php' )
+			$this->pagenow = ! empty( $GLOBALS['pagenow'] ) ? $GLOBALS['pagenow'] : 'index.php';
 
 		// setup the content folders
 		self::$wp_path = array( 'home' => untrailingslashit( parse_url( site_url(), PHP_URL_PATH ) ) ); // @since 2.6.0
