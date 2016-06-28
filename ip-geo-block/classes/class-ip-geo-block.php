@@ -60,7 +60,7 @@ class IP_Geo_Block {
 		// Garbage collection for IP address cache
 		add_action( IP_Geo_Block::CACHE_KEY, array( $this, 'exec_cache_gc' ) );
 
-		// normalize requested uri
+		// normalize requested uri and page
 		$this->request_uri = strtolower( preg_replace( array( '!\.+/!', '!//+!' ), '/', $_SERVER['REQUEST_URI'] ) );
 		if ( substr( $this->pagenow = basename( parse_url( $this->request_uri, PHP_URL_PATH ) ), -4 ) !== '.php' )
 			$this->pagenow = ! empty( $GLOBALS['pagenow'] ) ? $GLOBALS['pagenow'] : 'index.php';
@@ -322,6 +322,10 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function send_response( $hook, $code ) {
+		// prevent caching (WP Super Cache, W3TC, Wordfence, Comet Cache)
+		if ( ! defined( 'DONOTCACHEPAGE' ) )
+			define( 'DONOTCACHEPAGE', TRUE );
+
 		$code = (int   )apply_filters( self::PLUGIN_SLUG . '-'.$hook.'-status', (int)$code );
 		$mesg = (string)apply_filters( self::PLUGIN_SLUG . '-'.$hook.'-reason', get_status_header_desc( $code ) );
 
@@ -763,20 +767,19 @@ class IP_Geo_Block {
 				list( $name, $code ) = explode( ':', $bot, 2 );
 
 				if ( $name && FALSE !== strpos( $ua, $name ) ) {
-					if ( 'DNS' === $code ) {
-						static $DNS = -1;
-						if ( -1 === $DNS ) {
+					if ( 'DNS' === $code ) { // is_robots(), is_feed()
+						if ( empty( $validate['host'] ) ) {
 							include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php' );
-							$DNS = $validate['ip'] !== IP_Geo_Block_Util::gethostbyaddr( $validate['ip'] );
+							$validate['host'] = IP_Geo_Block_Util::gethostbyaddr( $validate['ip'] );
 						}
-						if ( $DNS ) {
-							$validate['result'] = 'passed'; // can overwrite existing result
+						if ( $validate['host'] !== $validate['ip'] ) {
+							$validate['result'] = 'passed'; // overwrite existing result
 							break;
 						}
 					}
 
 					elseif ( $co === $code ) {
-						$validate['result'] = 'passed'; // can overwrite existing result
+						$validate['result'] = 'passed'; // overwrite existing result
 						break;
 					}
 

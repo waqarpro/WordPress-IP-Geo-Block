@@ -1,7 +1,7 @@
 === IP Geo Block ===
 Contributors: tokkonopapa
 Donate link:
-Tags: buddypress, bbPress, comment, pingback, trackback, spam, IP address, geolocation, xmlrpc, login, wp-admin, admin, ajax, security, brute force, firewall, vulnerability
+Tags: buddypress, bbPress, comment, pingback, trackback, spam, IP address, geo, geolocation, xmlrpc, login, wp-admin, admin, ajax, security, brute force, firewall, vulnerability
 Requires at least: 3.7
 Tested up to: 4.5.2
 Stable tag: 2.2.6

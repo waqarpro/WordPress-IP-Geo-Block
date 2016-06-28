@@ -489,90 +489,6 @@ class IP_Geo_Block_API_IPInfoDB extends IP_Geo_Block_API {
  * Input type  : IP address (IPv4, IPv6)
  * Output type : array
  */
-define( 'IP_GEO_BLOCK_CACHE_USE_TRANSIENT', FALSE );
-
-if ( IP_GEO_BLOCK_CACHE_USE_TRANSIENT ) :
-
-class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
-
-	public static function update_cache( $hook, $validate, $settings ) {
-		$time = $_SERVER['REQUEST_TIME']; // time();
-		$num = ! empty( $settings['cache_hold'] ) ? $settings['cache_hold'] : 10;
-		$exp = ! empty( $settings['cache_time'] ) ? $settings['cache_time'] : HOUR_IN_SECONDS;
-
-		// unset expired elements
-		if ( FALSE !== ( $cache = get_transient( IP_Geo_Block::CACHE_KEY ) ) ) {
-			foreach ( $cache as $key => $val ) {
-				if ( $time - $val['time'] > $exp )
-					unset( $cache[ $key ] );
-			}
-		}
-
-		// $validate['fail'] is set in auth_fail()
-		if ( isset( $cache[ $ip = $validate['ip'] ] ) ) {
-			$fail = $cache[ $ip ]['fail'] + (int)isset( $validate['fail'] );
-			$call = $cache[ $ip ]['call'] + (int)empty( $validate['fail'] );
-		} else { // if new cache then reset these values
-			$call = 1;
-			$fail = 0;
-		}
-
-		// update elements
-		$cache[ $ip ] = array(
-			'time' => $time,
-			'hook' => $hook,
-			'code' => $validate['code'],
-			'auth' => $validate['auth'], // get_current_user_id() > 0
-			'fail' => $validate['auth'] ? 0 : $fail,
-			'call' => $settings['save_statistics'] ? $call : 0,
-			'host' => isset( $validate['host'] ) ? $validate['host'] : NULL,
-		);
-
-		// sort by 'time'
-		foreach ( $cache as $key => $val )
-			$hash[ $key ] = $val['time'];
-		array_multisort( $hash, SORT_DESC, $cache );
-
-		// keep the maximum number of entries, except for hidden elements
-		$time = 0;
-		foreach ( $cache as $key => $val ) {
-			if ( ! $val['auth'] && ++$time > $num ) {
-				--$time;
-				unset( $cache[ $key ] );
-			}
-		}
-
-		set_transient( IP_Geo_Block::CACHE_KEY, $cache, $exp ); // @since 2.8
-		return $cache[ $ip ];
-	}
-
-	public static function clear_cache() {
-		delete_transient( IP_Geo_Block::CACHE_KEY ); // @since 2.8
-	}
-
-	public static function get_cache_all() {
-		return get_transient( IP_Geo_Block::CACHE_KEY );
-	}
-
-	public static function get_cache( $ip ) {
-		$cache = get_transient( IP_Geo_Block::CACHE_KEY );
-		return $cache && isset( $cache[ $ip ] ) ? $cache[ $ip ] : NULL;
-	}
-
-	public function get_location( $ip, $args = array() ) {
-		if ( $cache = self::get_cache( $ip ) )
-			return array( 'countryCode' => $cache['code'] );
-		else
-			return array( 'errorMessage' => 'not in the cache' );
-	}
-
-	public function get_country( $ip, $args = array() ) {
-		return ( $cache = self::get_cache( $ip ) ) ? $cache['code'] : NULL;
-	}
-}
-
-else: /* IP_GEO_BLOCK_CACHE_USE_TRANSIENT */
-
 class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 
 	public function __construct( $api_key = NULL ) {
@@ -634,8 +550,6 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 		return ( $cache = self::get_cache( $ip ) ) ? $cache['code'] : NULL;
 	}
 }
-
-endif; /* IP_GEO_BLOCK_CACHE_USE_TRANSIENT */
 
 /**
  * Class for Cache by cookie

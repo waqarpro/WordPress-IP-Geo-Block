@@ -160,16 +160,6 @@ class IP_Geo_Block_Logs {
 	}
 
 	/**
-	 * Clear IP address cache.
-	 *
-	 */
-	public static function clear_cache() {
-		global $wpdb;
-		$table = $wpdb->prefix . IP_Geo_Block::CACHE_KEY;
-		$wpdb->query( "TRUNCATE TABLE `$table`" ) or self::error( __LINE__ );
-	}
-
-	/**
 	 * Restore statistics data.
 	 *
 	 */
@@ -571,6 +561,16 @@ class IP_Geo_Block_Logs {
 			// Record statistics.
 			self::record_stat( $statistics );
 		}
+	}
+
+	/**
+	 * Clear IP address cache.
+	 *
+	 */
+	public static function clear_cache() {
+		global $wpdb;
+		$table = $wpdb->prefix . IP_Geo_Block::CACHE_KEY;
+		$wpdb->query( "TRUNCATE TABLE `$table`" ) or self::error( __LINE__ );
 	}
 
 	/**

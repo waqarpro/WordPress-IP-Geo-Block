@@ -7,6 +7,8 @@ angular.module('validate-wp', []);
 angular.module('validate-wp').service('WPValidateSvc', ['$http', function ($http) {
 	'use strict';
 
+	var proxy = '182.22.72.251'; // yahoo.co.jp
+
 	/**
 	 * Validate if the page is WordPress
 	 *
@@ -14,7 +16,10 @@ angular.module('validate-wp').service('WPValidateSvc', ['$http', function ($http
 	this.validate_home = function (url) {
 		return $http({
 			method: 'GET',
-			url: url
+			url: url,
+			headers: {
+				'X-Forwarded-For': proxy
+			}
 		})
 
 		.then(
@@ -39,7 +44,10 @@ angular.module('validate-wp').service('WPValidateSvc', ['$http', function ($http
 	this.validate_page = function (url) {
 		return $http({
 			method: 'GET',
-			url: url
+			url: url,
+			headers: {
+				'X-Forwarded-For': proxy
+			}
 		})
 
 		// data       – {string|Object} The response body.
@@ -88,7 +96,10 @@ angular.module('validate-wp').service('WPValidateSvc', ['$http', function ($http
 	this.get_forum = function (url) {
 		return $http({
 			method: 'GET',
-			url: url
+			url: url,
+			headers: {
+				'X-Forwarded-For': proxy
+			}
 		})
 		.then(
 			function (res) {
