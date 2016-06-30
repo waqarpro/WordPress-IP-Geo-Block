@@ -7,8 +7,6 @@ angular.module('validate-wp', []);
 angular.module('validate-wp').service('WPValidateSvc', ['$http', function ($http) {
 	'use strict';
 
-	var proxy = '182.22.72.251'; // yahoo.co.jp
-
 	/**
 	 * Validate if the page is WordPress
 	 *
@@ -18,7 +16,7 @@ angular.module('validate-wp').service('WPValidateSvc', ['$http', function ($http
 			method: 'GET',
 			url: url,
 			headers: {
-				'X-Forwarded-For': proxy
+				'X-UA-Compatible': 'WordPress Post Simulator'
 			}
 		})
 
@@ -46,7 +44,7 @@ angular.module('validate-wp').service('WPValidateSvc', ['$http', function ($http
 			method: 'GET',
 			url: url,
 			headers: {
-				'X-Forwarded-For': proxy
+				'X-UA-Compatible': 'WordPress Post Simulator'
 			}
 		})
 
@@ -98,7 +96,7 @@ angular.module('validate-wp').service('WPValidateSvc', ['$http', function ($http
 			method: 'GET',
 			url: url,
 			headers: {
-				'X-Forwarded-For': proxy
+				'X-UA-Compatible': 'WordPress Post Simulator'
 			}
 		})
 		.then(

@@ -61,8 +61,9 @@ class IP_Geo_Block {
 		add_action( IP_Geo_Block::CACHE_KEY, array( $this, 'exec_cache_gc' ) );
 
 		// normalize requested uri and page
-		$this->request_uri = strtolower( preg_replace( array( '!\.+/!', '!//+!' ), '/', $_SERVER['REQUEST_URI'] ) );
-		if ( substr( $this->pagenow = basename( parse_url( $this->request_uri, PHP_URL_PATH ) ), -4 ) !== '.php' )
+		$this->request_uri = strtolower( parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH ) );
+		$this->request_uri = preg_replace( array( '!\.+/!', '!//+!' ), '/', $this->request_uri );
+		if ( substr( $this->pagenow = basename( $this->request_uri ), -4 ) !== '.php' )
 			$this->pagenow = ! empty( $GLOBALS['pagenow'] ) ? $GLOBALS['pagenow'] : 'index.php';
 
 		// setup the content folders
@@ -113,7 +114,10 @@ class IP_Geo_Block {
 		// analize core validation target (comment|xmlrpc|login|public)
 		elseif ( isset( $key[ $this->pagenow ] ) ) {
 			if ( $validate[ $key[ $this->pagenow ] ] )
-				add_action( 'init', array( $this, 'validate_' . $key[ $this->pagenow ] ), $priority );
+				add_action(
+					defined( 'IP_GEO_BLOCK_MU_PLUGINS' ) ? 'muplugins_loaded' : 'init',
+					array( $this, 'validate_' . $key[ $this->pagenow ] ), $priority
+				);
 		}
 
 		else {
@@ -745,29 +749,59 @@ class IP_Geo_Block {
 
 	/**
 	 * Validate at public facing pages.
-	 *
+	 * @see https://codex.wordpress.org/WordPress_Feeds
 	 */
+	private function is_feed() {
+		static $is_feed = NULL;
+
+		if ( NULL === $is_feed ) {
+			if ( isset( $_GET['feed'] ) )
+				$is_feed = preg_match( '!(?:comments-)?(?:feed|rss|rss2|rdf|atom)$!', $_GET['feed'] ) ? TRUE : FALSE;
+			else
+				$is_feed = preg_match( '!(?:comments/)?(?:feed|rss|rss2|rdf|atom)/?$!', $this->request_uri ) ? TRUE : FALSE;
+		}
+
+		return $is_feed;
+	}
+
 	public function validate_public() {
 		// replace matching rule and while/black list
 		$settings = self::get_option( 'settings' );
-		$settings['matching_rule'] = $settings['public']['matching_rule'];
-		$settings['white_list'   ] = $settings['public']['white_list'   ];
-		$settings['black_list'   ] = $settings['public']['black_list'   ];
+		if ( -1 !== $settings['matching_rule'] ) {
+			$settings['matching_rule'] = $settings['public']['matching_rule'];
+			$settings['white_list'   ] = $settings['public']['white_list'   ];
+			$settings['black_list'   ] = $settings['public']['black_list'   ];
+		}
 
 		add_filter( self::PLUGIN_SLUG . '-public', array( $this, 'check_bots' ), 10, 2 );
 		$this->validate_ip( 'public', $settings );
+
+		// find cache plugin and include the original advanced-cache.php
+		if ( defined( 'IP_GEO_BLOCK_ADVANCED_CACHE' ) ) {
+			if ( @is_dir( $dir = untrailingslashit( dirname( IP_GEO_BLOCK_PATH ) . '/' . $settings['public']['advanced_cache'] ) ) ) {
+				@include( $dir . '/advanced-cache.php' ) or
+				@include( $dir . '/wp-content/advanced-cache.php' );
+			}
+		}
 	}
 
 	public function check_bots( $validate, $settings ) {
 		if ( isset( $_SERVER['HTTP_USER_AGENT'] ) ) {
 			$ua = $_SERVER['HTTP_USER_AGENT'];
-			$co = $validate['code'];
+			$country = $validate['code'];
 
 			foreach ( $this->multiexplode( array( ",", "\n" ), $settings['public']['ua_list'] ) as $bot ) {
 				list( $name, $code ) = explode( ':', $bot, 2 );
 
-				if ( $name && FALSE !== strpos( $ua, $name ) ) {
-					if ( 'DNS' === $code ) { // is_robots(), is_feed()
+				if ( $name && ( FALSE !== strpos( $ua, $name ) || '*' === $name ) ) {
+					if ( 'FEED' === $code ) {
+						if ( $this->is_feed() ) {
+							$validate['result'] = 'passed'; // overwrite existing result
+							break;
+						}
+					}
+
+					elseif ( 'DNS' === $code ) {
 						if ( empty( $validate['host'] ) ) {
 							include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php' );
 							$validate['host'] = IP_Geo_Block_Util::gethostbyaddr( $validate['ip'] );
@@ -778,7 +812,7 @@ class IP_Geo_Block {
 						}
 					}
 
-					elseif ( $co === $code ) {
+					elseif ( $country === $code ) {
 						$validate['result'] = 'passed'; // overwrite existing result
 						break;
 					}

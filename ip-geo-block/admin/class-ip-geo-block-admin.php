@@ -510,7 +510,7 @@ class IP_Geo_Block_Admin {
 		  case 'select-text':
 			echo "\n<select id=\"${id}${sub_id}\" name=\"${name}${sub_name}\">\n";
 			foreach ( $args['list'] as $key => $val ) {
-				echo "\t<option value=\"$key\"", ( $key < 0 ? ' selected disabled' : selected( $args['value'], $key, FALSE ) );
+				echo "\t<option value=\"$key\"", ( NULL === $val ? ' selected disabled' : selected( $args['value'], $key, FALSE ) );
 				if ( isset( $args['desc'][ $key ] ) )
 					echo " data-desc=\"", $args['desc'][ $key ], "\"";
 				echo ">$val</option>\n";
@@ -687,7 +687,7 @@ class IP_Geo_Block_Admin {
 						else {
 							$output[ $key ][ $sub ] = ( is_int( $default[ $key ][ $sub ] ) ?
 								(int)$input[ $key ][ $sub ] :
-								wp_kses( preg_replace( '/[^\w\s\.\/,:!]/', '', $input[ $key ][ $sub ] ), array() )
+								wp_kses( preg_replace( '/[^-,:!*+\.\/\w\s]/', '', $input[ $key ][ $sub ] ), array() )
 							);
 						}
 					}

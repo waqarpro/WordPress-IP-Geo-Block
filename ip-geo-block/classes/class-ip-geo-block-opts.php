@@ -115,10 +115,11 @@ class IP_Geo_Block_Opts {
 			),
 			// since version 3.0.0
 			'public'          => array(
-			    'matching_rule' => 0,       // -1:neither, 0:white list, 1:black list
-			    'white_list'    => NULL,    // Comma separeted country code
-			    'black_list'    => 'ZZ',    // Comma separeted country code
-			    'ua_list' => "Google:US,Yahoo!:US,bingbot:US\nFeedBurner:US,Feedspot:US\nAol:US,Pinterest:US",
+			    'matching_rule'  => 0,    // -1:neither, 0:white list, 1:black list
+			    'white_list'     => NULL, // Comma separeted country code
+			    'black_list'     => 'ZZ', // Comma separeted country code
+			    'ua_list'        => "bot:DNS,slurp:DNS,spider:DNS\n*:FEED,AOL:US,Pinterest:US",
+				'advanced_cache' => NULL, // name of the cache plugin which has advanced-cache.php
 			),
 		),
 	);

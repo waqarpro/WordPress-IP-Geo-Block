@@ -494,13 +494,13 @@ class IP_Geo_Block_Admin_Tab {
 		// Get all the themes
 		$exception = '';
 		$installed = wp_get_themes( NULL ); // @since 3.4.0
-		$activated = wp_get_theme(); // @since 3.4.0
-		$activated = $activated->get( 'Name' );
+		$avtive_theme = wp_get_theme(); // @since 3.4.0
+		$avtive_theme = $avtive_theme->get( 'Name' );
 
 		// List of installed themes
 		foreach ( $installed as $key => $val ) {
 			$key = esc_attr( $key );
-			$active = ( ( $val = $val->get( 'Name' ) ) === $activated );
+			$active = ( ( $val = $val->get( 'Name' ) ) === $avtive_theme );
 			$exception .= '<li><input type="checkbox" id="ip_geo_block_settings_exception_themes_' . $key
 				. '" name="ip_geo_block_settings[exception][themes][' . $key
 				. ']" value="1"' . checked( in_array( $key, $options['exception']['themes'] ), TRUE, FALSE )
@@ -599,6 +599,8 @@ class IP_Geo_Block_Admin_Tab {
 			)
 		);
 
+//		$rule[-1] = __( 'Same as Validation rule settings', 'ip-geo-block' );
+
 		// Matching rule
 		$field = 'public';
 		$key = 'matching_rule';
@@ -653,11 +655,41 @@ class IP_Geo_Block_Admin_Tab {
 			)
 		);
 
-		// Permitted pair of user agent : country code
+		// Cache plugin that has advanced-cache.php
+		$key = 'advanced_cache';
+		$dir = dirname( IP_GEO_BLOCK_PATH ) . '/';
+		$list = array( '.' => __( 'Disable', 'ip-geo-block' ) );
+
+		foreach ( $activated as $tmp => $val ) {
+			$val = dirname( $tmp );
+			if ( file_exists( $dir . $val . '/advanced-cache.php' ) ||
+			     file_exists( $dir . $val . '/wp-content/advanced-cache.php' ) ) {
+				$list[ $val ] = $val;
+				break;
+			}
+		}
+
+		add_settings_field(
+			$option_name.'_'.$field.'_'.$key,
+			__( 'Cache plugin', 'ip-geo-block' ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'select',
+				'option' => $option_name,
+				'field' => $field,
+				'sub-field' => $key,
+				'value' => $options[ $field ][ $key ],
+				'list' => $list,
+			)
+		);
+
+		// Permitted pair of user agent : qualification
 		$key = 'ua_list';
 		add_settings_field(
 			$option_name.'_'.$field.'_'.$key,
-			'<dfn title="' . __( 'Where the &#8221;condition&#8220; can be country code, IP address with CIDR or &#8221;DNS&#8220;', 'ip-geo-block' ) . '">' . __( 'Permitted user agent string : condition', 'ip-geo-block' ) . '</dfn>',
+			'<dfn title="' . __( 'Where the &#8221;condition&#8220; can be country code, IP address with CIDR or &#8221;DNS&#8220;', 'ip-geo-block' ) . '">' . __( 'Permitted user agent string and qualification', 'ip-geo-block' ) . '</dfn>',
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
