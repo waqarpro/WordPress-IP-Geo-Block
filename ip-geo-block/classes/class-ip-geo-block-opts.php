@@ -47,7 +47,7 @@ class IP_Geo_Block_Opts {
 			    'ajax'        => 0,       // Validate on ajax/post (1:country 2:ZEP)
 			    'xmlrpc'      => 1,       // Validate on xmlrpc (1:country 2:close)
 			    'proxy'       => NULL,    // $_SERVER variables for IPs
-			    'reclogs'     => 1,       // 1:blocked 2:passed 3:unauth 4:auth 5:all
+			    'reclogs'     => 3,       // 1:blocked 2:passed 3:unauth 4:auth 5:all
 			    'postkey'     => NULL,    // Keys in $_POST
 			    // since version 1.3.1
 			    'maxlogs'     => 100,     // Max number of rows of log
@@ -118,7 +118,7 @@ class IP_Geo_Block_Opts {
 			    'matching_rule'  => 0,    // -1:neither, 0:white list, 1:black list
 			    'white_list'     => NULL, // Comma separeted country code
 			    'black_list'     => 'ZZ', // Comma separeted country code
-			    'ua_list'        => "bot:DNS,slurp:DNS,spider:DNS\n*:FEED,AOL:US,Pinterest:US",
+			    'ua_list'        => "bot:DNS,slurp:DNS,spider:DNS,*:FEED\nAOL:US,Pinterest:US",
 				'advanced_cache' => NULL, // name of the cache plugin which has advanced-cache.php
 			),
 		),
