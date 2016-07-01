@@ -577,7 +577,7 @@ class IP_Geo_Block_Admin_Tab {
 		add_settings_section(
 			$section,
 			__( 'Frontend settings', 'ip-geo-block' ),
-			NULL,
+			array( __CLASS__, 'note_public' ),
 			$option_slug
 		);
 
@@ -599,7 +599,7 @@ class IP_Geo_Block_Admin_Tab {
 			)
 		);
 
-//		$rule[-1] = __( 'Same as Validation rule settings', 'ip-geo-block' );
+//		$rule[-1] = __( 'Follow &#8220;Validation rule settings&#8221;', 'ip-geo-block' );
 
 		// Matching rule
 		$field = 'public';
@@ -660,6 +660,9 @@ class IP_Geo_Block_Admin_Tab {
 		$dir = dirname( IP_GEO_BLOCK_PATH ) . '/';
 		$list = array( '.' => __( 'Disable', 'ip-geo-block' ) );
 
+		// exclude myself
+		unset( $activated[ IP_GEO_BLOCK_BASE ] );
+
 		foreach ( $activated as $tmp => $val ) {
 			$val = dirname( $tmp );
 			if ( file_exists( $dir . $val . '/advanced-cache.php' ) ||
@@ -671,7 +674,7 @@ class IP_Geo_Block_Admin_Tab {
 
 		add_settings_field(
 			$option_name.'_'.$field.'_'.$key,
-			__( 'Cache plugin', 'ip-geo-block' ),
+			__( 'Caching plugin', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -689,7 +692,7 @@ class IP_Geo_Block_Admin_Tab {
 		$key = 'ua_list';
 		add_settings_field(
 			$option_name.'_'.$field.'_'.$key,
-			'<dfn title="' . __( 'Where the &#8221;condition&#8220; can be country code, IP address with CIDR or &#8221;DNS&#8220;', 'ip-geo-block' ) . '">' . __( 'Permitted user agent string and qualification', 'ip-geo-block' ) . '</dfn>',
+			'<dfn title="' . __( 'Where the &#8220;qualification&#8221; can be country code, IP address with CIDR, &#8220;DNS&#8221; or &#8220;FEED&#8221;', 'ip-geo-block' ) . '">' . __( 'Permitted user agent string and qualification', 'ip-geo-block' ) . '</dfn>',
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -1104,8 +1107,16 @@ endif;
 	public static function note_services() {
 		echo
 			'<ul class="ip-geo-block-note">', "\n",
-				'<li>', __('While Maxmind and IP2Location will fetch the local database, others will pass an IP address to the APIs via HTTP.', 'ip-geo-block' ), '</li>', "\n",
-				'<li>', __('Please select the appropriate APIs to fit the privacy law in your country.', 'ip-geo-block' ), '</li>', "\n",
+				'<li>', __( 'While Maxmind and IP2Location will fetch the local database, others will pass an IP address to the APIs via HTTP.', 'ip-geo-block' ), '</li>', "\n",
+				'<li>', __( 'Please select the appropriate APIs to fit the privacy law in your country.', 'ip-geo-block' ), '</li>', "\n",
+			'</ul>', "\n";
+	}
+
+	public static function note_public() {
+		echo
+			'<ul class="ip-geo-block-note">', "\n",
+				'<li>', __( '', 'ip-geo-block' ), '</li>', "\n",
+				'<li>', __( '', 'ip-geo-block' ), '</li>', "\n",
 			'</ul>', "\n";
 	}
 

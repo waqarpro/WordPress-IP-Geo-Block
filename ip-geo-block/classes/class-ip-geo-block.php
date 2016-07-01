@@ -94,7 +94,7 @@ class IP_Geo_Block {
 		}
 
 		// WordPress core files
-		$key = array(
+		$list = array(
 			'wp-comments-post.php' => 'comment',
 			'wp-trackback.php'     => 'comment',
 			'xmlrpc.php'           => 'xmlrpc',
@@ -112,11 +112,11 @@ class IP_Geo_Block {
 		}
 
 		// analize core validation target (comment|xmlrpc|login|public)
-		elseif ( isset( $key[ $this->pagenow ] ) ) {
-			if ( $validate[ $key[ $this->pagenow ] ] )
+		elseif ( isset( $list[ $this->pagenow ] ) ) {
+			if ( $validate[ $list[ $this->pagenow ] ] )
 				add_action(
 					defined( 'IP_GEO_BLOCK_MU_PLUGINS' ) ? 'muplugins_loaded' : 'init',
-					array( $this, 'validate_' . $key[ $this->pagenow ] ), $priority
+					array( $this, 'validate_' . $list[ $this->pagenow ] ), $priority
 				);
 		}
 

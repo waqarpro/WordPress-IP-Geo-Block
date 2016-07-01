@@ -118,7 +118,7 @@ class IP_Geo_Block_Opts {
 			    'matching_rule'  => 0,    // -1:neither, 0:white list, 1:black list
 			    'white_list'     => NULL, // Comma separeted country code
 			    'black_list'     => 'ZZ', // Comma separeted country code
-			    'ua_list'        => "bot:DNS,slurp:DNS,spider:DNS,*:FEED\nAOL:US,Pinterest:US",
+			    'ua_list'        => "bot:DNS,slurp:DNS,spider:DNS,crawler:DNS\n*:FEED,AOL:US,Pinterest:US",
 				'advanced_cache' => NULL, // name of the cache plugin which has advanced-cache.php
 			),
 		),
