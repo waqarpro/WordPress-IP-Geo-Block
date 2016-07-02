@@ -778,10 +778,9 @@ class IP_Geo_Block {
 
 		// find cache plugin and include the original advanced-cache.php
 		if ( defined( 'IP_GEO_BLOCK_ADVANCED_CACHE' ) ) {
-			if ( @is_dir( $dir = untrailingslashit( dirname( IP_GEO_BLOCK_PATH ) . '/' . $settings['public']['advanced_cache'] ) ) ) {
-				@include( $dir . '/advanced-cache.php' ) or
+			$dir = untrailingslashit( dirname( IP_GEO_BLOCK_PATH ) . '/' . $settings['public']['advanced_cache'] );
+			if ( FALSE === @include( $dir . '/advanced-cache.php' ) )
 				@include( $dir . '/wp-content/advanced-cache.php' );
-			}
 		}
 	}
 
