@@ -267,4 +267,14 @@ class IP_Geo_Block_Util {
 		return isset( $host ) ? $host : $ip;
 	}
 
+	/**
+	 * https://codex.wordpress.org/WordPress_Feeds
+	 *
+	 */
+	public static function is_feed() {
+		return isset( $_GET['feed'] ) ?
+			( preg_match( '!(?:comments-)?(?:feed|rss|rss2|rdf|atom)$!', $_GET['feed'] ) ? TRUE : FALSE ) :
+			( preg_match( '!(?:comments/)?(?:feed|rss|rss2|rdf|atom)/?$!', $this->request_uri ) ? TRUE : FALSE );
+	}
+
 }

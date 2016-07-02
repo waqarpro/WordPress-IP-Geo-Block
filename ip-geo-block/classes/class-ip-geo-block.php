@@ -749,21 +749,8 @@ class IP_Geo_Block {
 
 	/**
 	 * Validate at public facing pages.
-	 * @see https://codex.wordpress.org/WordPress_Feeds
+	 *
 	 */
-	private function is_feed() {
-		static $is_feed = NULL;
-
-		if ( NULL === $is_feed ) {
-			if ( isset( $_GET['feed'] ) )
-				$is_feed = preg_match( '!(?:comments-)?(?:feed|rss|rss2|rdf|atom)$!', $_GET['feed'] ) ? TRUE : FALSE;
-			else
-				$is_feed = preg_match( '!(?:comments/)?(?:feed|rss|rss2|rdf|atom)/?$!', $this->request_uri ) ? TRUE : FALSE;
-		}
-
-		return $is_feed;
-	}
-
 	public function validate_public() {
 		// replace matching rule and while/black list
 		$settings = self::get_option( 'settings' );
@@ -778,26 +765,28 @@ class IP_Geo_Block {
 	}
 
 	public function check_bots( $validate, $settings ) {
+		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php' );
+
 		if ( isset( $_SERVER['HTTP_USER_AGENT'] ) ) {
-			$ua = $_SERVER['HTTP_USER_AGENT'];
+			$agent = $_SERVER['HTTP_USER_AGENT'];
 			$country = $validate['code'];
+			$is_feed = IP_Geo_Block_Util::is_feed();
 
 			foreach ( $this->multiexplode( array( ",", "\n" ), $settings['public']['ua_list'] ) as $bot ) {
 				list( $name, $code ) = explode( ':', $bot, 2 );
 
-				if ( $name && ( FALSE !== strpos( $ua, $name ) || '*' === $name ) ) {
+				if ( $name && ( FALSE !== strpos( $agent, $name ) || '*' === $name ) ) {
 					if ( 'FEED' === $code ) {
-						if ( $this->is_feed() ) {
+						if ( $is_feed ) {
 							$validate['result'] = 'passed'; // overwrite existing result
 							break;
 						}
 					}
 
 					elseif ( 'DNS' === $code ) {
-						if ( empty( $validate['host'] ) ) {
-							include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php' );
+						if ( empty( $validate['host'] ) )
 							$validate['host'] = IP_Geo_Block_Util::gethostbyaddr( $validate['ip'] );
-						}
+
 						if ( $validate['host'] !== $validate['ip'] ) {
 							$validate['result'] = 'passed'; // overwrite existing result
 							break;
