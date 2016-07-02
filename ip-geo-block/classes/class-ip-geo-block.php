@@ -775,13 +775,6 @@ class IP_Geo_Block {
 
 		add_filter( self::PLUGIN_SLUG . '-public', array( $this, 'check_bots' ), 10, 2 );
 		$this->validate_ip( 'public', $settings );
-
-		// find cache plugin and include the original advanced-cache.php
-		if ( defined( 'IP_GEO_BLOCK_ADVANCED_CACHE' ) ) {
-			$dir = untrailingslashit( dirname( IP_GEO_BLOCK_PATH ) . '/' . $settings['public']['advanced_cache'] );
-			if ( FALSE === @include( $dir . '/advanced-cache.php' ) )
-				@include( $dir . '/wp-content/advanced-cache.php' );
-		}
 	}
 
 	public function check_bots( $validate, $settings ) {

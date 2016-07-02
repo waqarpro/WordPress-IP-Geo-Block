@@ -383,6 +383,9 @@ class IP_Geo_Block_Admin {
 	echo '<a href="?page=', IP_Geo_Block::PLUGIN_SLUG, '&amp;tab=', $key, '" class="nav-tab', ($tab === $key ? ' nav-tab-active' : ''), '">', $val, '</a>';
 } ?>
 	</h2>
+<?php if ( 0 <= $tab && $tab <= 1 ) { ?>
+	<p style="text-align:left">[ <a id="ip-geo-block-toggle-sections" href="javascript:void(0)"><?php _e( 'Toggle all', 'ip-geo-block' ); ?></a> ]</p>
+<?php } ?>
 	<form method="post" action="options.php"<?php if ( 0 !== $tab ) echo " id=\"", IP_Geo_Block::PLUGIN_SLUG, "-inhibit\""; ?>>
 <?php
 		settings_fields( $option_slug );
@@ -410,7 +413,7 @@ class IP_Geo_Block_Admin {
 <?php if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ) {
 	echo '<p>', get_num_queries(), ' queries. ', timer_stop(0), ' seconds. ', memory_get_usage(), " bytes.</p>\n";
 } ?>
-	<p style="text-align:right">[ <a href="#"><?php _e( 'Back to top', 'ip-geo-block' ); ?></a> ]</p>
+	<p style="text-align:right">[ <a id="ip-geo-block-back-to-top" href="#"><?php _e( 'Back to top', 'ip-geo-block' ); ?></a> ]</p>
 </div>
 <?php
 	}

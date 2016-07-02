@@ -655,39 +655,6 @@ class IP_Geo_Block_Admin_Tab {
 			)
 		);
 
-		// Cache plugin that has advanced-cache.php
-		$key = 'advanced_cache';
-		$dir = dirname( IP_GEO_BLOCK_PATH ) . '/';
-		$list = array( '.' => __( 'Disable', 'ip-geo-block' ) );
-
-		// exclude myself
-		unset( $activated[ IP_GEO_BLOCK_BASE ] );
-
-		foreach ( $activated as $tmp => $val ) {
-			$val = dirname( $tmp );
-			if ( file_exists( $dir . $val . '/advanced-cache.php' ) ||
-			     file_exists( $dir . $val . '/wp-content/advanced-cache.php' ) ) {
-				$list[ $val ] = $val;
-				break;
-			}
-		}
-
-		add_settings_field(
-			$option_name.'_'.$field.'_'.$key,
-			__( 'Caching plugin', 'ip-geo-block' ),
-			array( $context, 'callback_field' ),
-			$option_slug,
-			$section,
-			array(
-				'type' => 'select',
-				'option' => $option_name,
-				'field' => $field,
-				'sub-field' => $key,
-				'value' => $options[ $field ][ $key ],
-				'list' => $list,
-			)
-		);
-
 		// Permitted pair of user agent : qualification
 		$key = 'ua_list';
 		add_settings_field(

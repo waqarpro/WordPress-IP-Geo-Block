@@ -328,24 +328,51 @@ var ip_geo_block_time = new Date();
 		});
 
 		// Click event handler to show/hide form-table
+		var toggle_section = function (title) {
+			var index = title.closest('fieldset').data('ip-geo-block');
+
+			// Show/Hide
+			title.parent().nextAll().toggle();
+			title.toggleClass(ID('dropup')).toggleClass(ID('dropdown'));
+
+			// Save cookie
+			if ('undefined' !== typeof wpCookies) {
+				cookie[index + (tabNo ? maxTabs : 0)] = title.hasClass(ID('dropdown')) ? 'o' : '';
+				wpCookies.setHash(ID('admin'), cookie, new Date(Date.now() + 2592000000));
+			}
+
+			// redraw google chart
+			if ($(ID('#', 'chart-countries')).length) {
+				chart.drawChart();
+			}
+		}
+
 		if (tabNo <= 1) {
 			$('form').on('click', 'h2,h3', function (event) {
-				var title = $(this),
-				    index = title.closest('fieldset').data('ip-geo-block');
+				toggle_section($(this));
+				return false;
+			});
 
-				// Show/Hide
-				title.parent().nextAll().toggle();
-				title.toggleClass(ID('dropup')).toggleClass(ID('dropdown'));
+			// Toggle all
+			$(ID('#', 'toggle-sections')).on('click', function (event) {
+				var $this, n = 0,
+				    id = [ID('dropdown'), ID('dropup')],
+				    title = $(ID('.', 'field')).find('h2,h3');
 
-				// Save cookie
+				title.each(function (i) {
+					n += $(this).hasClass(id[0]);
+				});
+
+				title.each(function (i) {
+					$this = $(this);
+					$this.parent().nextAll().toggle(n ? false : true);
+					$this.removeClass(id.join(' '))
+					     .addClass(n ? id[1] : id[0]);
+					cookie[i + (tabNo ? maxTabs : 0)] = n ? '' : 'o';
+				});
+
 				if ('undefined' !== typeof wpCookies) {
-					cookie[index + (tabNo ? maxTabs : 0)] = title.hasClass(ID('dropdown')) ? 'o' : '';
 					wpCookies.setHash(ID('admin'), cookie, new Date(Date.now() + 2592000000));
-				}
-
-				// redraw google chart
-				if ($(ID('#', 'chart-countries')).length) {
-					chart.drawChart();
 				}
 
 				return false;

@@ -7,6 +7,7 @@ class IP_Geo_Block_Admin_Ajax {
 	 */
 	static public function search_ip( $which ) {
 		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
+		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php' );
 
 		// check format
 		if ( filter_var( $ip = $_POST['ip'], FILTER_VALIDATE_IP ) ) {
@@ -24,6 +25,9 @@ class IP_Geo_Block_Admin_Ajax {
 		else {
 			$res = array( 'errorMessage' => 'Invalid IP address.' );
 		}
+
+		if ( empty( $res['errorMessage'] ) )
+			$res['host'] = IP_Geo_Block_Util::gethostbyaddr( $ip );
 
 		return $res;
 	}
