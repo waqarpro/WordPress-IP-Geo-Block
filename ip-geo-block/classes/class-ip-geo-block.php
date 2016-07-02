@@ -770,7 +770,7 @@ class IP_Geo_Block {
 		if ( isset( $_SERVER['HTTP_USER_AGENT'] ) ) {
 			$agent = $_SERVER['HTTP_USER_AGENT'];
 			$country = $validate['code'];
-			$is_feed = IP_Geo_Block_Util::is_feed();
+			$is_feed = IP_Geo_Block_Util::is_feed( $this->request_uri );
 
 			foreach ( $this->multiexplode( array( ",", "\n" ), $settings['public']['ua_list'] ) as $bot ) {
 				list( $name, $code ) = explode( ':', $bot, 2 );
