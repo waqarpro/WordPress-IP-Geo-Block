@@ -659,7 +659,7 @@ class IP_Geo_Block_Admin_Tab {
 		$key = 'ua_list';
 		add_settings_field(
 			$option_name.'_'.$field.'_'.$key,
-			'<dfn title="' . __( 'Where the &#8220;qualification&#8221; can be country code, IP address with CIDR, &#8220;DNS&#8221; or &#8220;FEED&#8221;', 'ip-geo-block' ) . '">' . __( 'Permitted user agent string and qualification', 'ip-geo-block' ) . '</dfn>',
+			'<dfn title="' . __( 'Where the &#8220;qualification&#8221; can be country code, IP address with CIDR, &#8220;DNS&#8221; or &#8220;FEED&#8221;.', 'ip-geo-block' ) . '">' . __( 'Permitted user agent string and qualification', 'ip-geo-block' ) . '</dfn>',
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -1082,8 +1082,7 @@ endif;
 	public static function note_public() {
 		echo
 			'<ul class="ip-geo-block-note">', "\n",
-				'<li>', __( '', 'ip-geo-block' ), '</li>', "\n",
-				'<li>', __( '', 'ip-geo-block' ), '</li>', "\n",
+				'<li>', __( 'Configure your caching plugin to use PHP and late initialization not to serve inconsistent pages.', 'ip-geo-block' ), '</li>', "\n",
 			'</ul>', "\n";
 	}
 

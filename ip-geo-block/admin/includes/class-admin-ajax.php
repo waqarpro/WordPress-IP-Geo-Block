@@ -264,6 +264,7 @@ class IP_Geo_Block_Admin_Ajax {
 			'[public][white_list]',      // 3.0.0
 			'[public][black_list]',      // 3.0.0
 			'[public][ua_list]',         // 3.0.0
+			'[public][advanced_cache]',  // 3.0.0
 			'[providers][Maxmind]',
 			'[providers][IP2Location]',
 			'[providers][freegeoip.net]',
