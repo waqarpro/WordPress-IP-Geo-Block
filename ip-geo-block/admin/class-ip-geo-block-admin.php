@@ -115,7 +115,9 @@ class IP_Geo_Block_Admin {
 
 		// css for option page
 		wp_enqueue_style( IP_Geo_Block::PLUGIN_SLUG . '-admin-styles',
-			plugins_url( 'css/admin.min.css', __FILE__ ),
+			plugins_url( ! defined( 'IP_GEO_BLOCK_DEBUG' ) || ! IP_GEO_BLOCK_DEBUG ?
+				'css/admin.min.css' : 'css/admin.css', __FILE__
+			),
 			array(), IP_Geo_Block::VERSION
 		);
 

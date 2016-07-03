@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '2.2.6';
+	const VERSION = '3.0.0a';
 	const GEOAPI_NAME = 'ip-geo-api';
 	const PLUGIN_SLUG = 'ip-geo-block';
 	const CACHE_KEY   = 'ip_geo_block_cache';
@@ -51,14 +51,14 @@ class IP_Geo_Block {
 
 		// the action hook which will be fired by cron job
 		if ( $settings['update']['auto'] )
-			add_action( self::CRON_NAME, array( $this, 'update_database' ) );
+			$this->add_action( self::CRON_NAME, array( $this, 'update_database' ) );
 
 		// check the package version and upgrade if needed
 		if ( version_compare( $settings['version'], self::VERSION ) < 0 || $settings['matching_rule'] < 0 )
-			add_action( 'init', array( __CLASS__, 'activate' ), $priority );
+			$this->add_action( 'init', array( __CLASS__, 'activate' ), $priority );
 
 		// Garbage collection for IP address cache
-		add_action( IP_Geo_Block::CACHE_KEY, array( $this, 'exec_cache_gc' ) );
+		$this->add_action( IP_Geo_Block::CACHE_KEY, array( $this, 'exec_cache_gc' ) );
 
 		// normalize requested uri and page
 		$this->request_uri = strtolower( parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH ) );
@@ -106,46 +106,43 @@ class IP_Geo_Block {
 		// wp-admin, wp-includes, wp-content/(plugins|themes|language|uploads)
 		if ( $this->target_type ) {
 			if ( 'admin' !== $this->target_type )
-				add_action( 'init', array( $this, 'validate_direct' ), $priority );
+				$this->add_action( 'init', array( $this, 'validate_direct' ), $priority );
 			else // 'widget_init' for admin dashboard
-				add_action( 'wp_loaded', array( $this, 'validate_admin' ), $priority );
+				$this->add_action( 'wp_loaded', array( $this, 'validate_admin' ), $priority );
 		}
 
 		// analize core validation target (comment|xmlrpc|login|public)
 		elseif ( isset( $list[ $this->pagenow ] ) ) {
 			if ( $validate[ $list[ $this->pagenow ] ] )
-				add_action(
-					defined( 'IP_GEO_BLOCK_MU_PLUGINS' ) ? 'muplugins_loaded' : 'init',
-					array( $this, 'validate_' . $list[ $this->pagenow ] ), $priority
-				);
+				$this->add_action( 'init', array( $this, 'validate_' . $list[ $this->pagenow ] ), $priority );
 		}
 
 		else {
 			// message text on comment form
 			if ( $settings['comment']['pos'] ) {
 				$key = ( 1 === (int)$settings['comment']['pos'] ? '_top' : '' );
-				add_action( 'comment_form' . $key, array( $this, 'comment_form_message' ) );
+				$this->add_action( 'comment_form' . $key, array( $this, 'comment_form_message' ) );
 			}
 
 			if ( $validate['comment'] ) {
 				// bbPress: prevent creating topic/relpy and rendering form
-				add_action( 'bbp_post_request_bbp-new-topic', array( $this, 'validate_comment' ), $priority );
-				add_action( 'bbp_post_request_bbp-new-reply', array( $this, 'validate_comment' ), $priority );
-				add_filter( 'bbp_current_user_can_access_create_topic_form', array( $this, 'validate_front' ), $priority );
-				add_filter( 'bbp_current_user_can_access_create_reply_form', array( $this, 'validate_front' ), $priority );
+				$this->add_action( 'bbp_post_request_bbp-new-topic', array( $this, 'validate_comment' ), $priority );
+				$this->add_action( 'bbp_post_request_bbp-new-reply', array( $this, 'validate_comment' ), $priority );
+				$this->add_filter( 'bbp_current_user_can_access_create_topic_form', array( $this, 'validate_front' ), $priority );
+				$this->add_filter( 'bbp_current_user_can_access_create_reply_form', array( $this, 'validate_front' ), $priority );
 			}
 
 			if ( $validate['login'] ) {
 				// for hide/rename wp-login.php, BuddyPress: prevent registration and rendering form
-				add_action( 'login_init', array( $this, 'validate_login' ), $priority );
-				add_action( 'bp_core_screen_signup',  array( $this, 'validate_login' ), $priority );
-				add_action( 'bp_signup_pre_validate', array( $this, 'validate_login' ), $priority );
+				$this->add_action( 'login_init', array( $this, 'validate_login' ), $priority );
+				$this->add_action( 'bp_core_screen_signup',  array( $this, 'validate_login' ), $priority );
+				$this->add_action( 'bp_signup_pre_validate', array( $this, 'validate_login' ), $priority );
 			}
 		}
 
 		// force to change the redirect URL at logout to remove nonce, embed a nonce into pages
-		add_filter( 'wp_redirect', array( $this, 'logout_redirect' ), 20, 2 ); // logout_redirect @4.2
-		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_nonce' ), $priority );
+		$this->add_filter( 'wp_redirect', array( $this, 'logout_redirect' ), 20, 2 ); // logout_redirect @4.2
+		$this->add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_nonce' ), $priority );
 	}
 
 	/**
@@ -186,6 +183,32 @@ class IP_Geo_Block {
 	}
 
 	/**
+	 * Register and apply action hook and filter hook.
+	 *
+	 */
+	public function add_action( $tag, $callback, $priority = 10, $args = 1 ) {
+//		if ( function_exists( 'add_action' ) )
+			add_action(
+				defined( 'IP_GEO_BLOCK_MU_PLUGINS' ) && 'init' === $tag ? 'muplugins_loaded' : $tag,
+				$callback, $priority, $args
+			);
+	}
+
+	public function add_filter( $tag, $callback, $priority = 10, $args = 1 ) {
+//		if ( function_exists( 'add_filter' ) )
+			add_filter( $tag, $callback, $priority, $args );
+	}
+
+	public static function apply_filters() {
+//		if ( function_exists( 'apply_filters' ) ) {
+			$args = func_get_args();
+			$value = call_user_func_array( 'apply_filters', $args );
+//		}
+
+		return $value;
+	}
+
+	/**
 	 * Register and enqueue a nonce with a specific JavaScript.
 	 *
 	 */
@@ -220,7 +243,7 @@ class IP_Geo_Block {
 	 * @see http://codex.wordpress.org/Function_Reference/wp_remote_get
 	 */
 	public static function get_request_headers( $settings ) {
-		return apply_filters( self::PLUGIN_SLUG . '-headers', array(
+		return self::apply_filters( self::PLUGIN_SLUG . '-headers', array(
 			'timeout' => (int)$settings['timeout'],
 			'user-agent' => 'WordPress/' . $GLOBALS['wp_version'] . ', ' . self::PLUGIN_SLUG . ' ' . self::VERSION,
 		) );
@@ -231,7 +254,7 @@ class IP_Geo_Block {
 	 *
 	 */
 	public static function get_ip_address() {
-		return apply_filters( self::PLUGIN_SLUG . '-ip-addr', $_SERVER['REMOTE_ADDR'] );
+		return self::apply_filters( self::PLUGIN_SLUG . '-ip-addr', $_SERVER['REMOTE_ADDR'] );
 	}
 
 	/**
@@ -330,8 +353,8 @@ class IP_Geo_Block {
 		if ( ! defined( 'DONOTCACHEPAGE' ) )
 			define( 'DONOTCACHEPAGE', TRUE );
 
-		$code = (int   )apply_filters( self::PLUGIN_SLUG . '-'.$hook.'-status', (int)$code );
-		$mesg = (string)apply_filters( self::PLUGIN_SLUG . '-'.$hook.'-reason', get_status_header_desc( $code ) );
+		$code = (int   )self::apply_filters( self::PLUGIN_SLUG . '-'.$hook.'-status', (int)$code );
+		$mesg = (string)self::apply_filters( self::PLUGIN_SLUG . '-'.$hook.'-reason', get_status_header_desc( $code ) );
 
 		nocache_headers(); // nocache and response code
 
@@ -385,7 +408,7 @@ class IP_Geo_Block {
 			add_filter( $var, array( $this, 'check_auth' ), 9, 2 );
 			add_filter( $var, array( $this, 'check_fail' ), 8, 2 );
 		}
-		$settings['extra_ips'] = apply_filters( self::PLUGIN_SLUG . '-extra-ips', $settings['extra_ips'], $hook );
+		$settings['extra_ips'] = self::apply_filters( self::PLUGIN_SLUG . '-extra-ips', $settings['extra_ips'], $hook );
 		$settings['extra_ips']['white_list'] and add_filter( $var, array( $this, 'check_ips_white' ), 7, 2 );
 		$settings['extra_ips']['black_list'] and add_filter( $var, array( $this, 'check_ips_black' ), 7, 2 );
 
@@ -394,7 +417,7 @@ class IP_Geo_Block {
 		$providers = IP_Geo_Block_Provider::get_valid_providers( $settings['providers'] );
 
 		// apply custom filter for validation
-		// @usage add_filter( "ip-geo-block-$hook", 'my_validation' );
+		// @usage add_filter( 'ip-geo-block-$hook', 'my_validation' );
 		// @param $validate = array(
 		//     'ip'       => $ip,       /* validated ip address                */
 		//     'auth'     => $auth,     /* authenticated or not                */
@@ -403,7 +426,7 @@ class IP_Geo_Block {
 		// );
 		foreach ( $ips as $this->remote_addr ) {
 			$validate = self::_get_geolocation( $this->remote_addr, $settings, $providers );
-			$validate = apply_filters( $var, $validate, $settings );
+			$validate = self::apply_filters( $var, $validate, $settings );
 
 			// if no 'result' then validate ip address by country
 			if ( empty( $validate['result'] ) )
@@ -421,7 +444,7 @@ class IP_Geo_Block {
 			include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 
 			// record log (0:no, 1:blocked, 2:passed, 3:unauth, 4:auth, 5:all)
-			$var = (int)apply_filters( self::PLUGIN_SLUG . '-record-logs', $settings['validation']['reclogs'], $hook, $validate );
+			$var = (int)self::apply_filters( self::PLUGIN_SLUG . '-record-logs', $settings['validation']['reclogs'], $hook, $validate );
 			$result = ( 'passed' !== $validate['result'] );
 			if ( ( 1 === $var &&   $result ) || // blocked
 			     ( 2 === $var && ! $result ) || // passed
@@ -537,7 +560,7 @@ class IP_Geo_Block {
 			$this->trace_nonce();
 
 			// list of request with a specific query to bypass WP-ZEP
-			$list = apply_filters( self::PLUGIN_SLUG . '-bypass-admins', array(
+			$list = self::apply_filters( self::PLUGIN_SLUG . '-bypass-admins', array(
 				'wp-compression-test', // wp-admin/includes/template.php
 				'upload-attachment', 'imgedit-preview', 'bp_avatar_upload', // pluploader won't fire an event in "Media Library"
 				'jetpack', 'authorize', 'jetpack_modules', 'atd_settings', 'bulk-activate', 'bulk-deactivate', // jetpack page & action
@@ -573,7 +596,7 @@ class IP_Geo_Block {
 		$request = empty( $module[2] ) ? $module[1] : $module[2];
 
 		// set validation type (0: Bypass, 1: Block by country, 2: WP-ZEP)
-		$list = apply_filters( self::PLUGIN_SLUG . "-bypass-{$type}", $settings['exception'][ $type ] );
+		$list = self::apply_filters( self::PLUGIN_SLUG . "-bypass-{$type}", $settings['exception'][ $type ] );
 		$type = in_array( $request, $list, TRUE ) ? 0 : $settings['validation'][ $type ];
 
 		// register validation of nonce (2: WP-ZEP)
@@ -752,9 +775,9 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function validate_public() {
-		// replace matching rule and while/black list
 		$settings = self::get_option( 'settings' );
-		if ( -1 !== $settings['matching_rule'] ) {
+
+		if ( -1 !== $settings['matching_rule'] ) { // replace "Validation rule settings"
 			$settings['matching_rule'] = $settings['public']['matching_rule'];
 			$settings['white_list'   ] = $settings['public']['white_list'   ];
 			$settings['black_list'   ] = $settings['public']['black_list'   ];
@@ -807,7 +830,7 @@ class IP_Geo_Block {
 			}
 		}
 
-		return apply_filters( self::PLUGIN_SLUG . '-bypass-public', $validate, $settings );
+		return self::apply_filters( self::PLUGIN_SLUG . '-bypass-public', $validate, $settings );
 	}
 
 	/**
