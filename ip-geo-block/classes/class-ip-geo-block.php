@@ -63,8 +63,7 @@ class IP_Geo_Block {
 		// normalize requested uri and page
 		$this->request_uri = strtolower( parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH ) );
 		$this->request_uri = preg_replace( array( '!\.+/!', '!//+!' ), '/', $this->request_uri );
-		if ( substr( $this->pagenow = basename( $this->request_uri ), -4 ) !== '.php' )
-			$this->pagenow = ! empty( $GLOBALS['pagenow'] ) ? $GLOBALS['pagenow'] : 'index.php';
+		$this->pagenow = ! empty( $GLOBALS['pagenow'] ) ? $GLOBALS['pagenow'] : basename( $_SERVER['SCRIPT_NAME'] );
 
 		// setup the content folders
 		self::$wp_path = array( 'home' => untrailingslashit( parse_url( site_url(), PHP_URL_PATH ) ) ); // @since 2.6.0
@@ -74,6 +73,8 @@ class IP_Geo_Block {
 			'plugins'   => 'plugins_url',        // @since 2.6.0
 			'themes'    => 'get_theme_root_uri', // @since 1.5.0
 			'includes'  => 'includes_url',       // @since 2.6.0
+			'uploads'   => array( $this, 'uploads_url' ),   // @since 2.2.0
+			'languages' => array( $this, 'languages_url' ), // @since 2.6.0
 		);
 
 		// analize the validation target (admin|plugins|themes|includes)
@@ -81,16 +82,6 @@ class IP_Geo_Block {
 			self::$wp_path[ $key ] = trailingslashit( substr( parse_url( call_user_func( $val ), PHP_URL_PATH ), $len ) );
 			if ( ! $this->target_type && FALSE !== strpos( $this->request_uri, self::$wp_path[ $key ] ) )
 				$this->target_type = $key;
-		}
-
-		// analize additional validation target (uploads|languages)
-		if ( ! $this->target_type ) {
-			$key = wp_upload_dir(); // @since 2.2.0
-			if ( $this->target_type =
-				FALSE !== strpos( $this->request_uri, parse_url( $key['baseurl'], PHP_URL_PATH ) . '/'           ) ? 'uploads'   : (
-				FALSE !== strpos( $this->request_uri, str_replace( ABSPATH, '', WP_CONTENT_DIR ) . '/languages/' ) ? 'languages' : NULL ) ) {
-				self::$wp_path[ $this->target_type ] = $this->request_uri;
-			}
 		}
 
 		// WordPress core files
@@ -197,6 +188,19 @@ class IP_Geo_Block {
 			wp_enqueue_script( $handle, $script, array( 'jquery' ), self::VERSION );
 			wp_localize_script( $handle, 'IP_GEO_BLOCK_AUTH', $nonce );
 		}
+	}
+
+	/**
+	 * Get WordPress folders.
+	 *
+	 */
+	public function uploads_url() {
+		$dir = wp_upload_dir(); // @since 2.2.0
+		return $dir['baseurl'];
+	}
+
+	public function languages_url() {
+		return content_url() . '/languages';
 	}
 
 	/**
