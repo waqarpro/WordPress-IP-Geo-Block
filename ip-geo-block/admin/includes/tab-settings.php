@@ -494,13 +494,13 @@ class IP_Geo_Block_Admin_Tab {
 		// Get all the themes
 		$exception = '';
 		$installed = wp_get_themes( NULL ); // @since 3.4.0
-		$avtive_theme = wp_get_theme(); // @since 3.4.0
-		$avtive_theme = $avtive_theme->get( 'Name' );
+		$activated = wp_get_theme(); // @since 3.4.0
+		$activated = $activated->get( 'Name' );
 
 		// List of installed themes
 		foreach ( $installed as $key => $val ) {
 			$key = esc_attr( $key );
-			$active = ( ( $val = $val->get( 'Name' ) ) === $avtive_theme );
+			$active = ( ( $val = $val->get( 'Name' ) ) === $activated );
 			$exception .= '<li><input type="checkbox" id="ip_geo_block_settings_exception_themes_' . $key
 				. '" name="ip_geo_block_settings[exception][themes][' . $key
 				. ']" value="1"' . checked( in_array( $key, $options['exception']['themes'] ), TRUE, FALSE )

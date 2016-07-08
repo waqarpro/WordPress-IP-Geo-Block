@@ -878,7 +878,7 @@ class IP_Geo_Block_Admin {
 			// Delete logs in MySQL DB
 			include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 
-			$hook = array( 'comment', 'login', 'admin', 'xmlrpc' );
+			$hook = array( 'comment', 'login', 'admin', 'xmlrpc', 'public' );
 			$which = in_array( $which, $hook ) ? $which : NULL;
 			IP_Geo_Block_Logs::clear_logs( $which );
 			$res = array(

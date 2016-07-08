@@ -284,6 +284,7 @@ class IP_Geo_Block_Admin_Ajax {
 			'[cache_time]',
 			'[comment][pos]',
 			'[comment][msg]',
+			'[network_wide]',            // 3.0.0
 			'[clean_uninstall]',
 		);
 		$json = array();

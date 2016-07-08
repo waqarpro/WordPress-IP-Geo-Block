@@ -47,7 +47,7 @@ class IP_Geo_Block_Opts {
 			    'ajax'        => 0,       // Validate on ajax/post (1:country 2:ZEP)
 			    'xmlrpc'      => 1,       // Validate on xmlrpc (1:country 2:close)
 			    'proxy'       => NULL,    // $_SERVER variables for IPs
-			    'reclogs'     => 3,       // 1:blocked 2:passed 3:unauth 4:auth 5:all
+			    'reclogs'     => 1,       // 1:blocked 2:passed 3:unauth 4:auth 5:all
 			    'postkey'     => NULL,    // Keys in $_POST
 			    // since version 1.3.1
 			    'maxlogs'     => 100,     // Max number of rows of log
@@ -114,11 +114,12 @@ class IP_Geo_Block_Opts {
 			    'languages'   => array(), // for wp-content/language
 			),
 			// since version 3.0.0
+			'network_wide'    => 0,       // settings page on network dashboard
 			'public'          => array(
 			    'matching_rule'  => 0,    // -1:neither, 0:white list, 1:black list
 			    'white_list'     => NULL, // Comma separeted country code
 			    'black_list'     => 'ZZ', // Comma separeted country code
-			    'ua_list'        => "bot:DNS,slurp:DNS,spider:DNS,archive:DNS\n*:FEED,Twitterbot:US,Pinterest:US,AOL:US",
+			    'ua_list'        => "Google:DNS,bot:DNS,slurp:DNS,spider:DNS\narchive:DNS,*:FEED,Twitterbot:US\nPinterest:US,AOL:US",
 				'advanced_cache' => NULL, // name of the cache plugin which has advanced-cache.php
 			),
 		),
@@ -262,11 +263,15 @@ class IP_Geo_Block_Opts {
 	 *
 	 */
 	public static function install_api( $settings ) {
-		$src = IP_GEO_BLOCK_PATH . IP_Geo_Block::GEOAPI_NAME;
+		$src = IP_GEO_BLOCK_PATH . 'wp-content/' . IP_Geo_Block::GEOAPI_NAME;
 		$dst = self::get_api_dir( $settings );
 
-		if ( $src !== $dst )
-			self::recurse_copy( $src, $dst );
+		try {
+			if ( $src !== $dst )
+				self::recurse_copy( $src, $dst );
+		} catch ( Exception $e ) {
+			return NULL;
+		}
 
 		return $dst;
 	}

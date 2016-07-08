@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2016-07-03 16:25+0900\n"
-"PO-Revision-Date: 2016-07-03 20:19+0900\n"
+"POT-Creation-Date: 2016-07-08 23:19+0900\n"
+"PO-Revision-Date: 2016-07-08 23:28+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -778,10 +778,10 @@ msgstr "自国のプライバシー関連法規に合わせ、適切なAPIを選
 
 #: admin/includes/tab-settings.php:1085
 msgid ""
-"Configure your caching plugin to use PHP and late initialization not to "
-"serve inconsistent pages."
+"Please configure your caching plugin so as to use PHP and late "
+"initialization to prevent serving inconsistent pages."
 msgstr ""
-"適切なページを表示するため、キャッシュ・プラグインはPHPによる初期化遅延モード"
+"ページの一貫性を保つため、キャッシュ・プラグインはPHPによる初期化遅延モード"
 "（late initialization）を設定して下さい。"
 
 #: admin/includes/tab-statistics.php:28 admin/includes/tab-statistics.php:188
@@ -884,9 +884,9 @@ msgstr "データベース・ファイルは最新です。"
 msgid "Unable to read %s. Please check permission."
 msgstr "%sが読めません。パーミッションを確認して下さい。"
 
-#: ip-geo-api/ip2location/class-ip2location.php:143
-#: ip-geo-api/ip2location/class-ip2location.php:172
-#: ip-geo-api/maxmind/class-maxmind.php:143
-#: ip-geo-api/maxmind/class-maxmind.php:172
+#: wp-content/ip-geo-api/ip2location/class-ip2location.php:143
+#: wp-content/ip-geo-api/ip2location/class-ip2location.php:172
+#: wp-content/ip-geo-api/maxmind/class-maxmind.php:143
+#: wp-content/ip-geo-api/maxmind/class-maxmind.php:172
 msgid "Database file does not exist."
 msgstr "データベース・ファイルが見つかりません。"

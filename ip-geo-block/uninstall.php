@@ -29,7 +29,6 @@ class IP_Geo_Block_Uninstall {
 	 */
 	private static function delete_all_options( $settings ) {
 		delete_option( IP_Geo_Block::$option_keys['settings'] ); // @since 1.2.0
-		IP_Geo_Block_API_Cache::clear_cache();
 		IP_Geo_Block_Logs::delete_tables();
 		IP_Geo_Block_Opts::delete_api( $settings );
 	}
@@ -39,6 +38,11 @@ class IP_Geo_Block_Uninstall {
 	 *
 	 */
 	public static function uninstall() {
+		if ( ! current_user_can( 'activate_plugins' ) )
+			return;
+
+		check_admin_referer( 'bulk-plugins' );
+
 		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
 

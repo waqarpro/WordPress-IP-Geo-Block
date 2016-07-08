@@ -240,6 +240,7 @@ var ip_geo_block_time = new Date();
 				self.dataLine.addColumn('number', 'xmlrpc');
 				self.dataLine.addColumn('number', 'login');
 				self.dataLine.addColumn('number', 'admin');
+				self.dataLine.addColumn('number', 'public');
 				var i, j, k, m, n, cells, arr = [],
 				    tr = $(ID('#', 'targets tr'));
 				for (m = tr.length, i = 0; i < m; i++) {
