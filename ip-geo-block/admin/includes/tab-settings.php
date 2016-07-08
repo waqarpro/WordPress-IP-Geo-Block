@@ -1082,7 +1082,7 @@ endif;
 	public static function note_public() {
 		echo
 			'<ul class="ip-geo-block-note">', "\n",
-				'<li>', __( 'Configure your caching plugin to use PHP and late initialization not to serve inconsistent pages.', 'ip-geo-block' ), '</li>', "\n",
+				'<li>', __( 'Please configure your caching plugin so as to use PHP and late initialization to prevent serving inconsistent pages.', 'ip-geo-block' ), '</li>', "\n",
 			'</ul>', "\n";
 	}
 

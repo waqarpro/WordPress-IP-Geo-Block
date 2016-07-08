@@ -287,7 +287,7 @@ class IP_Geo_Block_Opts {
 
 		if ( ! @is_writable( $dir ) ) {
 			// wp-content/plugins/ip-geo-block
-			$dir = IP_GEO_BLOCK_PATH;
+			$dir = IP_GEO_BLOCK_PATH . 'wp-content';
 
 			if ( ! @is_writable( $dir ) ) {
 				// wp-content/uploads
