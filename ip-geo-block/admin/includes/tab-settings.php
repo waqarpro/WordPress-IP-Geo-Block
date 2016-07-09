@@ -871,7 +871,7 @@ class IP_Geo_Block_Admin_Tab {
 			$option_slug
 		);
 
-		// Number of entries
+		/* Number of entries
 		$field = 'cache_hold';
 		add_settings_field(
 			$option_name.'_'.$field,
@@ -885,13 +885,13 @@ class IP_Geo_Block_Admin_Tab {
 				'field' => $field,
 				'value' => $options[ $field ],
 			)
-		);
+		);*/
 
 		// Expiration time [sec]
 		$field = 'cache_time';
 		add_settings_field(
 			$option_name.'_'.$field,
-			sprintf( __( '<dfn title="If user authentication fails consecutively %d times, subsequent login will also be prohibited for this period.">Expiration time [sec]</dfn>', 'ip-geo-block' ), (int)$options['login_fails'] ),
+			sprintf( __( '<dfn title="If user authentication fails consecutively %d times, subsequent login will also be prohibited for this period including garbage collection.">Expiration time [sec]</dfn>', 'ip-geo-block' ), (int)$options['login_fails'] ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -916,6 +916,22 @@ class IP_Geo_Block_Admin_Tab {
 				'option' => $option_name,
 				'field' => $field,
 				'value' => $options[ $field ],
+			)
+		);
+
+		// Cashe by cookie
+		$field = 'cache_cookie';
+		add_settings_field(
+			$option_name.'_'.$field,
+			__( '<dfn title="It saves IP address and country code into the client cookie with nonce to reduce SQL queries.">Cache by cookie</dfn>', 'ip-geo-block' ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'checkbox',
+				'option' => $option_name,
+				'field' => $field,
+				'value' => ! empty( $options[ $field ] ) ? TRUE : FALSE,
 			)
 		);
 

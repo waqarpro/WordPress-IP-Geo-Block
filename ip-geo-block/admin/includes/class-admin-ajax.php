@@ -282,6 +282,8 @@ class IP_Geo_Block_Admin_Ajax {
 			'[anonymize]',
 			'[cache_hold]',
 			'[cache_time]',
+			'[cache_time_gc]',           // 3.0.0
+			'[cache_cookie]',            // 3.0.0
 			'[comment][pos]',
 			'[comment][msg]',
 			'[network_wide]',            // 3.0.0

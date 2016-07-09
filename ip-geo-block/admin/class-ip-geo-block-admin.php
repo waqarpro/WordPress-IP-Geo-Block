@@ -566,10 +566,11 @@ class IP_Geo_Block_Admin {
 		if ( empty( $input['version'] ) )
 			$input = $output;
 
-		// checkboxes not on the form
-		foreach ( array( 'anonymize' ) as $key )
+		// checkboxes not on the form (added after 2.0.0, just in case)
+		foreach ( array( 'anonymize', 'cache_cookie', 'network_wide' ) as $key )
 			$output[ $key ] = 0;
 
+		// checkboxes not on the form
 		foreach ( array( 'admin', 'ajax', 'plugins', 'themes', 'public' ) as $key )
 			$output['validation'][ $key ] = 0;
 

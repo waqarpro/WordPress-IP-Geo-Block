@@ -35,6 +35,7 @@ class IP_Geo_Block_Opts {
 		'cache_time'      => HOUR_IN_SECONDS, // @since 3.5
 		// since version 3.0.0
 		'cache_time_gc'   => 900,     // Cache garbage collection time
+		'cache_cookie'    => TRUE,    // Cache IP address and country code by cookie
 		// since version 1.2, 1.3
 		'login_fails'     => 5,       // Limited number of login attempts
 		'validation'      => array(   // Action hook for validation
@@ -111,7 +112,7 @@ class IP_Geo_Block_Opts {
 			'languages'   => array(), // for wp-content/language
 		),
 		// since version 3.0.0
-		'network_wide'    => 0,       // settings page on network dashboard
+		'network_wide'    => FALSE,   // settings page on network dashboard
 		'public'          => array(
 			'matching_rule'  => 0,    // -1:neither, 0:white list, 1:black list
 			'white_list'     => NULL, // Comma separeted country code
@@ -234,7 +235,9 @@ class IP_Geo_Block_Opts {
 
 			if ( version_compare( $version, '3.0' ) < 0 ) {
 				$settings['cache_time_gc']        = $default['cache_time_gc'];
+				$settings['cache_cookie']         = $default['cache_cookie'];
 				$settings['validation']['public'] = $default['validation']['public'];
+				$settings['network_wide']         = $default['network_wide'];
 				$settings['public']               = $default['public'];
 			}
 

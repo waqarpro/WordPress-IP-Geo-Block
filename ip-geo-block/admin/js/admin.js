@@ -327,6 +327,12 @@ var ip_geo_block_time = new Date();
 			}
 		});
 
+		var drawChart = function () {
+			if ($(ID('#', 'chart-countries')).length) {
+				chart.drawChart();
+			}
+		};
+
 		// Click event handler to show/hide form-table
 		var toggle_section = function (title) {
 			var index = title.closest('fieldset').data('ip-geo-block');
@@ -342,10 +348,8 @@ var ip_geo_block_time = new Date();
 			}
 
 			// redraw google chart
-			if ($(ID('#', 'chart-countries')).length) {
-				chart.drawChart();
-			}
-		}
+			drawChart();
+		};
 
 		if (tabNo <= 1) {
 			$('form').on('click', 'h2,h3', function (event) {
@@ -374,6 +378,9 @@ var ip_geo_block_time = new Date();
 				if ('undefined' !== typeof wpCookies) {
 					wpCookies.setHash(ID('admin'), cookie, new Date(Date.now() + 2592000000));
 				}
+
+				// redraw google chart
+				drawChart();
 
 				return false;
 			});
