@@ -6,10 +6,10 @@ include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
 class IP_Geo_Block_Admin_Tab {
 
 	public static function tab_setup( $context ) {
-		$plugin_slug = IP_Geo_Block::PLUGIN_SLUG;
-		$option_slug = $context->option_slug['statistics'];
-		$option_name = $context->option_name['statistics'];
-		$options = IP_Geo_Block::get_option( 'settings' );
+		$plugin_slug = IP_Geo_Block::PLUGIN_NAME;
+		$option_slug = IP_Geo_Block::PLUGIN_NAME;
+		$option_name = IP_Geo_Block::OPTION_NAME;
+		$options = IP_Geo_Block::get_option();
 		$statistics = IP_Geo_Block_Logs::restore_stat( TRUE );
 
 		register_setting(

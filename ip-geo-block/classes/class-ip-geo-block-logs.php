@@ -81,7 +81,7 @@ class IP_Geo_Block_Logs {
 		) and $wpdb->query( $sql );
 
 		// for IP address cache
-		$table = $wpdb->prefix . IP_Geo_Block::CACHE_KEY;
+		$table = $wpdb->prefix . IP_Geo_Block::CACHE_NAME;
 		$result &= ( FALSE !== $wpdb->query( "CREATE TABLE IF NOT EXISTS `$table` (
 			`No` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 			`time` int(10) unsigned NOT NULL DEFAULT 0,
@@ -106,7 +106,7 @@ class IP_Geo_Block_Logs {
 	 */
 	public static function delete_tables() {
 		global $wpdb;
-		$tables = array( self::TABLE_LOGS, self::TABLE_STAT, IP_Geo_Block::CACHE_KEY );
+		$tables = array( self::TABLE_LOGS, self::TABLE_STAT, IP_Geo_Block::CACHE_NAME );
 
 		foreach ( $tables as $table ) {
 			$table = $wpdb->prefix . $table;
@@ -120,7 +120,7 @@ class IP_Geo_Block_Logs {
 	 */
 	public static function diag_tables() {
 		global $wpdb;
-		$tables = array( self::TABLE_LOGS, self::TABLE_STAT, IP_Geo_Block::CACHE_KEY );
+		$tables = array( self::TABLE_LOGS, self::TABLE_STAT, IP_Geo_Block::CACHE_NAME );
 
 		foreach ( $tables as $table ) {
 			$table = $wpdb->prefix . $table;
@@ -414,7 +414,7 @@ class IP_Geo_Block_Logs {
 			return;
 
 		$path = trailingslashit( $path ) .
-			IP_Geo_Block::PLUGIN_SLUG . date('-Y-m') . '.log';
+			IP_Geo_Block::PLUGIN_NAME . date('-Y-m') . '.log';
 
 		if ( ( $fp = @fopen( $path, 'ab' ) ) === FALSE )
 			return;
@@ -498,7 +498,7 @@ class IP_Geo_Block_Logs {
 
 		// backup logs to text files
 		if ( $dir = apply_filters(
-			IP_Geo_Block::PLUGIN_SLUG . '-backup-dir',
+			IP_Geo_Block::PLUGIN_NAME . '-backup-dir',
 			$settings['validation']['backup'], $hook
 		) ) {
 			self::backup_logs(
@@ -537,22 +537,40 @@ class IP_Geo_Block_Logs {
 	public static function update_stat( $hook, $validate, $settings ) {
 		// Restore statistics.
 		if ( $statistics = self::restore_stat() ) {
-			if ( filter_var( $validate['ip'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) )
-				$statistics['IPv4']++;
-			elseif ( filter_var( $validate['ip'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) )
-				$statistics['IPv6']++;
-
-			@$statistics[ 'passed' !== $validate['result'] ? 'blocked' : 'passed' ]++;
-			@$statistics['countries'][ $validate['code'] ]++;
 
 			$provider = isset( $validate['provider'] ) ? $validate['provider'] : 'ZZ';
 			if ( empty( $statistics['providers'][ $provider ] ) )
 				$statistics['providers'][ $provider ] = array( 'count' => 0, 'time' => 0.0 );
 
 			$statistics['providers'][ $provider ]['count']++;
-			$statistics['providers'][ $provider ]['time'] += (float)@$validate['time'];
+			$statistics['providers'][ $provider ]['time'] += (float)$validate['time'];
 
-			@$statistics['daystats'][ mktime( 0, 0, 0 ) ][ $hook ]++;
+			$blocked = 'passed' !== $validate['result'] ? 'blocked' : 'passed';
+			if ( 'blocked' === $blocked ) {
+				// Blocked by type of IP address
+				if ( filter_var( $validate['ip'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) )
+					$statistics['IPv4']++;
+				elseif ( filter_var( $validate['ip'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) )
+					$statistics['IPv6']++;
+
+				// Blocked
+				if ( empty( $statistics['blocked'] ) )
+					$statistics['blocked'] = 0;
+				$statistics['blocked']++;
+
+				// Blocked by countries
+				$key = $validate['code'];
+				if ( empty( $statistics['countries'][ $key ] ) )
+					$statistics['countries'][ $key ] = 0;
+				$statistics['countries'][ $key ]++;
+
+				// Blocked per day
+				$key = mktime( 0, 0, 0 );
+				if ( empty( $statistics['daystats'][ $key ][ $hook ] ) )
+					$statistics['daystats'][ $key ][ $hook ] = 0;
+				$statistics['daystats'][ $key ][ $hook ]++;
+			}
+
 			if ( count( $statistics['daystats'] ) > 30 ) {
 				reset( $statistics['daystats'] );
 				unset( $statistics['daystats'][ key( $statistics['daystats'] ) ] );
@@ -569,7 +587,7 @@ class IP_Geo_Block_Logs {
 	 */
 	public static function clear_cache() {
 		global $wpdb;
-		$table = $wpdb->prefix . IP_Geo_Block::CACHE_KEY;
+		$table = $wpdb->prefix . IP_Geo_Block::CACHE_NAME;
 		$wpdb->query( "TRUNCATE TABLE `$table`" ) or self::error( __LINE__ );
 	}
 
@@ -579,7 +597,7 @@ class IP_Geo_Block_Logs {
 	 */
 	public static function search_cache( $ip ) {
 		global $wpdb;
-		$table = $wpdb->prefix . IP_Geo_Block::CACHE_KEY;
+		$table = $wpdb->prefix . IP_Geo_Block::CACHE_NAME;
 
 		$sql = $wpdb->prepare(
 			"SELECT * FROM `$table` WHERE `ip` = '%s'", $ip
@@ -594,7 +612,7 @@ class IP_Geo_Block_Logs {
 	 */
 	public static function restore_cache() {
 		global $wpdb;
-		$table = $wpdb->prefix . IP_Geo_Block::CACHE_KEY;
+		$table = $wpdb->prefix . IP_Geo_Block::CACHE_NAME;
 		$result = $wpdb->get_results( "SELECT * FROM `$table`", ARRAY_A ) or self::error( __LINE__ );
 
 		// transform DB to cache format
@@ -619,7 +637,7 @@ class IP_Geo_Block_Logs {
 	 */
 	public static function update_cache( $cache ) {
 		global $wpdb;
-		$table = $wpdb->prefix . IP_Geo_Block::CACHE_KEY;
+		$table = $wpdb->prefix . IP_Geo_Block::CACHE_NAME;
 
 		$sql = $wpdb->prepare(
 			"INSERT INTO `$table`
@@ -652,7 +670,7 @@ class IP_Geo_Block_Logs {
 	 */
 	public static function delete_expired_cache( $cache_time ) {
 		global $wpdb;
-		$table = $wpdb->prefix . IP_Geo_Block::CACHE_KEY;
+		$table = $wpdb->prefix . IP_Geo_Block::CACHE_NAME;
 
 		$sql = $wpdb->prepare(
 			"DELETE FROM `$table` WHERE `time` < %d",

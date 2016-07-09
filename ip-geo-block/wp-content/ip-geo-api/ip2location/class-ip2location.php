@@ -11,7 +11,7 @@ define( 'IP_GEO_BLOCK_IP2LOC_IPV4_ZIP', 'http://download.ip2location.com/lite/IP
 define( 'IP_GEO_BLOCK_IP2LOC_IPV6_ZIP', 'http://download.ip2location.com/lite/IP2LOCATION-LITE-DB1.IPV6.BIN.ZIP' );
 
 /**
- * Class for IP2Location (ver. 1.1.3)
+ * Class for IP2Location (ver. 1.1.4)
  *
  * URL         : http://www.ip2location.com/
  * Term of use : http://www.ip2location.com/terms
@@ -30,7 +30,7 @@ class IP_Geo_Block_API_IP2Location extends IP_Geo_Block_API {
 	);
 
 	public function get_location( $ip, $args = array() ) {
-		$settings = IP_Geo_Block::get_option( 'settings' );
+		$settings = IP_Geo_Block::get_option();
 
 		if ( ! extension_loaded('bcmath') )
 			require_once( 'bcmath.php' );
@@ -42,18 +42,20 @@ class IP_Geo_Block_API_IP2Location extends IP_Geo_Block_API {
 		if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ) {
 			$type = IP_GEO_BLOCK_API_TYPE_IPV4;
 			$file = apply_filters(
-				IP_Geo_Block::PLUGIN_SLUG . '-ip2location-path',
+				IP_Geo_Block::PLUGIN_NAME . '-ip2location-path',
 				empty( $settings['IP2Location']['ipv4_path'] ) ? 
 					$this->get_db_dir() . IP_GEO_BLOCK_IP2LOC_IPV4_DAT :
 					$settings['IP2Location']['ipv4_path']
 			);
 		}
+
 		elseif ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) ) {
 			$type = IP_GEO_BLOCK_API_TYPE_IPV6;
 			$file = empty( $settings['IP2Location']['ipv6_path'] ) ? 
 				$this->get_db_dir() . IP_GEO_BLOCK_IP2LOC_IPV6_DAT :
 				$settings['IP2Location']['ipv6_path'];
 		}
+
 		else {
 			return array( 'errorMessage' => 'illegal format' );
 		}
@@ -83,7 +85,7 @@ class IP_Geo_Block_API_IP2Location extends IP_Geo_Block_API {
 
 	private function get_db_dir() {
 		return trailingslashit( apply_filters(
-			IP_Geo_Block::PLUGIN_SLUG . '-ip2location-dir', dirname( __FILE__ )
+			IP_Geo_Block::PLUGIN_NAME . '-ip2location-dir', dirname( __FILE__ )
 		) );
 	}
 
@@ -95,7 +97,7 @@ class IP_Geo_Block_API_IP2Location extends IP_Geo_Block_API {
 
 		$res['ipv4'] = IP_Geo_Block_Util::download_zip(
 			apply_filters(
-				IP_Geo_Block::PLUGIN_SLUG . '-ip2location-zip-ipv4',
+				IP_Geo_Block::PLUGIN_NAME . '-ip2location-zip-ipv4',
 				IP_GEO_BLOCK_IP2LOC_IPV4_ZIP
 			),
 			$args,
@@ -108,7 +110,7 @@ class IP_Geo_Block_API_IP2Location extends IP_Geo_Block_API {
 
 		$res['ipv6'] = IP_Geo_Block_Util::download_zip(
 			apply_filters(
-				IP_Geo_Block::PLUGIN_SLUG . '-ip2location-zip-ipv6',
+				IP_Geo_Block::PLUGIN_NAME . '-ip2location-zip-ipv6',
 				IP_GEO_BLOCK_IP2LOC_IPV6_ZIP
 			),
 			$args,
@@ -132,7 +134,7 @@ class IP_Geo_Block_API_IP2Location extends IP_Geo_Block_API {
 		$dir = $this->get_db_dir();
 
 		$path = apply_filters(
-			IP_Geo_Block::PLUGIN_SLUG . '-ip2location-path',
+			IP_Geo_Block::PLUGIN_NAME . '-ip2location-path',
 			empty( $options['IP2Location']['ipv4_path'] ) ? 
 				$dir . IP_GEO_BLOCK_IP2LOC_IPV4_DAT :
 				$options['IP2Location']['ipv4_path']

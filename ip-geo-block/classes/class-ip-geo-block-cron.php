@@ -51,7 +51,7 @@ class IP_Geo_Block_Cron {
 		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php' );
 		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
 
-		$settings = IP_Geo_Block::get_option( 'settings' );
+		$settings = IP_Geo_Block::get_option();
 		$args = IP_Geo_Block::get_request_headers( $settings );
 
 		// download database files (higher priority order)
@@ -69,7 +69,7 @@ class IP_Geo_Block_Cron {
 
 		// update matching rule immediately
 		if ( $immediate && FALSE !== get_transient( IP_Geo_Block::CRON_NAME ) ) {
-			add_filter( IP_Geo_Block::PLUGIN_SLUG . '-ip-addr', array( __CLASS__, 'extract_ip' ) );
+			add_filter( IP_Geo_Block::PLUGIN_NAME . '-ip-addr', array( __CLASS__, 'extract_ip' ) );
 
 			$validate = IP_Geo_Block::get_geolocation( NULL, $providers );
 			$validate = IP_Geo_Block::validate_country( NULL, $validate, $settings );
@@ -104,8 +104,6 @@ class IP_Geo_Block_Cron {
 		if ( ! function_exists( 'is_plugin_active_for_network' ) )
 			include_once( ABSPATH . '/wp-admin/includes/plugin.php' );
 
-		$slug = IP_Geo_Block::$option_keys['settings'];
-
 		// for multisite
 		if ( is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) ) {
 
@@ -115,13 +113,13 @@ class IP_Geo_Block_Cron {
 
 			foreach ( $blog_ids as $id ) {
 				switch_to_blog( $id );
-				$dst = IP_Geo_Block::get_option( 'settings' );
+				$dst = IP_Geo_Block::get_option();
 
 				foreach ( $keys as $key ) {
 					$dst[ $key ] = $src[ $key ];
 				}
 
-				update_option( $slug, $dst );
+				update_option( IP_Geo_Block::OPTION_NAME, $dst );
 			}
 
 			switch_to_blog( $current_blog_id );
@@ -129,7 +127,7 @@ class IP_Geo_Block_Cron {
 
 		// for single site
 		else {
-			update_option( $slug, $src );
+			update_option( IP_Geo_Block::OPTION_NAME, $src );
 		}
 	}
 
@@ -149,7 +147,7 @@ class IP_Geo_Block_Cron {
 	 */
 	public static function start_update_db( $immediate = TRUE, $ip_adrs ) {
 		set_transient( IP_Geo_Block::CRON_NAME, $ip_adrs, 2 * MINUTE_IN_SECONDS );
-		$settings = IP_Geo_Block::get_option( 'settings' );
+		$settings = IP_Geo_Block::get_option();
 		self::schedule_cron_job( $settings['update'], NULL, $immediate );
 	}
 
@@ -164,21 +162,21 @@ class IP_Geo_Block_Cron {
 	public static function exec_cache_gc( $settings ) {
 		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 
-		wp_clear_scheduled_hook( IP_Geo_Block::CACHE_KEY );
+		wp_clear_scheduled_hook( IP_Geo_Block::CACHE_NAME );
 
 		IP_Geo_Block_Logs::delete_expired_cache( $settings['cache_time'] );
 
-		wp_schedule_single_event( time() + $settings['cache_time_gc'], IP_Geo_Block::CACHE_KEY );
+		wp_schedule_single_event( time() + $settings['cache_time_gc'], IP_Geo_Block::CACHE_NAME );
 	}
 
 	public static function start_cache_gc( $settings ) {
-		if ( ! wp_next_scheduled( IP_Geo_Block::CACHE_KEY ) ) {
-			wp_schedule_single_event( time() + $settings['cache_time_gc'], IP_Geo_Block::CACHE_KEY );
+		if ( ! wp_next_scheduled( IP_Geo_Block::CACHE_NAME ) ) {
+			wp_schedule_single_event( time() + $settings['cache_time_gc'], IP_Geo_Block::CACHE_NAME );
     	}
 	}
 
 	public static function stop_cache_gc() {
-		wp_clear_scheduled_hook( IP_Geo_Block::CACHE_KEY ); // @since 2.1.0
+		wp_clear_scheduled_hook( IP_Geo_Block::CACHE_NAME ); // @since 2.1.0
 	}
 
 }

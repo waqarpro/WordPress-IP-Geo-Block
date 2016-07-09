@@ -4,10 +4,9 @@ include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
 class IP_Geo_Block_Admin_Tab {
 
 	public static function tab_setup( $context ) {
-		$plugin_slug = IP_Geo_Block::PLUGIN_SLUG;
-		$option_slug = $context->option_slug['settings'];
-		$option_name = $context->option_name['settings'];
-		$options = IP_Geo_Block::get_option( 'settings' );
+		$option_slug = IP_Geo_Block::PLUGIN_NAME;
+		$option_name = IP_Geo_Block::OPTION_NAME;
+		$options = IP_Geo_Block::get_option();
 
 		register_setting(
 			$option_slug,
@@ -17,7 +16,7 @@ class IP_Geo_Block_Admin_Tab {
 		/*----------------------------------------*
 		 * Geolocation
 		 *----------------------------------------*/
-		$section = $plugin_slug . '-search';
+		$section = IP_Geo_Block::PLUGIN_NAME . '-search';
 		add_settings_section(
 			$section,
 			__( 'Search IP address geolocation', 'ip-geo-block' ),

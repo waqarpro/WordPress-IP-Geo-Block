@@ -14,7 +14,6 @@ var ip_geo_block_time = new Date();
 			'.': 'ip-geo-block-',
 			'#': 'ip-geo-block-',
 			'@': 'ip_geo_block_settings_',
-			'%': 'ip_geo_block_statistics_'
 		};
 		return id ? ('.' === selector ? '.' : '#') + keys[selector] + id : keys['#'] + selector;
 	}
@@ -606,7 +605,7 @@ var ip_geo_block_time = new Date();
 			}
 
 			// Statistics
-			$(ID('%', 'clear_statistics')).on('click', function (event) {
+			$(ID('@', 'clear_statistics')).on('click', function (event) {
 				confirm('Clear statistics ?', function () {
 					ajax_clear('statistics', null);
 				});
@@ -614,7 +613,7 @@ var ip_geo_block_time = new Date();
 			});
 
 			// Statistics
-			$(ID('%', 'clear_cache')).on('click', function (event) {
+			$(ID('@', 'clear_cache')).on('click', function (event) {
 				confirm('Clear cache ?', function () {
 					ajax_clear('cache', null);
 				});

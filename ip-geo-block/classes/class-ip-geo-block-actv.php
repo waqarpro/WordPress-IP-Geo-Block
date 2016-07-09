@@ -23,7 +23,7 @@ class IP_Geo_Block_Activate {
 			include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-cron.php' );
 			include_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php' );
 
-			$settings = IP_Geo_Block::get_option( 'settings' );
+			$settings = IP_Geo_Block::get_option();
 
 			// kick off a cron job to download database immediately
 			IP_Geo_Block_Cron::start_update_db( TRUE, IP_Geo_Block::get_ip_address() );

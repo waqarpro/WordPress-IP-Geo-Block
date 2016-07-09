@@ -574,7 +574,7 @@ class IP_Geo_Block_API_Cookie extends IP_Geo_Block_API {
 		unset( $cache['ip'] );
 
 		setcookie(
-			IP_Geo_Block::CACHE_KEY,
+			IP_Geo_Block::CACHE_NAME,
 			wp_create_nonce( $ip ) . ',' . implode( ',', array_values( $cache ) ),
 			$_SERVER['REQUEST_TIME'] + $settings['cache_time'],
 			trailingslashit( IP_Geo_Block::$wp_path['home'] ),
@@ -588,8 +588,8 @@ class IP_Geo_Block_API_Cookie extends IP_Geo_Block_API {
 		if ( ! function_exists( 'wp_verify_nonce' ) )
 			self::load_dependency();
 
-		if ( isset( $_COOKIE[ IP_Geo_Block::CACHE_KEY ] ) ) {
-			$cache = explode( ',', $_COOKIE[ IP_Geo_Block::CACHE_KEY ] );
+		if ( isset( $_COOKIE[ IP_Geo_Block::CACHE_NAME ] ) ) {
+			$cache = explode( ',', $_COOKIE[ IP_Geo_Block::CACHE_NAME ] );
 
 			// prevent to disguise country code
 			if ( isset( $cache[0] ) && wp_verify_nonce( $cache[0], $ip ) ) {
@@ -776,7 +776,7 @@ if ( class_exists( 'IP_Geo_Block' ) ) {
 	$dir = IP_Geo_Block::get_option( 'settings' );
 	$dir = trailingslashit(
 		apply_filters(
-			IP_Geo_Block::PLUGIN_SLUG . '-api-dir',
+			IP_Geo_Block::PLUGIN_NAME . '-api-dir',
 			dirname( $dir['api_dir'] )
 		)
 	) . IP_Geo_Block::GEOAPI_NAME;

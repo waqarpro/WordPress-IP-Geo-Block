@@ -9,10 +9,10 @@ if ( ! function_exists( 'get_plugins' ) ) {
 class IP_Geo_Block_Admin_Tab {
 
 	public static function tab_setup( $context ) {
-		$plugin_slug = IP_Geo_Block::PLUGIN_SLUG;         // 'ip-geo-block'
-		$option_slug = $context->option_slug['settings']; // 'ip-geo-block-settings'
-		$option_name = $context->option_name['settings']; // 'ip_geo_block_settings'
-		$options = IP_Geo_Block::get_option( 'settings' );
+		$plugin_slug = IP_Geo_Block::PLUGIN_NAME; // 'ip-geo-block'
+		$option_slug = IP_Geo_Block::PLUGIN_NAME; // 'ip-geo-block'
+		$option_name = IP_Geo_Block::OPTION_NAME; // 'ip_geo_block_settings'
+		$options = IP_Geo_Block::get_option();
 
 		// Get the country code
 		$key = IP_Geo_Block::get_geolocation();

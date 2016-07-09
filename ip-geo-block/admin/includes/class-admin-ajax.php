@@ -12,7 +12,7 @@ class IP_Geo_Block_Admin_Ajax {
 		// check format
 		if ( filter_var( $ip = $_POST['ip'], FILTER_VALIDATE_IP ) ) {
 			// get option settings and compose request headers
-			$options = IP_Geo_Block::get_option( 'settings' );
+			$options = IP_Geo_Block::get_option();
 			$args    = IP_Geo_Block::get_request_headers( $options );
 
 			// create object for provider and get location
@@ -41,7 +41,7 @@ class IP_Geo_Block_Admin_Ajax {
 
 		// scan all the country code using selected APIs
 		$ip        = IP_Geo_Block::get_ip_address();
-		$options   = IP_Geo_Block::get_option( 'settings' );
+		$options   = IP_Geo_Block::get_option();
 		$args      = IP_Geo_Block::get_request_headers( $options );
 		$type      = IP_Geo_Block_Provider::get_providers( 'type', FALSE, FALSE );
 		$providers = IP_Geo_Block_Provider::get_valid_providers( $options['providers'], FALSE, FALSE );
@@ -105,7 +105,7 @@ class IP_Geo_Block_Admin_Ajax {
 		// Send as file
 		header( 'Content-Description: File Transfer' );
 		header( 'Content-Type: application/octet-stream' );
-		header( 'Content-Disposition: attachment; filename="' . IP_Geo_Block::PLUGIN_SLUG . '_' . $date . '.csv"' );
+		header( 'Content-Disposition: attachment; filename="' . IP_Geo_Block::PLUGIN_NAME . '_' . $date . '.csv"' );
 		header( 'Pragma: public' );
 		header( 'Expires: 0' );
 		header( 'Cache-Control: no-store, no-cache, must-revalidate' );
@@ -167,7 +167,7 @@ class IP_Geo_Block_Admin_Ajax {
 
 		// Sanitize to fit the type of each field
 		$temp = self::json_to_settings( $data );
-		$temp = $parent->validate_options( 'settings', $temp );
+		$temp = $parent->validate_options( $temp );
 		$data = self::settings_to_json( $temp );
 		$json = self::json_unsafe_encode( $data );
 
@@ -178,7 +178,7 @@ class IP_Geo_Block_Admin_Ajax {
 		// Send json as file
 		header( 'Content-Description: File Transfer' );
 		header( 'Content-Type: application/octet-stream' );
-		header( 'Content-Disposition: attachment; filename="' . IP_Geo_Block::PLUGIN_SLUG . '-settings.json"' );
+		header( 'Content-Disposition: attachment; filename="' . IP_Geo_Block::PLUGIN_NAME . '-settings.json"' );
 		header( 'Pragma: public' );
 		header( 'Expires: 0' );
 		header( 'Cache-Control: no-store, no-cache, must-revalidate' );
