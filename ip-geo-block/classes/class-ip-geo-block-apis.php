@@ -485,7 +485,6 @@ class IP_Geo_Block_API_IPInfoDB extends IP_Geo_Block_API {
 /**
  * Class for Cache
  *
- * URL         : http://codex.wordpress.org/Transients_API
  * Input type  : IP address (IPv4, IPv6)
  * Output type : array
  */
@@ -776,8 +775,7 @@ if ( class_exists( 'IP_Geo_Block' ) ) {
 	$dir = IP_Geo_Block::get_option();
 	$dir = trailingslashit(
 		apply_filters(
-			IP_Geo_Block::PLUGIN_NAME . '-api-dir',
-			dirname( $dir['api_dir'] )
+			IP_Geo_Block::PLUGIN_NAME . '-api-dir', dirname( $dir['api_dir'] )
 		)
 	) . IP_Geo_Block::GEOAPI_NAME;
 
