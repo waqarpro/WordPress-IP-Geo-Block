@@ -519,7 +519,8 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 		) );
 
 		// also update cache by cookie
-		IP_Geo_Block_API_Cookie::update_cache( $cache, $settings );
+		if ( $settings['cache_cookie'] )
+			IP_Geo_Block_API_Cookie::update_cache( $cache, $settings );
 
 		return $cache;
 	}
@@ -554,7 +555,6 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 /**
  * Class for Cache by cookie
  *
- * URL         : http://codex.wordpress.org/Transients_API
  * Input type  : IP address (IPv4, IPv6)
  * Output type : array
  */
@@ -575,7 +575,7 @@ class IP_Geo_Block_API_Cookie extends IP_Geo_Block_API {
 
 		setcookie(
 			IP_Geo_Block::CACHE_NAME,
-			wp_create_nonce( $ip ) . ',' . implode( ',', array_values( $cache ) ),
+			str_rot13( wp_create_nonce( $ip ) . ',' . implode( ',', array_values( $cache ) ) ),
 			$_SERVER['REQUEST_TIME'] + $settings['cache_time'],
 			trailingslashit( IP_Geo_Block::$wp_path['home'] ),
 			'',
@@ -589,7 +589,7 @@ class IP_Geo_Block_API_Cookie extends IP_Geo_Block_API {
 			self::load_dependency();
 
 		if ( isset( $_COOKIE[ IP_Geo_Block::CACHE_NAME ] ) ) {
-			$cache = explode( ',', $_COOKIE[ IP_Geo_Block::CACHE_NAME ] );
+			$cache = explode( ',', str_rot13( $_COOKIE[ IP_Geo_Block::CACHE_NAME ] ) );
 
 			// prevent to disguise country code
 			if ( isset( $cache[0] ) && wp_verify_nonce( $cache[0], $ip ) ) {
@@ -628,13 +628,13 @@ class IP_Geo_Block_Provider {
 			'type' => 'IPv4, IPv6 / free',
 			'link' => '<a class="ip-geo-block-link" href="http://ipinfo.io/" title="ip address information including geolocation, hostname and network details" rel=noreferrer target=_blank>http://ipinfo.io/</a>&nbsp;(IPv4, IPv6 / free)',
 		),
-
+/*
 		'IP-Json' => array(
 			'key'  => NULL,
 			'type' => 'IPv4, IPv6 / free',
 			'link' => '<a class="ip-geo-block-link" href="http://ip-json.rhcloud.com/" title="Free IP Geolocation Web Service" rel=noreferrer target=_blank>http://ip-json.rhcloud.com/</a>&nbsp;(IPv4, IPv6 / free)',
 		),
-
+*/
 		'Nekudo' => array(
 			'key'  => NULL,
 			'type' => 'IPv4, IPv6 / free',
@@ -773,7 +773,7 @@ class IP_Geo_Block_Provider {
 if ( class_exists( 'IP_Geo_Block' ) ) {
 
 	// Get absolute path to the geo-location API
-	$dir = IP_Geo_Block::get_option( 'settings' );
+	$dir = IP_Geo_Block::get_option();
 	$dir = trailingslashit(
 		apply_filters(
 			IP_Geo_Block::PLUGIN_NAME . '-api-dir',
