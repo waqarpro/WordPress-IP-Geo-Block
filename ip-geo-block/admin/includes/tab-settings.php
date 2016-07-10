@@ -237,7 +237,7 @@ class IP_Geo_Block_Admin_Tab {
 		$field = 'response_code';
 		add_settings_field(
 			$option_name.'_'.$field,
-			sprintf( __( 'Response code %s', 'ip-geo-block' ), '(<a class="ip-geo-block-link" href="http://tools.ietf.org/html/rfc2616#section-10" title="RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1" target=_blank>RFC 2616</a>)' ),
+			sprintf( __( '<dfn title="You can put your original 403.php and so on into your theme directory.">Response code</dfn> %s', 'ip-geo-block' ), '(<a class="ip-geo-block-link" href="http://tools.ietf.org/html/rfc2616#section-10" title="RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1" target=_blank>RFC 2616</a>)' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -891,7 +891,7 @@ class IP_Geo_Block_Admin_Tab {
 		$field = 'cache_time';
 		add_settings_field(
 			$option_name.'_'.$field,
-			sprintf( __( '<dfn title="If user authentication fails consecutively %d times, subsequent login will also be prohibited for this period including garbage collection.">Expiration time [sec]</dfn>', 'ip-geo-block' ), (int)$options['login_fails'] ),
+			sprintf( __( '<dfn title="If user authentication fails consecutively %d times, subsequent login will also be prohibited for this and garbage collection period.">Expiration time [sec]</dfn>', 'ip-geo-block' ), (int)$options['login_fails'] ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -984,6 +984,22 @@ class IP_Geo_Block_Admin_Tab {
 			$option_slug
 		);
 
+		// Remove all settings at uninstallation
+		$field = 'clean_uninstall';
+		add_settings_field(
+			$option_name.'_'.$field,
+			__( 'Remove all settings at uninstallation', 'ip-geo-block' ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'checkbox',
+				'option' => $option_name,
+				'field' => $field,
+				'value' => $options[ $field ],
+			)
+		);
+
 		$desc = __( 'You need to click the &#8220;Save Changes&#8221; button for imported settings to take effect.', 'ip-geo-block' );
 
 		// Export / Import settings
@@ -1017,22 +1033,6 @@ class IP_Geo_Block_Admin_Tab {
 					'<a class="button button-secondary" id="ip-geo-block-default"   title="' . __( 'Import the default settings to revert to the &#8220;Right after installing&#8221; state', 'ip-geo-block' ) . '" href="javascript:void(0)">' . __( 'Default settings', 'ip-geo-block' ) . '</a>&nbsp;' .
 					'<a class="button button-secondary" id="ip-geo-block-preferred" title="' . __( 'Import the preferred settings mainly for the &#8220;Validation target settings&#8221;',   'ip-geo-block' ) . '" href="javascript:void(0)">' . __( 'Best practice',    'ip-geo-block' ) . '</a>',
 				'after' => '<div id="ip-geo-block-pre-defined"></div>',
-			)
-		);
-
-		// Remove all settings at uninstallation
-		$field = 'clean_uninstall';
-		add_settings_field(
-			$option_name.'_'.$field,
-			__( 'Remove all settings at uninstallation', 'ip-geo-block' ),
-			array( $context, 'callback_field' ),
-			$option_slug,
-			$section,
-			array(
-				'type' => 'checkbox',
-				'option' => $option_name,
-				'field' => $field,
-				'value' => $options[ $field ],
 			)
 		);
 

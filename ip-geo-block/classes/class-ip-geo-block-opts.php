@@ -304,7 +304,9 @@ class IP_Geo_Block_Opts {
 	private static function recurse_copy( $src, $dst ) {
 		$src = trailingslashit( $src );
 		$dst = trailingslashit( $dst );
+
 		! @is_dir( $dst ) and @mkdir( $dst );
+
 		if ( $dir = @opendir( $src ) ) {
 			while( FALSE !== ( $file = readdir( $dir ) ) ) {
 				if ( '.' !== $file && '..' !== $file ) {
@@ -314,6 +316,7 @@ class IP_Geo_Block_Opts {
 						@copy( $src.$file, $dst.$file );
 				}
 			}
+
 			closedir( $dir );
 		}
 	}
@@ -322,12 +325,14 @@ class IP_Geo_Block_Opts {
 	private static function recurse_rmdir( $dir ) {
 		$dir = trailingslashit( $dir );
 		$files = array_diff( @scandir( $dir ), array( '.', '..' ) );
+
 		foreach ( $files as $file ) {
 			if ( is_dir( $dir.$file ) )
 				self::recurse_rmdir( $dir.$file );
 			else
 				@unlink( $dir.$file );
 		}
+
 		return @rmdir( $dir );
 	} 
 }

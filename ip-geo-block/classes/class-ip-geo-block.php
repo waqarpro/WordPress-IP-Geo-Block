@@ -329,8 +329,8 @@ class IP_Geo_Block {
 			if ( function_exists( 'trackback_response' ) )
 				trackback_response( $code, $mesg ); // @since 0.71
 			elseif ( ! defined( 'DOING_AJAX' ) && ! defined( 'XMLRPC_REQUEST' ) ) {
-				FALSE !== ( @include( STYLESHEETPATH . '/'.$code.'.php' ) ) or // child  theme
-				FALSE !== ( @include( TEMPLATEPATH   . '/'.$code.'.php' ) ) or // parent theme
+				FALSE !== ( @include( get_stylesheet_directory() .'/'.$code.'.php' ) ) or // child  theme
+				FALSE !== ( @include( get_template_directory()   .'/'.$code.'.php' ) ) or // parent theme
 				wp_die( $mesg, '', array( 'response' => $code, 'back_link' => TRUE ) );
 			}
 			exit;
@@ -474,7 +474,7 @@ class IP_Geo_Block {
 		// wp-includes/pluggable.php @since 2.5.0
 		add_action( 'wp_login_failed', array( $this, 'auth_fail' ), $settings['priority'] );
 
-		// enables to skip validation by country at login/out except BuddyPress signup
+		// enables to skip validation of country at login/out except BuddyPress signup
 		$block = ( 1 === (int)$settings['validation']['login'] ) ||
 			( 'bp_' === substr( current_filter(), 0, 3 ) ) ||
 			( isset( $_REQUEST['action'] ) && ! in_array( $_REQUEST['action'], array( 'login', 'logout' ), TRUE ) );
@@ -530,7 +530,7 @@ class IP_Geo_Block {
 				add_filter( IP_Geo_Block::PLUGIN_NAME . '-admin', array( $this, 'check_nonce' ), 5, 2 );
 		}
 
-		// register validation by malicious signature
+		// register validation of malicious signature (except in the comment and post)
 		if ( ! is_user_logged_in() || ! in_array( $this->pagenow, array( 'comment.php', 'post.php' ), TRUE ) )
 			add_filter( IP_Geo_Block::PLUGIN_NAME . '-admin', array( $this, 'check_signature' ), 6, 2 );
 
@@ -622,7 +622,7 @@ class IP_Geo_Block {
 	}
 
 	public function check_auth( $validate, $settings ) {
-		// authentication should be prior to validation by country (can't overwrite existing result)
+		// authentication should be prior to validation of country (can't overwrite existing result)
 		return $validate['auth'] ? $validate + array( 'result' => 'passed' ) : $validate;
 	}
 

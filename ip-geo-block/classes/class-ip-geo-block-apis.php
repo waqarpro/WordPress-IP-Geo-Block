@@ -559,16 +559,7 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
  */
 class IP_Geo_Block_API_Cookie extends IP_Geo_Block_API {
 
-	private static function load_dependency() {
-		include_once( ABSPATH . 'wp-includes/default-constants.php' );
-		include_once( ABSPATH . 'wp-includes/pluggable.php' );
-		wp_cookie_constants();
-	}
-
 	public static function update_cache( $cache, $settings ) {
-		if ( ! function_exists( 'wp_create_nonce' ) )
-			self::load_dependency();
-
 		$ip = $cache['ip'];
 		unset( $cache['ip'] );
 
@@ -584,9 +575,6 @@ class IP_Geo_Block_API_Cookie extends IP_Geo_Block_API {
 	}
 
 	public static function get_cache( $ip ) {
-		if ( ! function_exists( 'wp_verify_nonce' ) )
-			self::load_dependency();
-
 		if ( isset( $_COOKIE[ IP_Geo_Block::CACHE_NAME ] ) ) {
 			$cache = explode( ',', str_rot13( $_COOKIE[ IP_Geo_Block::CACHE_NAME ] ) );
 

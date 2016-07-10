@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2016-07-09 16:18+0900\n"
-"PO-Revision-Date: 2016-07-09 16:18+0900\n"
+"POT-Creation-Date: 2016-07-10 15:07+0900\n"
+"PO-Revision-Date: 2016-07-10 15:07+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -149,7 +149,7 @@ msgstr ""
 msgid "Export logs"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:55 admin/includes/tab-settings.php:1000
+#: admin/includes/tab-accesslog.php:55 admin/includes/tab-settings.php:1016
 msgid "Export to the local file"
 msgstr ""
 
@@ -345,7 +345,9 @@ msgstr ""
 
 #: admin/includes/tab-settings.php:240
 #, php-format
-msgid "Response code %s"
+msgid ""
+"<dfn title=\"You can put your original 403.php and so on into your theme "
+"directory.\">Response code</dfn> %s"
 msgstr ""
 
 #: admin/includes/tab-settings.php:270
@@ -563,7 +565,7 @@ msgstr ""
 #, php-format
 msgid ""
 "<dfn title=\"If user authentication fails consecutively %d times, subsequent "
-"login will also be prohibited for this period including garbage collection."
+"login will also be prohibited for this and garbage collection period."
 "\">Expiration time [sec]</dfn>"
 msgstr ""
 
@@ -605,54 +607,54 @@ msgstr ""
 msgid "Plugin settings"
 msgstr ""
 
-#: admin/includes/tab-settings.php:987
+#: admin/includes/tab-settings.php:991
+msgid "Remove all settings at uninstallation"
+msgstr ""
+
+#: admin/includes/tab-settings.php:1003
 msgid ""
 "You need to click the &#8220;Save Changes&#8221; button for imported "
 "settings to take effect."
 msgstr ""
 
-#: admin/includes/tab-settings.php:993
+#: admin/includes/tab-settings.php:1009
 msgid "Export / Import settings"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1000
+#: admin/includes/tab-settings.php:1016
 msgid "Export settings"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1001
+#: admin/includes/tab-settings.php:1017
 msgid "Import from the local file"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1001
+#: admin/includes/tab-settings.php:1017
 msgid "Import settings"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1010
+#: admin/includes/tab-settings.php:1026
 msgid "Import pre-defined settings"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1017
+#: admin/includes/tab-settings.php:1033
 msgid ""
 "Import the default settings to revert to the &#8220;Right after "
 "installing&#8221; state"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1017
+#: admin/includes/tab-settings.php:1033
 msgid "Default settings"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1018
+#: admin/includes/tab-settings.php:1034
 msgid ""
 "Import the preferred settings mainly for the &#8220;Validation target "
 "settings&#8221;"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1018
+#: admin/includes/tab-settings.php:1034
 msgid "Best practice"
-msgstr ""
-
-#: admin/includes/tab-settings.php:1027
-msgid "Remove all settings at uninstallation"
 msgstr ""
 
 #: admin/includes/tab-settings.php:1045
@@ -776,7 +778,7 @@ msgid ""
 "statistics."
 msgstr ""
 
-#: classes/class-ip-geo-block-apis.php:760
+#: classes/class-ip-geo-block-apis.php:747
 msgid ""
 "You need to select at least one IP geolocation service. Otherwise "
 "<strong>you'll be blocked</strong> after the cache expires."
