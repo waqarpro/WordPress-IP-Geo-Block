@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
 "POT-Creation-Date: 2016-07-10 15:07+0900\n"
-"PO-Revision-Date: 2016-07-10 15:16+0900\n"
+"PO-Revision-Date: 2016-07-10 18:23+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -194,7 +194,7 @@ msgstr "管理領域"
 
 #: admin/includes/tab-accesslog.php:101 admin/includes/tab-settings.php:309
 msgid "Pubic facing pages"
-msgstr "公開ページ"
+msgstr "一般公開ページ"
 
 #: admin/includes/tab-accesslog.php:107
 msgid "Date"
@@ -386,8 +386,8 @@ msgid ""
 "<dfn title=\"You can put your original 403.php and so on into your theme "
 "directory.\">Response code</dfn> %s"
 msgstr ""
-"<dfn title=\"テーマ・ディレクトリに独自の403.phpなどを設置する事が出来ま"
-"す。\">レスポンス・コード</dfn> %s"
+"<dfn title=\"テーマ・ディレクトリに独自の403.phpなどのファイルを設置する事が"
+"出来ます。\">レスポンス・コード</dfn> %s"
 
 #: admin/includes/tab-settings.php:270
 msgid ""
@@ -649,8 +649,8 @@ msgid ""
 "<dfn title=\"It saves IP address and country code into the client cookie "
 "with nonce to reduce SQL queries.\">Cache by cookie</dfn>"
 msgstr ""
-"<dfn title=\"SQLクエリを削減するために、IPアドレスと国コードを暗号化してクッ"
-"キーに保存します。\">クッキーによるキャッシュ</dfn>"
+"<dfn title=\"IPアドレスと国コードを暗号化してクッキーに保存し、SQLクエリを削"
+"減します。\">クッキーによるキャッシュ</dfn>"
 
 #: admin/includes/tab-settings.php:944
 msgid "Submission settings"

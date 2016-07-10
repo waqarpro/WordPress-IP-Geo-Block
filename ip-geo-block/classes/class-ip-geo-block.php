@@ -744,12 +744,12 @@ class IP_Geo_Block {
 	}
 
 	public function check_bots( $validate, $settings ) {
-		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php' );
+		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-lkup.php' );
 
 		if ( isset( $_SERVER['HTTP_USER_AGENT'] ) ) {
 			$agent = $_SERVER['HTTP_USER_AGENT'];
 			$country = $validate['code'];
-			$is_feed = IP_Geo_Block_Util::is_feed( $this->request_uri );
+			$is_feed = IP_Geo_Block_Lkup::is_feed( $this->request_uri );
 
 			foreach ( $this->multiexplode( array( ",", "\n" ), $settings['public']['ua_list'] ) as $bot ) {
 				list( $name, $code ) = explode( ':', $bot, 2 );
@@ -764,7 +764,7 @@ class IP_Geo_Block {
 
 					elseif ( 'DNS' === $code ) {
 						if ( empty( $validate['host'] ) )
-							$validate['host'] = IP_Geo_Block_Util::gethostbyaddr( $validate['ip'] );
+							$validate['host'] = IP_Geo_Block_Lkup::gethostbyaddr( $validate['ip'] );
 
 						if ( $validate['host'] !== $validate['ip'] ) {
 							$validate['result'] = 'passed'; // overwrite existing result
