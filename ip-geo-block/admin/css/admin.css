@@ -158,17 +158,22 @@ ul.ip-geo-block-statistics-countries li {
 }
 
 /* table */
-.ip-geo-block-statistics-type th,
-.ip-geo-block-statistics-type td,
-.ip-geo-block-statistics-service th,
-.ip-geo-block-statistics-service td,
-.ip-geo-block-statistics-cache th,
-.ip-geo-block-statistics-cache td {
+table.ip-geo-block-statistics-table {
+    float: right;
+}
+table.ip-geo-block-statistics-table th,
+table.ip-geo-block-statistics-table td {
     width: 12em;
     margin: 0;
     padding: 0.2em 0;
     text-align: right;
     line-height: 1.5em;
+    word-wrap: break-word;
+}
+table.ip-geo-block-statistics-table tr:nth-child(even) {
+    background-color: #f7f7f7;
+}
+table.ip-geo-block-statistics-table tr:nth-child(odd) {
 }
 
 /* for footable */
