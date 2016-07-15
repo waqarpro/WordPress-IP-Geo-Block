@@ -429,14 +429,14 @@ var ip_geo_block_time = new Date();
 
 			// Matching rule
 			$(ID('@', 'matching_rule')).on('change', function () {
-				$(ID('@', 'white_list')).closest('tr').toggle(this.value !== '1');
-				$(ID('@', 'black_list')).closest('tr').toggle(this.value !== '0');
+				$(ID('@', 'white_list')).closest('tr').toggle(this.value === '0');
+				$(ID('@', 'black_list')).closest('tr').toggle(this.value === '1');
 				return false;
 			}).trigger('change');
 
 			$(ID('@', 'public_matching_rule')).on('change', function () {
-				$(ID('@', 'public_white_list')).closest('tr').toggle(this.value !== '1');
-				$(ID('@', 'public_black_list')).closest('tr').toggle(this.value !== '0');
+				$(ID('@', 'public_white_list')).closest('tr').toggle(this.value === '0');
+				$(ID('@', 'public_black_list')).closest('tr').toggle(this.value === '1');
 				return false;
 			}).trigger('change');
 

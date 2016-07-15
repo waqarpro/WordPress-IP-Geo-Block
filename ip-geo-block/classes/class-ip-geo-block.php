@@ -733,7 +733,7 @@ class IP_Geo_Block {
 	public function validate_public() {
 		$settings = self::get_option();
 
-		if ( -1 !== $settings['matching_rule'] ) { // replace "Validation rule settings"
+		if ( -1 !== (int)$settings['public']['matching_rule'] ) { // replace "Validation rule settings"
 			$settings['matching_rule'] = $settings['public']['matching_rule'];
 			$settings['white_list'   ] = $settings['public']['white_list'   ];
 			$settings['black_list'   ] = $settings['public']['black_list'   ];
