@@ -288,12 +288,12 @@ class IP_Geo_Block_Admin_Tab {
 		);
 
 		/*----------------------------------------*
-		 * Validation target settings
+		 * Back-end target settings
 		 *----------------------------------------*/
 		$section = $plugin_slug . '-validation-target';
 		add_settings_section(
 			$section,
-			__( 'Validation target settings', 'ip-geo-block' ),
+			__( 'Back-end target settings', 'ip-geo-block' ),
 			array( __CLASS__, 'note_target' ),
 			$option_slug
 		);
@@ -305,7 +305,7 @@ class IP_Geo_Block_Admin_Tab {
 			'xmlrpc'  => sprintf( $dfn, 'xmlrpc.php',           __( 'XML-RPC',            'ip-geo-block' ) ),
 			'login'   => sprintf( $dfn, 'wp-login.php',         __( 'Login form',         'ip-geo-block' ) ),
 			'admin'   => sprintf( $dfn, 'wp-admin/*.php',       __( 'Admin area',         'ip-geo-block' ) ),
-			'others'  => sprintf( $dfn, 'hacked PHP files',     __( 'Other areas',        'ip-geo-block' ) ),
+			'others'  => sprintf( $dfn, 'executable files',     __( 'Other areas',        'ip-geo-block' ) ),
 			'public'  => sprintf( $dfn, 'public facing pages',  __( 'Pubic facing pages', 'ip-geo-block' ) ),
 		);
 
@@ -544,7 +544,7 @@ class IP_Geo_Block_Admin_Tab {
 			)
 		);
 
-		// Other area
+		// Other areas
 		$key = IP_Geo_Block_Admin_Rewrite::get_dirs();
 		$tmp = '';
 
@@ -566,17 +566,17 @@ class IP_Geo_Block_Admin_Tab {
 			array(
 				'type' => 'html',
 				'value' => '<ul style="margin-top:0.25em">' . "\n" . $tmp . "\n</ul>\n",
-				'before' => '<p class="ip-geo-block-desc">' . __( 'WordPress core does not request PHP files directly except for the few in the following directories. This feature prevents attackers accessing to the compromised files such as PHP, CGI and SSI.', 'ip-geo-block' ) . '</p>',
+				'before' => '<p class="ip-geo-block-desc">' . __( 'WordPress core does not directly request PHP files in the following directories except for the few. This feature configures <code>.htaccess</code> in each directory to prevent attackers from requesting to the executable files such as PHP, CGI and SSI.', 'ip-geo-block' ) . '</p>',
 			)
 		);
 
 		/*----------------------------------------*
-		 * Frontend settings
+		 * Front-end settings
 		 *----------------------------------------*/
 		$section = $plugin_slug . '-public';
 		add_settings_section(
 			$section,
-			__( 'Frontend settings', 'ip-geo-block' ),
+			__( 'Front-end target settings', 'ip-geo-block' ),
 			array( __CLASS__, 'note_public' ),
 			$option_slug
 		);
@@ -599,7 +599,8 @@ class IP_Geo_Block_Admin_Tab {
 			)
 		);
 
-//		$rule[-1] = __( 'Follow &#8220;Validation rule settings&#8221;', 'ip-geo-block' );
+		// Default for matching rule on front-end
+		$rule[-1] = __( 'Follow &#8220;Validation rule settings&#8221;', 'ip-geo-block' );
 
 		// Matching rule
 		$field = 'public';

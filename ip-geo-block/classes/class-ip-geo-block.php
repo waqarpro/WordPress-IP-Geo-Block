@@ -630,7 +630,7 @@ class IP_Geo_Block {
 		$score = 0.0;
 		$request = strtolower( urldecode( serialize( $_GET + $_POST ) ) );
 
-		foreach ( $this->multiexplode( array( ",", "\n" ), $settings['signature'] ) as $sig ) {debug_log($sig);
+		foreach ( $this->multiexplode( array( ",", "\n" ), $settings['signature'] ) as $sig ) {
 			$val = explode( ':', $sig, 2 );
 
 			if ( ( $sig = trim( $val[0] ) ) && FALSE !== strpos( $request, $sig ) ) {

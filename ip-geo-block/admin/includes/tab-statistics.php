@@ -224,9 +224,12 @@ endif;
 		$html .= '</tr></thead><tbody>';
 
 		if ( $cache = IP_Geo_Block_API_Cache::get_cache_all() ) {
+			$count = 0;
 			$time = time();
 			$debug = defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG;
 			foreach ( $cache as $key => $val ) {
+				if ( $count++ > $options['cache_hold'] )
+					break;
 				if ( $options['anonymize'] )
 					$key = preg_replace( '/\d{1,3}$/', '***', $key );
 				if ( empty( $val['auth'] ) || $debug ) { // hide authenticated user
@@ -244,7 +247,11 @@ endif;
 				}
 			}
 		}
+
 		$html .= '</tbody></table>';
+
+		if ( ! empty( $count ) )
+			$html .= '<p style="text-align:right">[ ' . $count . ' / ' . count( $cache ) . ' ]</p>';
 
 		add_settings_field(
 			$option_name.'_'.$field,

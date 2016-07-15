@@ -220,7 +220,7 @@ class IP_Geo_Block_Admin {
 		$key = IP_Geo_Block::PLUGIN_NAME . '-notice';
 		if ( FALSE !== ( $notices = get_transient( $key ) ) ) {
 			foreach ( $notices as $msg => $type ) {
-				echo "\n<div class=\"notice is-dismissible ", $type, "\"><p><strong>IP Geo Block:</strong> ", $msg, "</p></div>\n";
+				echo "\n<div class=\"notice is-dismissible ", esc_attr( $type ), "\"><p><strong>IP Geo Block:</strong> ", esc_html( $msg ), "</p></div>\n";
 			}
 		}
 	}
@@ -293,10 +293,10 @@ class IP_Geo_Block_Admin {
 			}
 		}
 
-		// Check to finish downloading
+		// Check to finish updating matching rule
 		elseif ( 'done' === get_transient( IP_Geo_Block::CRON_NAME ) ) {
 			delete_transient( IP_Geo_Block::CRON_NAME );
-			self::add_admin_notice( 'updated', __( 'Downloading geolocation databases was successfully done.', 'ip-geo-block' ) );
+			self::add_admin_notice( 'updated', __( 'Matching rule has been updated.', 'ip-geo-block' ) );
 		}
 
 		// Check self blocking

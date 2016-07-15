@@ -41,7 +41,7 @@ class IP_Geo_Block_Admin_Rewrite {
 				'RewriteBase %REWRITE_BASE%',
 				'RewriteRule ^.*\.php$ rewrite.php [L]',
 				'</IfModule>',
-				'<FilesMatch "\.(phtml|php3|pl|py|jsp|asp|htm|shtml|sh|cgi)$">',
+				'<FilesMatch "\.(php[2-7]|phtml|pl|py|jsp|asp|htm|shtml|sh|cgi)$">',
 				'deny from all', // 'Options -ExecCGI',
 				'</FilesMatch>',
 				'# END IP Geo Block',

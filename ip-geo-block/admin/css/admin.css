@@ -165,7 +165,7 @@ table.ip-geo-block-statistics-table th,
 table.ip-geo-block-statistics-table td {
     width: 12em;
     margin: 0;
-    padding: 0.2em 0;
+    padding: 0.2em;
     text-align: right;
     line-height: 1.5em;
     word-wrap: break-word;
