@@ -246,20 +246,20 @@ class IP_Geo_Block_Admin_Ajax {
 			'[validation][ajax][2]',
 			'[validation][plugins]',
 			'[validation][themes]',
-			'[validation][includes]',    // 2.3.0
-		    '[validation][uploads]',     // 2.3.0
-			'[validation][languages]',   // 2.3.0
+			'[validation][includes]',    // 3.0.0
+		    '[validation][uploads]',     // 3.0.0
+			'[validation][languages]',   // 3.0.0
 			'[validation][public]',      // 3.0.0
 			'[rewrite][plugins]',
 			'[rewrite][themes]',
-			'[rewrite][includes]',       // 2.3.0
-		    '[rewrite][uploads]',        // 2.3.0
-			'[rewrite][languages]',      // 2.3.0
+			'[rewrite][includes]',       // 3.0.0
+		    '[rewrite][uploads]',        // 3.0.0
+			'[rewrite][languages]',      // 3.0.0
 			'[exception][plugins][*]',   // 2.2.5
 			'[exception][themes][*]',    // 2.2.5
-			'[exception][includes][*]',  // 2.3.0
-		    '[exception][uploads][*]',   // 2.3.0
-			'[exception][languages][*]', // 2.3.0
+			'[exception][includes][*]',  // 3.0.0
+		    '[exception][uploads][*]',   // 3.0.0
+			'[exception][languages][*]', // 3.0.0
 			'[public][matching_rule]',   // 3.0.0
 			'[public][white_list]',      // 3.0.0
 			'[public][black_list]',      // 3.0.0

@@ -733,13 +733,13 @@ class IP_Geo_Block_Admin {
 		foreach ( array( 'plugins', 'themes' ) as $key )
 			$output['exception'][ $key ] = array_keys( $output['exception'][ $key ] );
 
-		// 2.3.0 exception : set default factors
-		foreach ( array( 'includes', 'uploads', 'languages' ) as $key )
-			$output['exception'][ $key ] = $default['exception'][ $key ];
-
 		// 3.0.0 public : convert country code to upper case
 		foreach ( array( 'white_list', 'black_list' ) as $key )
 			$output['public'][ $key ] = strtoupper( preg_replace( '/\s/', '', $output['public'][ $key ] ) );
+
+		// 3.0.0 exception : set default factors
+		foreach ( array( 'includes', 'uploads', 'languages' ) as $key )
+			$output['exception'][ $key ] = $default['exception'][ $key ];
 
 		return $output;
 	}

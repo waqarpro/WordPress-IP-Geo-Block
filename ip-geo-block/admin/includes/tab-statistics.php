@@ -230,7 +230,7 @@ endif;
 			foreach ( $cache as $key => $val ) {
 				if ( $options['anonymize'] )
 					$key = preg_replace( '/\d{1,3}$/', '***', $key );
-				if ( empty( $val['auth'] ) || $debug ) { // hide authenticated user
+//				if ( empty( $val['auth'] ) || $debug ) { // hide authenticated user
 					$html .= '<tr><td>' .  esc_html( $key         ) . '</td>';
 					$html .= '<td>'     .  esc_html( $val['code'] ) . ' / ';
 					$html .= '<small>'  .  esc_html( $val['hook'] ) . '</small></td>';
@@ -244,7 +244,7 @@ endif;
 					$html .= '</td></tr>';
 					if ( ++$count >= $options['cache_hold'] )
 						break;
-				}
+//				}
 			}
 		}
 

@@ -16,7 +16,7 @@ class IP_Geo_Block_Opts {
 	 *
 	 */
 	private static $option_table = array(
-		'version'         => '2.2.6', // This table version (not package)
+		'version'         => '3.0.0a',// This table version (not package)
 		// since version 1.0
 		'providers'       => array(), // List of providers and API keys
 		'comment'         => array(   // Message on the comment form
@@ -225,20 +225,18 @@ class IP_Geo_Block_Opts {
 				}
 			}
 
-			if ( version_compare( $version, '2.2.7' ) < 0 ) {
-				foreach ( array( 'includes', 'uploads', 'languages' ) as $tmp ) {
-					$settings['validation'][ $tmp ] = $default['validation'][ $tmp ];
-					$settings['rewrite'   ][ $tmp ] = $default['rewrite'   ][ $tmp ];
-					$settings['exception' ][ $tmp ] = $default['exception' ][ $tmp ];
-				}
-			}
-
 			if ( version_compare( $version, '3.0' ) < 0 ) {
 				$settings['cache_time_gc']        = $default['cache_time_gc'];
 				$settings['cache_cookie']         = $default['cache_cookie'];
 				$settings['validation']['public'] = $default['validation']['public'];
 				$settings['network_wide']         = $default['network_wide'];
 				$settings['public']               = $default['public'];
+
+				foreach ( array( 'includes', 'uploads', 'languages' ) as $tmp ) {
+					$settings['validation'][ $tmp ] = $default['validation'][ $tmp ];
+					$settings['rewrite'   ][ $tmp ] = $default['rewrite'   ][ $tmp ];
+					$settings['exception' ][ $tmp ] = $default['exception' ][ $tmp ];
+				}
 			}
 
 			// save package version number
