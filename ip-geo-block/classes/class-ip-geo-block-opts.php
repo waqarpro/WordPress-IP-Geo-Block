@@ -53,11 +53,10 @@ class IP_Geo_Block_Opts {
 			// since version 2.1.0
 			'plugins'     => 0,       // Validate on wp-content/plugins
 			'themes'      => 0,       // Validate on wp-content/themes
-			// since version 2.2.7
+			// since version 3.0.0
 			'includes'    => 3,       // for wp-includes/
 			'uploads'     => 3,       // for UPLOADS/uploads
 			'languages'   => 3,       // for WP_CONTENT_DIR/language
-			// since version 3.0.0
 			'public'      => 0,       // Validate on public facing pages
 		),
 		'update'          => array(   // Updating IP address DB
@@ -77,7 +76,7 @@ class IP_Geo_Block_Opts {
 		'rewrite'         => array(   // Apply rewrite rule
 			'plugins'     => FALSE,   // for wp-content/plugins
 			'themes'      => FALSE,   // for wp-content/themes
-			// since version 2.2.7
+			// since version 3.0.0
 			'includes'    => FALSE,   // for wp-includes/
 			'uploads'     => FALSE,   // for UPLOADS/uploads
 			'languages'   => FALSE,   // for wp-content/language
@@ -104,7 +103,7 @@ class IP_Geo_Block_Opts {
 		'exception'       => array(   // list of exceptional
 			'plugins'     => array(), // for pliugins
 			'themes'      => array(), // for themes
-			// since version 2.2.7
+			// since version 3.0.0
 			'includes'    => array(   // for wp-includes/
 				'ms-files.php', 'js/tinymce/wp-tinymce.php'
 			 ),

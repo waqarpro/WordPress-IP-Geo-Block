@@ -543,7 +543,7 @@ class IP_Geo_Block_Admin_Tab {
 					. "</ul></li></ul>\n",
 			)
 		);
-
+/*
 		// Other areas
 		$key = IP_Geo_Block_Admin_Rewrite::get_dirs();
 		$tmp = '';
@@ -569,7 +569,7 @@ class IP_Geo_Block_Admin_Tab {
 				'before' => '<p class="ip-geo-block-desc">' . __( 'WordPress core does not directly request PHP files in the following directories except for the few. This feature configures <code>.htaccess</code> in each directory to prevent attackers from requesting to the executable files such as PHP, CGI and SSI.', 'ip-geo-block' ) . '</p>',
 			)
 		);
-
+*/
 		/*----------------------------------------*
 		 * Front-end settings
 		 *----------------------------------------*/
