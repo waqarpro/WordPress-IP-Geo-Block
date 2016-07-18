@@ -5,8 +5,8 @@
  * @package   IP_Geo_Block
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-2.0+
- * @link      https://github.com/tokkonopapa
- * @copyright 2013-2015 tokkonopapa
+ * @link      http://www.ipgeoblock.com/
+ * @copyright 2013-2016 tokkonopapa
  */
 
 class IP_Geo_Block_Admin {
@@ -515,9 +515,9 @@ class IP_Geo_Block_Admin {
 			if ( 'select' === $args['type'] )
 				break;
 			echo "<br />\n";
-			$sub_id   = '_' . $args['txt-field'];
+			$sub_id   = '_' . $args['txt-field']; // possible value of 'txt-field' is 'msg'
 			$sub_name = '[' . $args['txt-field'] . ']';
-			$args['value'] = $args['text'];
+			$args['value']  = $args['text']; // should be escaped because it can contain allowed tags
 
 		  case 'text': ?>
 <input type="text" class="regular-text code" id="<?php echo $id, $sub_id; ?>" name="<?php echo $name, $sub_name; ?>" value="<?php echo esc_attr( $args['value'] ); ?>"

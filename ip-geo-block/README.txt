@@ -382,6 +382,7 @@ Yes, here is the list of all hooks to extend the feature of this plugin.
 * `ip-geo-block-xmlrpc`           : validate IP address at `xmlrpc.php`.
 * `ip-geo-block-login`            : validate IP address at `wp-login.php`.
 * `ip-geo-block-admin`            : validate IP address at `wp-admin/*.php`.
+* `ip-geo-block-public`           : validate IP address at front-end.
 * `ip-geo-block-extra-ips`        : white/black list of extra IPs for prior validation.
 * `ip-geo-block-xxxxxx-status`    : http response status code for comment|xmlrpc|login|admin.
 * `ip-geo-block-xxxxxx-reason`    : http response reason      for comment|xmlrpc|login|admin.
@@ -411,6 +412,18 @@ For more details, see
 5. **IP Geo Plugin** - Attribution.
 
 == Changelog ==
+
+= 3.0.0 =
+* **New feature:** Add the function of blocking front-end.
+* **New feature:** Add IP address and country code cache by cookie.
+* **New feature:** Add getting host information using reverse DNS lookup.
+* **New filter hook:** Add `ip-geo-block-public` to validate requests on 
+  front-end.
+* **Bug fix:** Fix inadequate validation of "**Bad signatures in query**".
+* See more details at
+    [Call for testing 3.0.0 beta](http://www.ipgeoblock.com/changelog/call-for-testing-3.0.0b.html "Call for testing 3.0.0 beta | IP Geo Block")
+  and
+    [release 3.0.0](http://www.ipgeoblock.com/changelog/release-3.0.0.html "3.0.0 Release Note | IP Geo Block").
 
 = 2.2.6 =
 * **New feature:** Add saving csv file of logs in "Logs" tab.

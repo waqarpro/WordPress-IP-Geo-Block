@@ -13,7 +13,7 @@ var ip_geo_block_time = new Date();
 		var keys = {
 			'.': 'ip-geo-block-',
 			'#': 'ip-geo-block-',
-			'@': 'ip_geo_block_settings_',
+			'@': 'ip_geo_block_settings_'
 		};
 		return id ? ('.' === selector ? '.' : '#') + keys[selector] + id : keys['#'] + selector;
 	}

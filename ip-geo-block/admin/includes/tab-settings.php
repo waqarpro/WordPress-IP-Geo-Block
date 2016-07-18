@@ -970,7 +970,7 @@ class IP_Geo_Block_Admin_Tab {
 					1 => __( 'Top',    'ip-geo-block' ),
 					2 => __( 'Bottom', 'ip-geo-block' ),
 				),
-				'text' => $options[ $field ]['msg'], // sanitized at 'select-text'
+				'text' => $options[ $field ]['msg'], // escaped by esc_attr() at 'text'
 			)
 		);
 

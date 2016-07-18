@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '3.0.0a';
+	const VERSION = '3.0.0b';
 	const GEOAPI_NAME = 'ip-geo-api';
 	const PLUGIN_NAME = 'ip-geo-block';
 	const OPTION_NAME = 'ip_geo_block_settings';
@@ -756,37 +756,31 @@ class IP_Geo_Block {
 
 				if ( $name && ( FALSE !== strpos( $agent, $name ) || '*' === $name ) ) {
 					if ( 'FEED' === $code ) {
-						if ( $is_feed ) {
-							$validate['result'] = 'passed'; // overwrite existing result
-							break;
-						}
+						if ( $is_feed )
+							return $validate + array( 'result' => 'passed' ); // can't overwrite existing result
 					}
 
 					elseif ( 'DNS' === $code ) {
 						if ( empty( $validate['host'] ) )
 							$validate['host'] = IP_Geo_Block_Lkup::gethostbyaddr( $validate['ip'] );
 
-						if ( $validate['host'] !== $validate['ip'] ) {
-							$validate['result'] = 'passed'; // overwrite existing result
-							break;
-						}
+						if ( $validate['host'] !== $validate['ip'] )
+							return $validate + array( 'result' => 'passed' ); // can't overwrite existing result
 					}
 
-					elseif ( $country === $code ) {
-						$validate['result'] = 'passed'; // overwrite existing result
-						break;
-					}
+					elseif ( $country === $code )
+						return $validate + array( 'result' => 'passed' ); // can't overwrite existing result
 
 					elseif ( filter_var( $code, FILTER_VALIDATE_IP ) ) {
 						$validate = $this->check_ips( $validate, $code, 0 ); // only 'white_list'
 						if ( isset( $validate['result'] ) )
-							break;
+							return $validate;
 					}
 				}
 			}
 		}
 
-		return apply_filters( self::PLUGIN_NAME . '-bypass-public', $validate, $settings );
+		return $validate;
 	}
 
 	/**

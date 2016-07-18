@@ -60,10 +60,7 @@ class IP_Geo_Block_Activate {
 			self::activate_blog();
 		}
 
-		if ( defined( 'IP_GEO_BLOCK_MU_PLUGINS' ) )
-			add_action( 'init', array( __CLASS__, 'init_main_blog' ) );
-		else
-			self::init_main_blog();
+		self::init_main_blog(); // should be called after 'init' action hook with high priority
 	}
 
 	/**
