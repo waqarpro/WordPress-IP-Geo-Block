@@ -149,7 +149,7 @@ class IP_Geo_Block_Opts {
 			$version = $settings['version'];
 
 			// refresh if it's too old
-			if ( version_compare( $version, '2.0' ) < 0 ) {
+			if ( version_compare( $version, '2.0.0' ) < 0 ) {
 				$settings = $default;
 			}
 
@@ -224,7 +224,7 @@ class IP_Geo_Block_Opts {
 				}
 			}
 
-			if ( version_compare( $version, '3.0' ) < 0 ) {
+			if ( version_compare( $version, '3.0.0' ) < 0 ) {
 				$settings['cache_time_gc']        = $default['cache_time_gc'];
 				$settings['cache_cookie']         = $default['cache_cookie'];
 				$settings['validation']['public'] = $default['validation']['public'];
@@ -243,7 +243,7 @@ class IP_Geo_Block_Opts {
 		}
 
 		// install addons for IP Geolocation database API
-		if ( ! $settings['api_dir'] || version_compare( $version, '3.0' ) < 0 )
+		if ( ! $settings['api_dir'] || version_compare( $version, '3.0.0' ) < 0 )
 			$settings['api_dir'] = self::install_api( $settings );
 
 		// update option table
@@ -264,7 +264,12 @@ class IP_Geo_Block_Opts {
 		try {
 			if ( $src !== $dst )
 				self::recurse_copy( $src, $dst );
+
 		} catch ( Exception $e ) {
+
+			if ( class_exists( 'IP_Geo_Block_Admin' ) )
+				IP_Geo_Block_Admin::add_admin_notice( 'error', sprintf( __( 'Unable to write %s. Please check permission.', 'ip-geo-block' ), $dst ) );
+
 			return NULL;
 		}
 
@@ -281,13 +286,13 @@ class IP_Geo_Block_Opts {
 		$dir = $settings['api_dir'] ? dirname( $settings['api_dir'] ) : WP_CONTENT_DIR;
 
 		if ( ! @is_writable( $dir ) ) {
-			// wp-content/plugins/ip-geo-block
-			$dir = IP_GEO_BLOCK_PATH . 'wp-content';
+			// wp-content/uploads
+			$dir = wp_upload_dir();
+			$dir = $dir['basedir'];
 
 			if ( ! @is_writable( $dir ) ) {
-				// wp-content/uploads
-				$dir = wp_upload_dir();
-				$dir = $dir['basedir'];
+				// wp-content/plugins/ip-geo-block
+				$dir = IP_GEO_BLOCK_PATH . 'wp-content';
 			}
 		}
 

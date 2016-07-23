@@ -20,8 +20,8 @@ specified countries targeting vulnerable plugins and themes, especially with
 the original feature 'Zero-day Exploit Prevention' (WP-ZEP).
 
 Up to version 2.x, this plugin has been dedicated to protect the back-end of 
-your site. And from version 3.0.0, it equips the functionality of blocking 
-public facing pages on front-end.
+your site. And from version 3.0.0, it becomes to be able to block the public 
+facing pages on front-end.
 
 The protection based on the IP address is not a perfect solution for everyone.
 But for some site owners or some certain cases such as 'zero-day attack', 
@@ -420,6 +420,9 @@ For more details, see
 == Changelog ==
 
 = 3.0.0 =
+* **Important:** Update geo location api libraries for maxmind and ip2locatoin.
+  Please confirm the directory for local geo location dabase (`ip-geo-api`) can
+  be writable.
 * **New feature:** Add the function of blocking front-end.
 * **New feature:** Add IP address and country code cache by cookie.
 * **New feature:** Add getting host information using reverse DNS lookup.

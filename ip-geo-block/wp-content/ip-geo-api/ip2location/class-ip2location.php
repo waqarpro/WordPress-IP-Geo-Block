@@ -127,7 +127,7 @@ class IP_Geo_Block_API_IP2Location extends IP_Geo_Block_API {
 	}
 
 	public function get_attribution() {
-		return 'This site or product includes IP2Location LITE data available from <a class="ip-geo-block-link" href="http://www.ip2location.com" rel=noreferrer target=_blank>http://www.ip2location.com</a>.';
+		return 'This site or product includes IP2Location LITE data available from <a class="ip-geo-block-link" href="http://www.ip2location.com" rel=noreferrer target=_blank>http://www.ip2location.com</a>. (CC BY-SA 4.0)';
 	}
 
 	public function add_settings_field( $field, $section, $option_slug, $option_name, $options, $callback, $str_path, $str_last ) {
@@ -203,8 +203,8 @@ class IP_Geo_Block_API_IP2Location extends IP_Geo_Block_API {
 IP_Geo_Block_Provider::register_addon( array(
 	'IP2Location' => array(
 		'key'  => NULL,
-		'type' => 'IPv4, IPv6 / API: LGPLv3, DB: CC BY-SA 4.0',
-		'link' => '<a class="ip-geo-block-link" href="http://lite.ip2location.com/" title="Free IP Geolocation Database" rel=noreferrer target=_blank>http://lite.ip2location.com/</a>&nbsp;(IPv4, IPv6 / API: LGPLv3, DB: CC BY-SA 4.0)',
+		'type' => 'IPv4, IPv6 / LGPLv3',
+		'link' => '<a class="ip-geo-block-link" href="http://lite.ip2location.com/" title="Free IP Geolocation Database" rel=noreferrer target=_blank>http://lite.ip2location.com/</a>&nbsp;(IPv4, IPv6 / LGPLv3)',
 	),
 ) );
 
