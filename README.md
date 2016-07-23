@@ -26,10 +26,7 @@ Also thanks for providing the following great services and REST APIs for free.
     [http://freegeoip.net/]    [freegeoip] | IPv4, IPv6     | free
     [http://ipinfo.io/]           [ipinfo] | IPv4, IPv6     | free
     [http://geoip.nekudo.com/]    [Nekudo] | IPv4, IPv6     | free
-    [http://ip-json.rhcloud.com/] [IPJson] | IPv4, IPv6     | free
     [http://xhanch.com/]          [Xhanch] | IPv4           | free
-    [http://ip.pycox.com/]         [Pycox] | IPv4, IPv6     | free
-    [http://www.telize.com/]      [Telize] | IPv4, IPv6     | free
     [http://www.geoplugin.com/][geoplugin] | IPv4, IPv6     | free, need an attribution link
     [http://ip-api.com/]           [ipapi] | IPv4, IPv6     | free for non-commercial use
     [http://ipinfodb.com/]      [IPInfoDB] | IPv4, IPv6     | free for registered user

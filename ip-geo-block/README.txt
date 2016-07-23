@@ -13,37 +13,30 @@ posted from the specific countries, and also prevents zero-day exploit.
 
 == Description ==
 
-There are some cases of a site being infected. The first one is the case 
-that contaminated files are uploaded via FTP or some kind of uploaders. 
-In this case, scaning and verifing integrity of files in your site is useful 
-to detect the infection.
+This plugin protects your site against malicious attacks to the back-end such 
+as comment form, login form, XML-RPC and admin area from undesired countries. 
+And it also blocks ajax requests and direct accesses to the PHP files from 
+specified countries targeting vulnerable plugins and themes, especially with 
+the original feature 'Zero-day Exploit Prevention' (WP-ZEP).
 
-The second one is cracking of the login username and password. In this case, 
-the rule of right is to strengthen the password.
+Up to version 2.x, this plugin has been dedicated to protect the back-end of 
+your site. And from version 3.0.0, it equips the functionality of blocking 
+public facing pages on front-end.
 
-The third one is caused by malicious access to the core files. The major issue 
-in this case is that a plugin or theme in your site can potentially has some 
-vulnerability such as XSS, CSRF, SQLi, LFI and so on. For example, if a plugin 
-has vulnerability of Local File Inclusion (LFI), the attackers can easily 
-download the `wp-config.php` without knowing the username and password by 
-simply hitting 
-    [wp-admin/admin-ajax.php?action=show&file=../wp-config.php](http://blog.sucuri.net/2014/09/slider-revolution-plugin-critical-vulnerability-being-exploited.html "Slider Revolution Plugin Critical Vulnerability Being Exploited | Sucuri Blog")
-on their browser.
-
-For these cases, the protection based on the IP address is not a perfect 
-solution for everyone. But for some site owners or some certain cases such 
-as 'zero-day attack', combination with WP-ZEP can still reduce the risk of 
-infection against the specific attacks.
+The protection based on the IP address is not a perfect solution for everyone.
+But for some site owners or some certain cases such as 'zero-day attack', 
+the combination of protecting both back-end and front-end can still reduce 
+the risk of infection against the specific attacks.
 
 That's why this plugin is here.
 
 = Features =
 
-This plugin will examine a country code based on the IP address. If a comment, 
+This plugin will examine a country code based on the IP address. If a comment,
 pingback or trackback comes from the specific country, it will be blocked 
 before Akismet validate it.
 
-With the same mechanism, it will fight against burst access of brute-force 
+With the same mechanism, it will fight against burst accesses by brute-force 
 and reverse-brute-force attacks to the login form and XML-RPC.
 
 * **Immigration control:**  
@@ -156,7 +149,6 @@ Also thanks for providing the following great services and REST APIs for free.
 * [http://freegeoip.net/](http://freegeoip.net/ "freegeoip.net: FREE IP Geolocation Web Service") (IPv4 / free)
 * [http://ipinfo.io/](http://ipinfo.io/ "ipinfo.io - ip address information including geolocation, hostname and network details") (IPv4, IPv6 / free)
 * [http://geoip.nekudo.com/](http://geoip.nekudo.com/ "Free IP GeoLocation/GeoIp API - geoip.nekudo.com") (IPv4, IPv6 / free)
-* [http://ip-json.rhcloud.com/](http://ip-json.rhcloud.com/ "Free IP Geolocation Web Service") (IPv4, IPv6 / free)
 * [http://xhanch.com/](http://xhanch.com/xhanch-api-ip-get-detail/ "Xhanch API &#8211; IP Get Detail | Xhanch Studio") (IPv4 / free)
 * [http://www.geoplugin.com/](http://www.geoplugin.com/ "geoPlugin to geolocate your visitors") (IPv4, IPv6 / free, need an attribution link)
 * [http://ip-api.com/](http://ip-api.com/ "IP-API.com - Free Geolocation API") (IPv4, IPv6 / free for non-commercial use)
@@ -315,6 +307,20 @@ that you should upload the original one to deactivate above feature.
 
 [This release note](http://www.ipgeoblock.com/changelog/release-2.1.3.html "2.1.3 Release Note")
 can also help you.
+
+= Does this plugin works well with caching plugin? =
+
+For the back-end protection, the answer YES. But for front-end protection, 
+the answer depends on the plugin you are using.
+
+Currently, this plugin needs caching by "**PHP mode**" (WP Super Cache) or 
+"**Disk: Basic**" (W3 Total Cache), and for both cases it also needs 
+"**Late Initialization**" is enabled.
+
+If your caching plugin doesn't support these kind of options, i.e. in case 
+of using redirection by `mod_rewrite` in `.htaccess` (WP Fastest Cache) or 
+`advanced-cache.php` drop-in (Comet Cache), "**Blocking on front-end**" 
+feature might lead to generate inconsistent pages. 
 
 = Do I have to turn on all the selection to enhance security? =
 

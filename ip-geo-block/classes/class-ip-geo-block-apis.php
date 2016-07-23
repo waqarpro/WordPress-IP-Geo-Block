@@ -276,43 +276,6 @@ class IP_Geo_Block_API_ipinfoio extends IP_Geo_Block_API {
 }
 
 /**
- * Class for IP-Json
- *
- * URL         : http://ip-json.rhcloud.com/
- * Term of use : 
- * Licence fee : free
- * Rate limit  : 
- * Sample URL  : http://ip-json.rhcloud.com/xml/124.83.187.140
- * Sample URL  : http://ip-json.rhcloud.com/v6/2a00:1210:fffe:200::1
- * Input type  : IP address (IPv4, IPv6) / domain name
- * Output type : json, xml, csv
- */
-class IP_Geo_Block_API_IPJson extends IP_Geo_Block_API {
-	protected $template = array(
-		'type' => IP_GEO_BLOCK_API_TYPE_BOTH,
-		'url' => 'http://ip-json.rhcloud.com/%API_FORMAT%/%API_IP%',
-		'api' => array(
-			'%API_FORMAT%' => 'json',
-		),
-		'transform' => array(
-			'errorMessage' => 'error',
-			'countryCode'  => 'country_code',
-			'countryName'  => 'country_name',
-			'regionName'   => 'region_name',
-			'cityName'     => 'city',
-			'latitude'     => 'latitude',
-			'longitude'    => 'longitude',
-		)
-	);
-
-	public function get_location( $ip, $args = array() ) {
-		if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) )
-			$this->template['api']['%API_FORMAT%'] = 'v6';
-		return parent::get_location( $ip, $args );
-	}
-}
-
-/**
  * Class for Nekudo
  *
  * URL         : http://geoip.nekudo.com/
@@ -560,12 +523,12 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 class IP_Geo_Block_API_Cookie extends IP_Geo_Block_API {
 
 	public static function update_cache( $cache, $settings ) {
-		$ip = $cache['ip'];
+		// no need to cache
 		unset( $cache['ip'] );
 
 		setcookie(
 			IP_Geo_Block::CACHE_NAME,
-			str_rot13( wp_create_nonce( $ip ) . ',' . implode( ',', array_values( $cache ) ) ),
+			str_rot13( wp_create_nonce( $cache['code'] ) . ',' . implode( ',', array_values( $cache ) ) ),
 			$_SERVER['REQUEST_TIME'] + $settings['cache_time'],
 			trailingslashit( IP_Geo_Block::$wp_path['home'] ),
 			'',
@@ -578,8 +541,8 @@ class IP_Geo_Block_API_Cookie extends IP_Geo_Block_API {
 		if ( isset( $_COOKIE[ IP_Geo_Block::CACHE_NAME ] ) ) {
 			$cache = explode( ',', str_rot13( $_COOKIE[ IP_Geo_Block::CACHE_NAME ] ) );
 
-			// prevent to disguise country code
-			if ( isset( $cache[0] ) && wp_verify_nonce( $cache[0], $ip ) ) {
+			// prevent to disguise country code (0: nonce)
+			if ( isset( $cache[0] ) && wp_verify_nonce( $cache[0], $cache[3] ) ) {
 				return array(
 					'time' => $cache[1],
 					'hook' => $cache[2],
@@ -615,13 +578,7 @@ class IP_Geo_Block_Provider {
 			'type' => 'IPv4, IPv6 / free',
 			'link' => '<a class="ip-geo-block-link" href="http://ipinfo.io/" title="ip address information including geolocation, hostname and network details" rel=noreferrer target=_blank>http://ipinfo.io/</a>&nbsp;(IPv4, IPv6 / free)',
 		),
-/*
-		'IP-Json' => array(
-			'key'  => NULL,
-			'type' => 'IPv4, IPv6 / free',
-			'link' => '<a class="ip-geo-block-link" href="http://ip-json.rhcloud.com/" title="Free IP Geolocation Web Service" rel=noreferrer target=_blank>http://ip-json.rhcloud.com/</a>&nbsp;(IPv4, IPv6 / free)',
-		),
-*/
+
 		'Nekudo' => array(
 			'key'  => NULL,
 			'type' => 'IPv4, IPv6 / free',

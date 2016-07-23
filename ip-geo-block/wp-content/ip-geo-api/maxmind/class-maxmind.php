@@ -207,8 +207,8 @@ class IP_Geo_Block_API_Maxmind extends IP_Geo_Block_API {
 IP_Geo_Block_Provider::register_addon( array(
 	'Maxmind' => array(
 		'key'  => NULL,
-		'type' => 'IPv4, IPv6 / CC BY-SA 3.0',
-		'link' => '<a class="ip-geo-block-link" href="http://dev.maxmind.com/geoip/" title="GeoIP Products &laquo; Maxmind Developer Site" rel=noreferrer target=_blank>http://dev.maxmind.com/geoip/</a>&nbsp;(IPv4, IPv6 / CC BY-SA 3.0)',
+		'type' => 'IPv4, IPv6 / API: LGPLv2, DB: CC BY-SA 3.0',
+		'link' => '<a class="ip-geo-block-link" href="http://dev.maxmind.com/geoip/" title="GeoIP Products &laquo; Maxmind Developer Site" rel=noreferrer target=_blank>http://dev.maxmind.com/geoip/</a>&nbsp;(IPv4, IPv6 / API: LGPLv2, DB: CC BY-SA 3.0)',
 	),
 ) );
 
