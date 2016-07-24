@@ -647,8 +647,8 @@ class IP_Geo_Block_API_Cookie extends IP_Geo_Block_API {
 		}
 
 		$num += $sum;
-		if ( isset( $_SERVER['HTTP_USER_AGENT'] ) && is_string( $_SERVER['HTTP_USER_AGENT'] ) )
-			$num .= stripslashes( $_SERVER['HTTP_USER_AGENT'] );
+//		if ( isset( $_SERVER['HTTP_USER_AGENT'] ) && is_string( $_SERVER['HTTP_USER_AGENT'] ) )
+//			$num .= preg_replace( '/[^-,:!*+\.\/\w\s]/', '', $_SERVER['HTTP_USER_AGENT'] );
 
 		return $num;
 	}
@@ -738,8 +738,9 @@ class IP_Geo_Block_Provider {
 	 *
 	 */
 	public static function get_providers( $key = 'key', $rand = FALSE, $cache = FALSE ) {
-		// add internal DB
 		$list = array();
+
+		// add internal DB
 		foreach ( self::$internals as $provider => $tmp ) {
 			if ( 'Cache' !== $provider || $cache )
 				$list[ $provider ] = $tmp[ $key ];
@@ -763,9 +764,8 @@ class IP_Geo_Block_Provider {
 	 */
 	public static function get_valid_providers( $settings, $rand = TRUE, $cache = TRUE ) {
 		$list = array();
-		$geo = self::get_providers( 'key', $rand, $cache );
 
-		foreach ( $geo as $provider => $key ) {
+		foreach ( self::get_providers( 'key', $rand, $cache ) as $provider => $key ) {
 			if ( ! empty( $settings[ $provider ] ) || (
 			     ! isset( $settings[ $provider ] ) && NULL === $key ) ) {
 				$list[] = $provider;
