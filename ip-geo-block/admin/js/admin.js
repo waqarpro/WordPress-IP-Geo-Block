@@ -11,11 +11,13 @@ var ip_geo_block_time = new Date();
 
 	function ID(selector, id) {
 		var keys = {
-			'.': 'ip-geo-block-',
-			'#': 'ip-geo-block-',
-			'@': 'ip_geo_block_settings_'
+			'.': '.ip-geo-block-',
+			'#': '#ip-geo-block-',
+			'@': '#ip_geo_block_settings_',
+			'$': 'ip-geo-block-',
+			'%': 'ip_geo_block_'
 		};
-		return id ? ('.' === selector ? '.' : '#') + keys[selector] + id : keys['#'] + selector;
+		return id ? keys[selector] + id : keys['$'] + selector;
 	}
 
 	function sanitize(str) {
@@ -296,7 +298,7 @@ var ip_geo_block_time = new Date();
 		ip_geo_block_time = new Date() - ip_geo_block_time;
 
 		// Get tab number and check wpCookies in wp-includes/js/utils.js
-		var cookie = ('undefined' !== typeof wpCookies && wpCookies.getHash(ID('admin'))) || {},
+		var cookie = ('undefined' !== typeof wpCookies && wpCookies.getHash(ID('%', 'admin'))) || {},
 		    maxTabs = 9, tabNo = /&tab=(\d)/.exec(window.location.href);
 		tabNo = Number(tabNo && tabNo[1]);
 
@@ -344,7 +346,7 @@ var ip_geo_block_time = new Date();
 			// Save cookie
 			if ('undefined' !== typeof wpCookies) {
 				cookie[index + (tabNo ? maxTabs : 0)] = title.hasClass(ID('dropdown')) ? 'o' : '';
-				wpCookies.setHash(ID('admin'), cookie, new Date(Date.now() + 2592000000));
+				wpCookies.setHash(ID('%', 'admin'), cookie, new Date(Date.now() + 2592000000));
 			}
 
 			// redraw google chart
@@ -376,7 +378,7 @@ var ip_geo_block_time = new Date();
 				});
 
 				if ('undefined' !== typeof wpCookies) {
-					wpCookies.setHash(ID('admin'), cookie, new Date(Date.now() + 2592000000));
+					wpCookies.setHash(ID('%', 'admin'), cookie, new Date(Date.now() + 2592000000));
 				}
 
 				// redraw google chart

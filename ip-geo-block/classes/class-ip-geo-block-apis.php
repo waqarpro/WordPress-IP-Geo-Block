@@ -526,9 +526,11 @@ class IP_Geo_Block_API_Cookie extends IP_Geo_Block_API {
 		// no need to cache
 		unset( $cache['ip'] );
 
+		$nonce = self::create_nonce( $cache['code'] );
+
 		setcookie(
 			IP_Geo_Block::CACHE_NAME,
-			str_rot13( wp_create_nonce( $cache['code'] ) . ',' . implode( ',', array_values( $cache ) ) ),
+			str_rot13( $nonce . '|' . implode( '|', array_values( $cache ) ) ),
 			$_SERVER['REQUEST_TIME'] + $settings['cache_time'],
 			trailingslashit( IP_Geo_Block::$wp_path['home'] ),
 			'',
@@ -539,10 +541,10 @@ class IP_Geo_Block_API_Cookie extends IP_Geo_Block_API {
 
 	public static function get_cache( $ip ) {
 		if ( isset( $_COOKIE[ IP_Geo_Block::CACHE_NAME ] ) ) {
-			$cache = explode( ',', str_rot13( $_COOKIE[ IP_Geo_Block::CACHE_NAME ] ) );
+			$cache = explode( '|', str_rot13( $_COOKIE[ IP_Geo_Block::CACHE_NAME ] ) );
 
-			// prevent to disguise country code (0: nonce)
-			if ( isset( $cache[0] ) && wp_verify_nonce( $cache[0], $cache[3] ) ) {
+			// prevent to disguise country code
+			if ( count( $cache ) === 8 && self::verify_nonce( $cache[0], $cache[3] ) ) {
 				return array(
 					'time' => $cache[1],
 					'hook' => $cache[2],
@@ -556,6 +558,99 @@ class IP_Geo_Block_API_Cookie extends IP_Geo_Block_API {
 		}
 
 		return NULL;
+	}
+
+	/**
+	 * Creates a cryptographic tied to the action, user, session, and time.
+	 *
+	 */
+	private static function create_nonce( $action = -1 ) {
+		$uid = self::get_current_user();
+		$tok = self::get_session_token();
+		$exp = self::nonce_tick();
+
+		return substr( self::hash_nonce( $exp . '|' . $action . '|' . $uid . '|' . $tok ), -12, 10 );
+	}
+
+	/**
+	 * Verify that correct nonce was used with time limit.
+	 *
+	 */
+	private static function verify_nonce( $nonce, $action = -1 ) {
+		if ( $nonce ) {
+			$uid = self::get_current_user();
+			$tok = self::get_session_token();
+			$exp = self::nonce_tick();
+
+			// Nonce generated 0-12 hours ago
+			$expected = substr( self::hash_nonce( $exp . '|' . $action . '|' . $uid . '|' . $tok ), -12, 10 );
+
+			if ( hash_equals( $expected, $nonce ) )
+				return TRUE;
+		}
+
+		return FALSE; // Invalid nonce
+	}
+
+	/**
+	 * Get hash of given string for nonce.
+	 *
+	 */
+	private static function hash_nonce( $data ) {
+		return hash_hmac( 'md5', $data, NONCE_KEY . NONCE_SALT );
+	}
+
+	/**
+	 * Retrieve the current session token from the logged_in cookie.
+	 *
+	 */
+	private static function get_session_token() {
+		$cookie = self::parse_auth_cookie( 'logged_in' );
+		return ! empty( $cookie['token'] ) ? $cookie['token'] : AUTH_KEY . AUTH_SALT;
+	}
+
+	private static function parse_auth_cookie( $scheme ) {
+		foreach ( array_keys( $_COOKIE ) as $key ) {
+			if ( FALSE !== strpos( $key, $scheme ) ) {
+				$elements = explode( '|', $_COOKIE[ $key ] );
+				if ( count( $elements ) === 4 ) {
+					list( $username, $expiration, $token, $hmac ) = $elements;
+					return compact( 'username', 'expiration', 'token', 'hmac' );
+				}
+			}
+		}
+
+		return FALSE;
+	}
+
+	/**
+	 * Get the time-dependent variable for nonce creation.
+	 *
+	 */
+	private static function nonce_tick() {
+		return ceil( time() / ( DAY_IN_SECONDS / 2 ) );
+	}
+
+	/**
+	 * Retrieve the current user identification.
+	 *
+	 */
+	private static function get_current_user() {
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-lkup.php' );
+
+		$sum = 0;
+		$num = '';
+
+		foreach ( unpack( 'C*', IP_Geo_Block_Lkup::inet_pton( IP_Geo_Block::get_ip_address() ) ) as $byte ) {
+			$sum += $byte;
+			$num .= (string)( $byte % 10 );
+		}
+
+		$num += $sum;
+		if ( isset( $_SERVER['HTTP_USER_AGENT'] ) && is_string( $_SERVER['HTTP_USER_AGENT'] ) )
+			$num .= stripslashes( $_SERVER['HTTP_USER_AGENT'] );
+
+		return $num;
 	}
 }
 

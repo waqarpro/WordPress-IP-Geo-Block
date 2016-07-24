@@ -15,7 +15,7 @@ class IP_Geo_Block_Lkup {
 	 * Converts IP address to in_addr representation
 	 *
 	 */
-	private static function inet_pton( $ip ) {
+	public static function inet_pton( $ip ) {
 		// available on Windows platforms after PHP 5.3.0
 		if ( function_exists( 'inet_pton' ) )
 			return inet_pton( $ip );
