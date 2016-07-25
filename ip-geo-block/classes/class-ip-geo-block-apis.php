@@ -587,20 +587,8 @@ class IP_Geo_Block_API_Cookie extends IP_Geo_Block_API {
 		// PHP 5 >= 5.6.0 or wp-includes/compat.php
 		if ( function_exists( 'hash_equals' ) )
 			return hash_equals( $expected, $nonce );
-
-		// http://php.net/manual/en/function.hash-equals.php#115635
-		else {
-			// this is not safe for timming attack
-			if( ( $i = strlen( $expected ) ) !== strlen( $nonce ) )
-				return FALSE;
-
-			$exp = $expected ^ $nonce; // 1 === strlen( 'a' ^ 'ab' )
-			$ret = 0;
-			while ( --$i >= 0 )
-				$ret |= ord( $exp[ $i ] );
-
-			return 0 === $ret;
-		}
+		else
+			return self::hash_equals( $expected, $nonce );
 	}
 
 	/**
@@ -608,8 +596,11 @@ class IP_Geo_Block_API_Cookie extends IP_Geo_Block_API {
 	 *
 	 */
 	private static function hash_nonce( $data ) {
-		// PHP 5 >= 5.1.2, PHP 7, PECL hash >= 1.1
-		return hash_hmac( 'md5', $data, NONCE_KEY . NONCE_SALT );
+		// PHP 5 >= 5.1.2, PECL hash >= 1.1 or wp-includes/compat.php
+		if ( function_exists( 'hash_hmac' ) )
+			return hash_hmac( 'md5', $data, NONCE_KEY . NONCE_SALT );
+		else
+			return self::hash_hmac( 'md5', $data, NONCE_KEY . NONCE_SALT );
 	}
 
 	/**
@@ -664,6 +655,51 @@ class IP_Geo_Block_API_Cookie extends IP_Geo_Block_API {
 
 		return $num;
 	}
+
+	/**
+	 * Alternative function of hash_equals() from wp-includes/compat.php
+	 *
+	 * @link http://php.net/manual/en/function.hash-equals.php#115635
+	 */
+	private static function hash_equals( $a, $b ) {
+		if( ( $i = strlen( $a ) ) !== strlen( $b ) )
+			return FALSE;
+
+		$exp = $a ^ $b; // 1 === strlen( 'a' ^ 'ab' )
+		$ret = 0;
+
+		while ( --$i >= 0 )
+			$ret |= ord( $exp[ $i ] );
+
+		return 0 === $ret;
+	}
+
+	/**
+	 * Alternative function of hash_hmac() from wp-includes/compat.php
+	 *
+	 * @link http://php.net/manual/en/function.hash-hmac.php#93440
+	 */
+	private static function hash_hmac( $algo, $data, $key, $raw_output = FALSE ) {
+		$packs = array( 'md5' => 'H32', 'sha1' => 'H40' );
+
+		if ( ! isset( $packs[ $algo ] ) )
+			return FALSE;
+
+		$pack = $packs[ $algo ];
+
+		if ( strlen( $key ) > 64 )
+			$key = pack( $pack, $algo( $key ) );
+
+		$key = str_pad( $key, 64, chr(0) );
+
+		$ipad = substr( $key, 0, 64 ) ^ str_repeat( chr(0x36), 64 );
+		$opad = substr( $key, 0, 64 ) ^ str_repeat( chr(0x5C), 64 );
+
+		$hmac = $algo( $opad . pack( $pack, $algo( $ipad . $data ) ) );
+
+		return $raw_output ? pack( $pack, $hmac ) : $hmac;
+	}
+
 }
 
 /**
