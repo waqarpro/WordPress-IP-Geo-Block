@@ -584,24 +584,22 @@ class IP_Geo_Block_API_Cookie extends IP_Geo_Block_API {
 		// Nonce generated 0-12 hours ago
 		$expected = substr( self::hash_nonce( $exp . '|' . $action . '|' . $uid . '|' . $tok ), -12, 10 );
 
-		// PHP 5 >= 5.6.0, PHP 7
+		// PHP 5 >= 5.6.0 or wp-includes/compat.php
 		if ( function_exists( 'hash_equals' ) )
 			return hash_equals( $expected, $nonce );
 
 		// http://php.net/manual/en/function.hash-equals.php#115635
 		else {
-//			$i = strlen( $expected );
-//			$nonce = substr( str_pad( $nonce, $i ), 0, $i );
-			if( strlen( $expected ) !== strlen( $nonce ) ) {
+			// this is not safe for timming attack
+			if( ( $i = strlen( $expected ) ) !== strlen( $nonce ) )
 				return FALSE;
-			} else {
-				$exp = $expected ^ $nonce;
-				$ret = 0;
-				for( $i = strlen( $exp ) - 1; $i >= 0; $i-- ) {
-					$ret |= ord( $exp[ $i ] );
-				}
-				return ! $ret;
-			}
+
+			$exp = $expected ^ $nonce; // 1 === strlen( 'a' ^ 'ab' )
+			$ret = 0;
+			while ( --$i >= 0 )
+				$ret |= ord( $exp[ $i ] );
+
+			return 0 === $ret;
 		}
 	}
 
