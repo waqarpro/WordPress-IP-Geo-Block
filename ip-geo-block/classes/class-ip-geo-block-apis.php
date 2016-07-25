@@ -454,7 +454,7 @@ class IP_Geo_Block_API_IPInfoDB extends IP_Geo_Block_API {
 class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 
 	public function __construct( $api_key = NULL ) {
-		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 	}
 
 	public static function update_cache( $hook, $validate, $settings ) {
@@ -590,13 +590,15 @@ class IP_Geo_Block_API_Cookie extends IP_Geo_Block_API {
 
 		// http://php.net/manual/en/function.hash-equals.php#115635
 		else {
+//			$i = strlen( $expected );
+//			$nonce = substr( str_pad( $nonce, $i ), 0, $i );
 			if( strlen( $expected ) !== strlen( $nonce ) ) {
 				return FALSE;
 			} else {
-				$res = $expected ^ $nonce;
+				$exp = $expected ^ $nonce;
 				$ret = 0;
-				for( $i = strlen( $res ) - 1; $i >= 0; $i-- ) {
-					$ret |= ord( $res[ $i ] );
+				for( $i = strlen( $exp ) - 1; $i >= 0; $i-- ) {
+					$ret |= ord( $exp[ $i ] );
 				}
 				return ! $ret;
 			}
@@ -826,9 +828,7 @@ if ( class_exists( 'IP_Geo_Block' ) ) {
 	// Get absolute path to the geo-location API
 	$dir = IP_Geo_Block::get_option();
 	$dir = trailingslashit(
-		apply_filters(
-			IP_Geo_Block::PLUGIN_NAME . '-api-dir', dirname( $dir['api_dir'] )
-		)
+		apply_filters( IP_Geo_Block::PLUGIN_NAME . '-api-dir', dirname( $dir['api_dir'] ) )
 	) . IP_Geo_Block::GEOAPI_NAME;
 
 	// If not exists then use bundled API
