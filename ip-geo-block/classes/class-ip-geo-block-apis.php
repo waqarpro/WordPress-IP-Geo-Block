@@ -577,19 +577,29 @@ class IP_Geo_Block_API_Cookie extends IP_Geo_Block_API {
 	 *
 	 */
 	private static function verify_nonce( $nonce, $action = -1 ) {
-		if ( $nonce ) {
-			$uid = self::get_current_user();
-			$tok = self::get_session_token();
-			$exp = self::nonce_tick();
+		$uid = self::get_current_user();
+		$tok = self::get_session_token();
+		$exp = self::nonce_tick();
 
-			// Nonce generated 0-12 hours ago
-			$expected = substr( self::hash_nonce( $exp . '|' . $action . '|' . $uid . '|' . $tok ), -12, 10 );
+		// Nonce generated 0-12 hours ago
+		$expected = substr( self::hash_nonce( $exp . '|' . $action . '|' . $uid . '|' . $tok ), -12, 10 );
 
-			if ( hash_equals( $expected, $nonce ) )
-				return TRUE;
+		if ( function_exists( 'hash_equals' ) )
+			return hash_equals( $expected, $nonce );
+
+		// http://php.net/manual/en/function.hash-equals.php#115635
+		else {
+			if( strlen( $expected ) !== strlen( $nonce ) ) {
+				return FALSE;
+			} else {
+				$res = $expected ^ $nonce;
+				$ret = 0;
+				for( $i = strlen( $res ) - 1; $i >= 0; $i-- ) {
+					$ret |= ord( $res[ $i ] );
+				}
+				return ! $ret;
+			}
 		}
-
-		return FALSE; // Invalid nonce
 	}
 
 	/**
