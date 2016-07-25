@@ -584,6 +584,7 @@ class IP_Geo_Block_API_Cookie extends IP_Geo_Block_API {
 		// Nonce generated 0-12 hours ago
 		$expected = substr( self::hash_nonce( $exp . '|' . $action . '|' . $uid . '|' . $tok ), -12, 10 );
 
+		// PHP 5 >= 5.6.0, PHP 7
 		if ( function_exists( 'hash_equals' ) )
 			return hash_equals( $expected, $nonce );
 
@@ -607,6 +608,7 @@ class IP_Geo_Block_API_Cookie extends IP_Geo_Block_API {
 	 *
 	 */
 	private static function hash_nonce( $data ) {
+		// PHP 5 >= 5.1.2, PHP 7, PECL hash >= 1.1
 		return hash_hmac( 'md5', $data, NONCE_KEY . NONCE_SALT );
 	}
 
