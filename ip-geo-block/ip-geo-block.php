@@ -43,19 +43,19 @@ define( 'IP_GEO_BLOCK_BASE', plugin_basename( __FILE__ ) ); // @since 1.5
  * Load class
  *
  */
-include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block.php' );
+require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block.php' );
 
 /**
  * Register hooks that are fired when the plugin is activated or deactivated.
  * When the plugin is deleted, the uninstall.php file is loaded.
  */
 function ip_geo_block_activate( $network_wide = FALSE ) {
-	include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-actv.php' );
+	require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-actv.php' );
 	IP_Geo_Block_Activate::activate( $network_wide );
 }
 
 function ip_geo_block_deactivate( $network_wide = FALSE ) {
-	include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-actv.php' );
+	require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-actv.php' );
 	IP_Geo_Block_Activate::deactivate( $network_wide );
 }
 
@@ -77,7 +77,7 @@ add_action( 'plugins_loaded', array( 'IP_Geo_Block', 'get_instance' ) );
  *
  */
 if ( is_admin() ) {
-	include_once( IP_GEO_BLOCK_PATH . 'admin/class-ip-geo-block-admin.php' );
+	require_once( IP_GEO_BLOCK_PATH . 'admin/class-ip-geo-block-admin.php' );
 	add_action( 'plugins_loaded', array( 'IP_Geo_Block_Admin', 'get_instance' ) );
 }
 

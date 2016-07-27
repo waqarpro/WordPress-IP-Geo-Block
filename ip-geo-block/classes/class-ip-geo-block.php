@@ -18,6 +18,7 @@ class IP_Geo_Block {
 	const VERSION = '3.0.0b';
 	const GEOAPI_NAME = 'ip-geo-api';
 	const PLUGIN_NAME = 'ip-geo-block';
+	const PLUGIN_SLUG = 'ip-geo-block'; // fallback for ip-geo-api 1.1.3
 	const OPTION_NAME = 'ip_geo_block_settings';
 	const CACHE_NAME  = 'ip_geo_block_cache';
 	const CRON_NAME   = 'ip_geo_block_cron';
@@ -144,7 +145,7 @@ class IP_Geo_Block {
 	 *
 	 */
 	public static function get_default() {
-		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
 		return IP_Geo_Block_Opts::get_default();
 	}
 
@@ -245,7 +246,7 @@ class IP_Geo_Block {
 	 * @return array $result country code and so on
 	 */
 	public static function get_geolocation( $ip = NULL, $providers = array(), $callback = 'get_country' ) {
-		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
 
 		$result = self::_get_geolocation( $ip ? $ip : self::get_ip_address(), self::get_option(), $providers, $callback );
 
@@ -345,8 +346,8 @@ class IP_Geo_Block {
 	 * @param boolean $die send http response and die if validation fails
 	 */
 	public function validate_ip( $hook, $settings, $block = TRUE, $die = TRUE, $auth = TRUE ) {
-		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
-		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 
 		// set IP address to be validated
 		$ips = array( self::get_ip_address() );
@@ -376,7 +377,7 @@ class IP_Geo_Block {
 		$providers = IP_Geo_Block_Provider::get_valid_providers( $settings['providers'] );
 
 		// apply custom filter for validation
-		// @usage add_filter( 'ip-geo-block-$hook', 'my_validation' );
+		// @usage add_filter( 'ip-geo-block-$hook', 'my_validation', 10, 2 );
 		// @param $validate = array(
 		//     'ip'       => $ip,       /* validated ip address                */
 		//     'auth'     => $auth,     /* authenticated or not                */
@@ -575,7 +576,7 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function auth_fail( $something = NULL ) {
-		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 
 		// Count up a number of fails when authentication is failed
 		if ( $cache = IP_Geo_Block_API_Cache::get_cache( $this->remote_addr ) ) {
@@ -698,7 +699,7 @@ class IP_Geo_Block {
 		$ip = $validate['ip'];
 
 		if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ) {
-			include_once( IP_GEO_BLOCK_PATH . 'includes/Net/IPv4.php' );
+			require_once( IP_GEO_BLOCK_PATH . 'includes/Net/IPv4.php' );
 
 			foreach ( $this->multiexplode( array( ",", "\n" ), $ips ) as $i ) {
 				$j = explode( '/', $i, 2 );
@@ -711,7 +712,7 @@ class IP_Geo_Block {
 		}
 
 		elseif ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) ) {
-			include_once( IP_GEO_BLOCK_PATH . 'includes/Net/IPv6.php' );
+			require_once( IP_GEO_BLOCK_PATH . 'includes/Net/IPv6.php' );
 
 			foreach ( $this->multiexplode( array( ",", "\n" ), $ips ) as $i ) {
 				$j = explode( '/', $i, 2 );
@@ -744,7 +745,7 @@ class IP_Geo_Block {
 	}
 
 	public function check_bots( $validate, $settings ) {
-		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-lkup.php' );
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-lkup.php' );
 
 		if ( isset( $_SERVER['HTTP_USER_AGENT'] ) ) {
 			$agent = $_SERVER['HTTP_USER_AGENT'];
@@ -788,12 +789,12 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function update_database( $immediate = FALSE ) {
-		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-cron.php' );
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-cron.php' );
 		return IP_Geo_Block_Cron::exec_job( $immediate );
 	}
 
 	public function exec_cache_gc() {
-		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-cron.php' );
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-cron.php' );
 		IP_Geo_Block_Cron::exec_cache_gc( self::get_option() );
 	}
 

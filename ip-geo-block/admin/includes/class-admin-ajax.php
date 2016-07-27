@@ -6,8 +6,8 @@ class IP_Geo_Block_Admin_Ajax {
 	 *
 	 */
 	static public function search_ip( $which ) {
-		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
-		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-lkup.php' );
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-lkup.php' );
 
 		// check format
 		if ( filter_var( $ip = $_POST['ip'], FILTER_VALIDATE_IP ) ) {
@@ -37,7 +37,7 @@ class IP_Geo_Block_Admin_Ajax {
 	 *
 	 */
 	static public function scan_country() {
-		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
 
 		// scan all the country code using selected APIs
 		$ip        = IP_Geo_Block::get_ip_address();
@@ -87,8 +87,8 @@ class IP_Geo_Block_Admin_Ajax {
 	 *
 	 */
 	static public function export_logs( $which ) {
-		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php' );
-		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php' );
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 
 		$csv = '';
 		$which = IP_Geo_Block_Logs::restore_logs( $which );
@@ -118,8 +118,8 @@ class IP_Geo_Block_Admin_Ajax {
 	 *
 	 */
 	static public function restore_logs( $which ) {
-		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php' );
-		include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php' );
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 
 		// if js is slow then limit the number of rows
 		$list = array();

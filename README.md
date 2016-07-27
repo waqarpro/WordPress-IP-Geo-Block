@@ -8,6 +8,10 @@ posted from the specific countries, and also prevents zero-day exploit.
 
 See more detail at [WordPress.org][IPGB].
 
+### Dependency:
+
+[IP Geo API 1.1.4][IPGeoAPI]
+
 ### Requirement:
 
 - WordPress 3.7+
@@ -49,3 +53,4 @@ This plugin is licensed under the GPL v2 or later.
 [MaxMind]:    http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention"
 [IP2Loc]:     http://www.ip2location.com "IP Address Geolocation to Identify Website Visitor's Geographical Location"
 [Cache]:      http://www.designbombs.com/top-wordpress-caching-plugins-compared/ "Top 6 Fastest WordPress Caching Plugins Compared (2016 Edition)"
+[IPGeoAPI]:   https://github.com/tokkonopapa/WordPress-IP-Geo-API "GitHub - tokkonopapa/WordPress-IP-Geo-API: A class library combined with WordPress plugin IP Geo Block to handle geo-location database of Maxmind and IP2Location."

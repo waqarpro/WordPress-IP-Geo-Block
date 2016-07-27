@@ -321,7 +321,7 @@ class IP_Geo_Block_Admin {
 		if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ) {
 			// Check creation of database table
 			if ( $settings['validation']['reclogs'] ) {
-				include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+				require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 
 				if ( ( $warn = IP_Geo_Block_Logs::diag_tables() ) &&
 				     FALSE === IP_Geo_Block_Logs::create_tables() ) {
@@ -390,9 +390,6 @@ class IP_Geo_Block_Admin {
 <?php if ( 2 === $tab ) { ?>
 	<div id="ip-geo-block-map"></div>
 <?php } elseif ( 3 === $tab ) {
-	echo '<p>', __( 'Thanks for providing these great services for free.', 'ip-geo-block' ), '<br />';
-	echo __( '(Most browsers will redirect you to each site <a href="http://www.ipgeoblock.com/etc/referer.html" title="Referer Checker">without referrer when you click the link</a>.)', 'ip-geo-block' ), '</p>';
-
 	// show attribution (higher priority order)
 	$providers = IP_Geo_Block_Provider::get_addons();
 	$tab = array();
@@ -402,6 +399,9 @@ class IP_Geo_Block_Admin {
 		}
 	}
 	echo '<p>', implode( '<br />', $tab ), "</p>\n";
+
+	echo "<p>", __( 'Thanks for providing these great services for free.', 'ip-geo-block' ), "<br />\n";
+	echo __( '(Most browsers will redirect you to each site <a href="http://www.ipgeoblock.com/etc/referer.html" title="Referer Checker">without referrer when you click the link</a>.)', 'ip-geo-block' ), "</p>\n";
 } ?>
 <?php if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ) {
 	echo '<p>', get_num_queries(), ' queries. ', timer_stop(0), ' seconds. ', memory_get_usage(), " bytes.</p>\n";
@@ -424,7 +424,7 @@ class IP_Geo_Block_Admin {
 			3 => 'admin/includes/tab-attribution.php',
 		);
 
-		include_once( IP_GEO_BLOCK_PATH . $files[ $this->admin_tab ] );
+		require_once( IP_GEO_BLOCK_PATH . $files[ $this->admin_tab ] );
 		IP_Geo_Block_Admin_Tab::tab_setup( $this );
 	}
 
@@ -591,7 +591,7 @@ class IP_Geo_Block_Admin {
 
 			switch( $key ) {
 			  case 'providers':
-				include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
+				require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
 				foreach ( IP_Geo_Block_Provider::get_providers() as $provider => $api ) {
 					// need no key
 					if ( NULL === $api ) {
@@ -789,7 +789,7 @@ class IP_Geo_Block_Admin {
 		$options = $this->validate_options( $input );
 
 		// activate rewrite rules
-		include_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php' );
+		require_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php' );
 		$stat = IP_Geo_Block_Admin_Rewrite::activate_rewrite_all( $options['rewrite'] );
 		$diff = array_diff( $options['rewrite'], $stat );
 
@@ -839,19 +839,19 @@ class IP_Geo_Block_Admin {
 
 		  case 'search':
 			// Get geolocation by IP
-			include_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-ajax.php' );
+			require_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-ajax.php' );
 			$res = IP_Geo_Block_Admin_Ajax::search_ip( $which );
 			break;
 
 		  case 'scan-code':
 			// Fetch providers to get country code
-			include_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-ajax.php' );
+			require_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-ajax.php' );
 			$res = IP_Geo_Block_Admin_Ajax::scan_country();
 			break;
 
 		  case 'clear-statistics':
 			// Set default values
-			include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 			IP_Geo_Block_Logs::clear_stat();
 			$res = array(
 				'page' => 'options-general.php?page=' . IP_Geo_Block::PLUGIN_NAME,
@@ -861,7 +861,7 @@ class IP_Geo_Block_Admin {
 
 		  case 'clear-cache':
 			// Delete cache of IP address
-			include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
+			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
 			IP_Geo_Block_API_Cache::clear_cache();
 			$res = array(
 				'page' => 'options-general.php?page=' . IP_Geo_Block::PLUGIN_NAME,
@@ -871,7 +871,7 @@ class IP_Geo_Block_Admin {
 
 		  case 'clear-logs':
 			// Delete logs in MySQL DB
-			include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 
 			$hook = array( 'comment', 'login', 'admin', 'xmlrpc', 'public' );
 			$which = in_array( $which, $hook ) ? $which : NULL;
@@ -884,38 +884,38 @@ class IP_Geo_Block_Admin {
 
 		  case 'export-logs':
 			// Export logs from MySQL DB
-			include_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-ajax.php' );
+			require_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-ajax.php' );
 			IP_Geo_Block_Admin_Ajax::export_logs( $which );
 			break;
 
 		  case 'restore':
 			// Get logs from MySQL DB
-			include_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-ajax.php' );
+			require_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-ajax.php' );
 			$res = IP_Geo_Block_Admin_Ajax::restore_logs( $which );
 			break;
 
 		  case 'validate':
 			// Validate settings
-			include_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-ajax.php' );
+			require_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-ajax.php' );
 			IP_Geo_Block_Admin_Ajax::validate_settings( $this );
 			break;
 
 		  case 'import-default':
 			// Import initial settings
-			include_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-ajax.php' );
+			require_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-ajax.php' );
 			$res = IP_Geo_Block_Admin_Ajax::settings_to_json( IP_Geo_Block::get_default() );
 			break;
 
 		  case 'import-preferred':
 			// Import preference
-			include_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-ajax.php' );
+			require_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-ajax.php' );
 			$res = IP_Geo_Block_Admin_Ajax::preferred_to_json();
 			break;
 
 		  case 'create-table':
 		  case 'delete-table':
 			// Need to define `IP_GEO_BLOCK_DEBUG` to true
-			include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
+			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 
 			if ( 'create-table' === $_POST['cmd'] )
 				IP_Geo_Block_Logs::create_tables();

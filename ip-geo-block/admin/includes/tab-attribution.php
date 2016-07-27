@@ -1,5 +1,5 @@
 <?php
-include_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
+require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
 
 class IP_Geo_Block_Admin_Tab {
 
