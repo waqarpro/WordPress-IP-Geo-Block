@@ -146,8 +146,15 @@ class IP_Geo_Block_Cron {
 	 * Kick off a cron job to download database immediately on background.
 	 *
 	 */
-	public static function start_update_db( $immediate = TRUE, $ip_adrs ) {
-		set_transient( IP_Geo_Block::CRON_NAME, $ip_adrs, 2 * MINUTE_IN_SECONDS );
+	public static function start_update_db( $immediate = TRUE ) {
+		if ( $immediate ) {
+			set_transient(
+				IP_Geo_Block::CRON_NAME,
+				IP_Geo_Block::get_ip_address(),
+				2 * MINUTE_IN_SECONDS
+			);
+		}
+
 		$settings = IP_Geo_Block::get_option();
 		self::schedule_cron_job( $settings['update'], NULL, $immediate );
 	}
