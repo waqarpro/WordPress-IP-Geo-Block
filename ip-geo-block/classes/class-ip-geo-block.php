@@ -41,6 +41,10 @@ class IP_Geo_Block {
 	 * 
 	 */
 	private function __construct() {
+		// prepare loader class
+		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-load.php';
+		$loader = new IP_Geo_Block_Loader();
+
 		$settings = self::get_option();
 		$priority = $settings['priority'];
 		$validate = $settings['validation'];
@@ -51,7 +55,7 @@ class IP_Geo_Block {
 
 		// check the package version and upgrade if needed
 		if ( version_compare( $settings['version'], self::VERSION ) < 0 || $settings['matching_rule'] < 0 )
-			add_action( 'init', 'ip_geo_block_activate', $priority );
+			$loader->add_action( 'init', 'ip_geo_block_activate', $priority );
 
 		// Garbage collection for IP address cache
 		add_action( self::CACHE_NAME, array( $this, 'exec_cache_gc' ) );
@@ -80,7 +84,7 @@ class IP_Geo_Block {
 				$this->target_type = $key;
 		}
 
-		// WordPress core files
+		// validate request to WordPress core files
 		$list = array(
 			'wp-comments-post.php' => 'comment',
 			'wp-trackback.php'     => 'comment',
@@ -93,15 +97,15 @@ class IP_Geo_Block {
 		// wp-admin, wp-includes, wp-content/(plugins|themes|language|uploads)
 		if ( $this->target_type ) {
 			if ( 'admin' !== $this->target_type )
-				add_action( 'init', array( $this, 'validate_direct' ), $priority );
+				$loader->add_action( 'init', array( $this, 'validate_direct' ), $priority );
 			else // 'widget_init' for admin dashboard
-				add_action( 'wp_loaded', array( $this, 'validate_admin' ), $priority );
+				$loader->add_action( 'wp_loaded', array( $this, 'validate_admin' ), $priority );
 		}
 
 		// analize core validation target (comment|xmlrpc|login|public)
 		elseif ( isset( $list[ $this->pagenow ] ) ) {
 			if ( $validate[ $list[ $this->pagenow ] ] )
-				add_action( 'init', array( $this, 'validate_' . $list[ $this->pagenow ] ), $priority );
+				$loader->add_action( 'init', array( $this, 'validate_' . $list[ $this->pagenow ] ), $priority );
 		}
 
 		else {
@@ -130,6 +134,9 @@ class IP_Geo_Block {
 		// force to change the redirect URL at logout to remove nonce, embed a nonce into pages
 		add_filter( 'wp_redirect', array( $this, 'logout_redirect' ), 20, 2 ); // logout_redirect @4.2
 		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_nonce' ), $priority );
+
+		// Run the loader to execute all of the hooks with WordPress.
+		$loader->run( $this );
 	}
 
 	/**
@@ -160,12 +167,14 @@ class IP_Geo_Block {
 	 */
 	public static function enqueue_nonce() {
 		if ( is_user_logged_in() ) {
+			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-nonc.php' );
+
 			$handle = self::PLUGIN_NAME . '-auth-nonce';
 			$script = plugins_url(
 				! defined( 'IP_GEO_BLOCK_DEBUG' ) || ! IP_GEO_BLOCK_DEBUG ?
 				'admin/js/authenticate.min.js' : 'admin/js/authenticate.js', IP_GEO_BLOCK_BASE
 			);
-			$nonce = array( 'nonce' => wp_create_nonce( $handle ) ) + self::$wp_path;
+			$nonce = array( 'nonce' => IP_Geo_Block_Nonce::create_nonce( $handle ) ) + self::$wp_path;
 			wp_enqueue_script( $handle, $script, array( 'jquery' ), self::VERSION );
 			wp_localize_script( $handle, 'IP_GEO_BLOCK_AUTH', $nonce );
 		}
@@ -330,8 +339,8 @@ class IP_Geo_Block {
 			if ( function_exists( 'trackback_response' ) )
 				trackback_response( $code, $mesg ); // @since 0.71
 			elseif ( ! defined( 'DOING_AJAX' ) && ! defined( 'XMLRPC_REQUEST' ) ) {
-				FALSE !== ( @include( get_stylesheet_directory() .'/'.$code.'.php' ) ) or // child  theme
-				FALSE !== ( @include( get_template_directory()   .'/'.$code.'.php' ) ) or // parent theme
+				defined( 'STYLESHEETPATH' ) && FALSE !== ( @include( get_stylesheet_directory() .'/'.$code.'.php' ) ) or // child  theme
+				defined( 'TEMPLATEPATH'   ) && FALSE !== ( @include( get_template_directory()   .'/'.$code.'.php' ) ) or // parent theme
 				wp_die( $mesg, '', array( 'response' => $code, 'back_link' => TRUE ) );
 			}
 			exit;
@@ -532,7 +541,8 @@ class IP_Geo_Block {
 		}
 
 		// register validation of malicious signature (except in the comment and post)
-		if ( ! is_user_logged_in() || ! in_array( $this->pagenow, array( 'comment.php', 'post.php' ), TRUE ) )
+		if ( ! ( function_exists( 'is_user_logged_in' ) && is_user_logged_in() ) ||
+		     ! in_array( $this->pagenow, array( 'comment.php', 'post.php' ), TRUE ) )
 			add_filter( self::PLUGIN_NAME . '-admin', array( $this, 'check_signature' ), 6, 2 );
 
 		// validate country by IP address (1: Block by country)
@@ -590,8 +600,8 @@ class IP_Geo_Block {
 			$settings = self::get_option();
 			$cache = IP_Geo_Block_API_Cache::update_cache( $cache['hook'], $validate, $settings );
 
-			// validate xmlrpc system.multicall (HTTP_RAW_POST_DATA has already populated in xmlrpc.php)
-			if ( defined( 'XMLRPC_REQUEST' ) && FALSE !== stripos( $GLOBALS['HTTP_RAW_POST_DATA'], 'system.multicall' ) )
+			// validate xmlrpc system.multicall ($HTTP_RAW_POST_DATA has already populated in xmlrpc.php)
+			if ( defined( 'XMLRPC_REQUEST' ) && FALSE !== stripos( $HTTP_RAW_POST_DATA, 'system.multicall' ) )
 				$validate['result'] = 'multi';
 
 			// (1) blocked, (3) unauthenticated, (5) all
@@ -648,9 +658,11 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function check_nonce( $validate, $settings ) {
-		$nonce = self::PLUGIN_NAME . '-auth-nonce';
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-nonc.php' );
 
-		if ( ! wp_verify_nonce( self::retrieve_nonce( $nonce ), $nonce ) ) {
+		$action = self::PLUGIN_NAME . '-auth-nonce';
+
+		if ( ! IP_Geo_Block_Nonce::verify_nonce( self::retrieve_nonce( $action ), $action ) ) {
 			if ( empty( $validate['result'] ) || 'passed' === $validate['result'] )
 				$validate['result'] = 'wp-zep'; // can't overwrite existing result
 		}
@@ -734,7 +746,8 @@ class IP_Geo_Block {
 	public function validate_public() {
 		$settings = self::get_option();
 
-		if ( -1 !== (int)$settings['public']['matching_rule'] ) { // replace "Validation rule settings"
+		// replace "Validation rule settings"
+		if ( -1 !== (int)$settings['public']['matching_rule'] ) {
 			$settings['matching_rule'] = $settings['public']['matching_rule'];
 			$settings['white_list'   ] = $settings['public']['white_list'   ];
 			$settings['black_list'   ] = $settings['public']['black_list'   ];

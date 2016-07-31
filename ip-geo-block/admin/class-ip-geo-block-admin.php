@@ -102,6 +102,8 @@ class IP_Geo_Block_Admin {
 	 *
 	 */
 	public function enqueue_admin_assets() {
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-nonc.php' );
+
 		$footer = TRUE;
 		$dependency = array( 'jquery' );
 
@@ -162,7 +164,7 @@ class IP_Geo_Block_Admin {
 			array(
 				'action' => 'ip_geo_block',
 				'url' => admin_url( 'admin-ajax.php' ),
-				'nonce' => wp_create_nonce( $this->get_ajax_action() ),
+				'nonce' => IP_Geo_Block_Nonce::create_nonce( $this->get_ajax_action() ),
 			)
 		);
 		wp_enqueue_script( $handle );
@@ -175,7 +177,7 @@ class IP_Geo_Block_Admin {
 	public function add_revision_nonce( $revisions_data, $revision, $post ) {
 		$revisions_data['restoreUrl'] = add_query_arg(
 			$nonce = IP_Geo_Block::PLUGIN_NAME . '-auth-nonce',
-			wp_create_nonce( $nonce ),
+			IP_Geo_Block_Nonce::create_nonce( $nonce ),
 			$revisions_data['restoreUrl']
 		);
 
@@ -761,12 +763,12 @@ class IP_Geo_Block_Admin {
 
 		if ( $ajax ) {
 			$action = $this->get_ajax_action();
-			$nonce &= wp_verify_nonce( IP_Geo_Block::retrieve_nonce( 'nonce' ), $action );
+			$nonce &= IP_Geo_Block_Nonce::verify_nonce( IP_Geo_Block::retrieve_nonce( 'nonce' ), $action );
 //			$nonce &= check_admin_referer( $this->get_ajax_action(), 'nonce' );
 		}
 
 		$action = IP_Geo_Block::PLUGIN_NAME . '-auth-nonce';
-		$nonce &= wp_verify_nonce( IP_Geo_Block::retrieve_nonce( $action ), $action );
+		$nonce &= IP_Geo_Block_Nonce::verify_nonce( IP_Geo_Block::retrieve_nonce( $action ), $action );
 
 		if ( ! current_user_can( 'manage_options' ) || empty( $_POST ) || ! $nonce ) {
 			status_header( 403 );
