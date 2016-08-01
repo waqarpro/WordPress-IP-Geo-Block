@@ -274,7 +274,7 @@ class IP_Geo_Block_Admin {
 		delete_transient( IP_Geo_Block::PLUGIN_NAME . '-notice' );
 
 		// Check version and compatibility
-		if ( version_compare( get_bloginfo( 'version' ), '3.7' ) < 0 )
+		if ( version_compare( get_bloginfo( 'version' ), '3.7.0' ) < 0 )
 			self::add_admin_notice( 'error', __( 'You need WordPress 3.7+.', 'ip-geo-block' ) );
 
 		$settings = IP_Geo_Block::get_option();
@@ -577,7 +577,7 @@ class IP_Geo_Block_Admin {
 			$output['validation'][ $key ] = 0;
 
 		// restore the 'signature' that might be transformed to avoid self blocking
-		$input['signature'] = base64_decode( $input['signature'] ); //str_rot13()
+		$input['signature'] = base64_decode( $input['signature'] ); // str_rot13()
 
 		/**
 		 * Sanitize a string from user input

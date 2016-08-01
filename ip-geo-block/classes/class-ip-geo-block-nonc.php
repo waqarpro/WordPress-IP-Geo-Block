@@ -1,6 +1,6 @@
 <?php
 /**
- * Register all actions and filters for the plugin
+ * IP Geo Block - Creates a cryptographic token and verification
  *
  * @package   IP_Geo_Block
  * @author    tokkonopapa <tokkonopapa@yahoo.com>

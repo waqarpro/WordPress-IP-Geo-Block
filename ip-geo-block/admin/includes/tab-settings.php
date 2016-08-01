@@ -2,9 +2,9 @@
 require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php' );
 require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
 require_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php' );
-if ( ! function_exists( 'get_plugins' ) ) {
+
+if ( ! function_exists( 'get_plugins' ) )
 	require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
-}
 
 class IP_Geo_Block_Admin_Tab {
 
@@ -576,7 +576,7 @@ class IP_Geo_Block_Admin_Tab {
 		$section = $plugin_slug . '-public';
 		add_settings_section(
 			$section,
-			__( 'Front-end target settings', 'ip-geo-block' ),
+			__( 'Front-end target settings (beta)', 'ip-geo-block' ),
 			array( __CLASS__, 'note_public' ),
 			$option_slug
 		);
@@ -872,21 +872,21 @@ class IP_Geo_Block_Admin_Tab {
 			$option_slug
 		);
 
-		/* Number of entries
-		$field = 'cache_hold';
+		// Cashe by cookie
+		$field = 'cache_cookie';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( 'Number of entries', 'ip-geo-block' ),
+			__( '<dfn title="It saves IP address and country code into the client cookie with nonce to reduce SQL queries.">Cache by cookie</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
 			array(
-				'type' => 'text',
+				'type' => 'checkbox',
 				'option' => $option_name,
 				'field' => $field,
-				'value' => $options[ $field ],
+				'value' => ! empty( $options[ $field ] ) ? TRUE : FALSE,
 			)
-		);*/
+		);
 
 		// Expiration time [sec]
 		$field = 'cache_time';
@@ -920,19 +920,19 @@ class IP_Geo_Block_Admin_Tab {
 			)
 		);
 
-		// Cashe by cookie
-		$field = 'cache_cookie';
+		// Number of entries
+		$field = 'cache_hold';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( '<dfn title="It saves IP address and country code into the client cookie with nonce to reduce SQL queries.">Cache by cookie</dfn>', 'ip-geo-block' ),
+			__( 'Number of entries to be displayed in cache', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
 			array(
-				'type' => 'checkbox',
+				'type' => 'text',
 				'option' => $option_name,
 				'field' => $field,
-				'value' => ! empty( $options[ $field ] ) ? TRUE : FALSE,
+				'value' => $options[ $field ],
 			)
 		);
 
@@ -1099,7 +1099,9 @@ endif;
 	public static function note_public() {
 		echo
 			'<ul class="ip-geo-block-note">', "\n",
-				'<li>', __( 'Please configure your caching plugin so as to use PHP and late initialization to prevent serving inconsistent pages.', 'ip-geo-block' ), '</li>', "\n",
+				'<li>', __( 'Please configure your caching plugin to use PHP and late initialization to prevent serving inconsistent pages.', 'ip-geo-block' ), '</li>', "\n",
+				'<li>', __( 'If your caching plugin does not support late initialization, please drop <code>ip-geo-block-mu.php</code> into your <code>mu-plugins</code> directory.', 'ip-geo-block' ), '</li>', "\n",
+				'<li>', __( 'For more details, please refer to the document <a href="http://www.ipgeoblock.com/codex/living-with-caching-plugin.html">Living with caching plugin</a>.', 'ip-geo-block' ), '</li>', "\n",
 			'</ul>', "\n";
 	}
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * Register all actions and filters for the plugin
+ * IP Geo Block - Register all actions and filters for the plugin
  *
  * @package   IP_Geo_Block
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
@@ -82,7 +82,7 @@ class IP_Geo_Block_Loader {
 		foreach ( $this->filters as $index => $filter ) {
 			if ( $filter['hook'] === $hook ) {
 				$args[1] = $value;
-                $value = call_user_func_array(
+				$value = call_user_func_array(
 					$filter['callback'], array_slice( $args, 1, (int)$filter['accepted_args'] )
 				);
 			}
@@ -129,7 +129,7 @@ class IP_Geo_Block_Loader {
 		 * This part will be executed at the very beginning of WordPress core.
 		 * Execute callbacks that are specified by the component with 'init'.
 		 */
-		if ( ! function_exists( 'add_filter' ) || defined( 'IP_GEO_BLOCK_MU_PLUGINS' ) ) {
+		if ( ! function_exists( 'add_filter' ) || defined( 'IP_GEO_BLOCK_BEFORE_INIT' ) ) {
 			foreach ( $this->actions as $index => $hook ) {
 				if ( in_array( $hook['hook'], array( 'init', 'wp_loaded' ) ) ) {
 					// Execute callback directly

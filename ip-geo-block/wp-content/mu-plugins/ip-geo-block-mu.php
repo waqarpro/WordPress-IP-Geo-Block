@@ -28,9 +28,10 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 /*----------------------------------------------------------------------------*
- * Global definition
+ * Validation must be executed before `init` action hook
  *----------------------------------------------------------------------------*/
-define( 'IP_GEO_BLOCK_MU_PLUGINS', TRUE );
+if ( ! defined( 'IP_GEO_BLOCK_BEFORE_INIT' ) )
+	define( 'IP_GEO_BLOCK_BEFORE_INIT', TRUE );
 
 /*----------------------------------------------------------------------------*
  * Detect plugin. For use on Front End only.

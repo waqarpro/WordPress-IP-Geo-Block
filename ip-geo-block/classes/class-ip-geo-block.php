@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '3.0.0b';
+	const VERSION = '3.0.0b2';
 	const GEOAPI_NAME = 'ip-geo-api';
 	const PLUGIN_NAME = 'ip-geo-block';
 	const PLUGIN_SLUG = 'ip-geo-block'; // fallback for ip-geo-api 1.1.3
@@ -137,6 +137,7 @@ class IP_Geo_Block {
 
 		// Run the loader to execute all of the hooks with WordPress.
 		$loader->run( $this );
+		unset( $loader );
 	}
 
 	/**

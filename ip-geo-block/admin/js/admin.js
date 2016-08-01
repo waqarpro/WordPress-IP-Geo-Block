@@ -124,6 +124,19 @@ var ip_geo_block_time = new Date();
 		return window.btoa(str);
 	}
 
+	// Equivalent for PHP's str_rot13
+	// @link http://phpjs.org/functions/str_rot13/
+	/*function str_rot13(str) {
+		return String(str).replace(/[a-z]/gi, function (s) {
+			return String.fromCharCode(s.charCodeAt(0) + (s.toLowerCase() < 'n' ? 13 : -13)); //'
+		});
+	}*/
+
+	// Wrapper for scrambling strings
+	function scramble_str(str) {
+		return -1 !== str.indexOf('wp-config') ? base64_encode(str) : str;
+	}
+
 	// File Reader
 	function readfile(file, callback) {
 		var reader = new FileReader();
@@ -509,7 +522,7 @@ var ip_geo_block_time = new Date();
 					}
 				});
 
-				json[id += '[signature]'] = base64_encode(json[id]);
+				json[id += '[signature]'] = scramble_str(json[id]);
 				$(ID('#', 'export-data')).val(JSON.stringify(json));
 				$(ID('#', 'export-form')).trigger('submit');
 
@@ -528,7 +541,7 @@ var ip_geo_block_time = new Date();
 					readfile(file, function (data) {
 						var id = name + '[signature]';
 						data = JSON.parse(data);
-						data[id] = base64_encode(data[id]);
+						data[id] = scramble_str(data[id]);
 						ajax_post('export-import', {
 							cmd: 'validate',
 							data: JSON.stringify(data)
@@ -585,7 +598,7 @@ var ip_geo_block_time = new Date();
 			// Submit
 			$('#submit').on('click', function (event) {
 				var elm = $(ID('@', 'signature'));
-				elm.val(base64_encode(elm.val()));
+				elm.val(scramble_str(elm.val()));
 				return true;
 			});
 

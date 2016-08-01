@@ -111,6 +111,7 @@ class IP_Geo_Block_Opts {
 			'languages'   => array(), // for wp-content/language
 		),
 		// since version 3.0.0
+		'redirect_uri'    => NULL,    // URI for redirection on blocking
 		'network_wide'    => FALSE,   // settings page on network dashboard
 		'public'          => array(
 			'matching_rule'  => 0,    // -1:neither, 0:white list, 1:black list
@@ -218,9 +219,8 @@ class IP_Geo_Block_Opts {
 
 				foreach ( array( 'plugins', 'themes' ) as $tmp ) {
 					$arr = array_keys( $settings['exception'][ $tmp ] );
-					if ( ! empty( $arr ) && ! is_numeric( $arr[0] ) ) {
+					if ( ! empty( $arr ) && ! is_numeric( $arr[0] ) )
 						$settings['exception'][ $tmp ] = $arr;
-					}
 				}
 			}
 
@@ -228,6 +228,7 @@ class IP_Geo_Block_Opts {
 				$settings['cache_time_gc']        = $default['cache_time_gc'];
 				$settings['cache_cookie']         = $default['cache_cookie'];
 				$settings['validation']['public'] = $default['validation']['public'];
+				$settings['redirect_uri']         = $default['redirect_uri'];
 				$settings['network_wide']         = $default['network_wide'];
 				$settings['public']               = $default['public'];
 
@@ -290,10 +291,9 @@ class IP_Geo_Block_Opts {
 			$dir = wp_upload_dir();
 			$dir = $dir['basedir'];
 
-			if ( ! @is_writable( $dir ) ) {
-				// wp-content/plugins/ip-geo-block
+			// wp-content/plugins/ip-geo-block
+			if ( ! @is_writable( $dir ) )
 				$dir = IP_GEO_BLOCK_PATH . 'wp-content';
-			}
 		}
 
 		// filter hook in `functions.php` doesn't work at activation
