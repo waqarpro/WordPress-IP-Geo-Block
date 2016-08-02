@@ -577,7 +577,7 @@ class IP_Geo_Block_Admin {
 			$output['validation'][ $key ] = 0;
 
 		// restore the 'signature' that might be transformed to avoid self blocking
-		$input['signature'] = base64_decode( $input['signature'] ); // str_rot13()
+		$input['signature'] = str_rot13( base64_decode( $input['signature'] ) );
 
 		/**
 		 * Sanitize a string from user input

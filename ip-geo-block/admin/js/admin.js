@@ -126,15 +126,15 @@ var ip_geo_block_time = new Date();
 
 	// Equivalent for PHP's str_rot13
 	// @link http://phpjs.org/functions/str_rot13/
-	/*function str_rot13(str) {
+	function str_rot13(str) {
 		return String(str).replace(/[a-z]/gi, function (s) {
 			return String.fromCharCode(s.charCodeAt(0) + (s.toLowerCase() < 'n' ? 13 : -13)); //'
 		});
-	}*/
+	}
 
 	// Wrapper for scrambling strings
 	function scramble_str(str) {
-		return -1 !== str.indexOf('wp-config') ? base64_encode(str) : str;
+		return base64_encode(str_rot13(str));
 	}
 
 	// File Reader
