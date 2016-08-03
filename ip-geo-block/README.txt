@@ -20,7 +20,7 @@ specified countries targeting vulnerable plugins and themes, especially with
 the original feature 'Zero-day Exploit Prevention' (WP-ZEP).
 
 Up to version 2.x, this plugin has been dedicated to protect the back-end of 
-your site. And from version 3.0.0, it becomes to be able to block the public 
+your site. And from version 3.x, it becomes to be able to block the public 
 facing pages on front-end.
 
 The protection based on the IP address is not a perfect solution for everyone.
@@ -310,17 +310,30 @@ can also help you.
 
 = Does this plugin works well with caching plugin? =
 
-For the back-end protection, the answer YES. But for front-end protection, 
+For the back-end protection, the answer is YES. But for front-end protection, 
 the answer depends on the plugin you are using.
 
-Currently, this plugin needs caching by "**PHP mode**" (WP Super Cache) or 
-"**Disk: Basic**" (W3 Total Cache), and for both cases it also needs 
-"**Late Initialization**" is enabled.
+Currently, the following caching plugins and configurations can be supported:
 
-If your caching plugin doesn't support these kind of options, i.e. in case 
-of using redirection by `mod_rewrite` in `.htaccess` (WP Fastest Cache) or 
-`advanced-cache.php` drop-in (Comet Cache), "**Blocking on front-end**" 
-feature might lead to generate inconsistent pages. 
+- [WP Super Cache](https://wordpress.org/plugins/wp-super-cache/ "WP Super Cache &mdash; WordPress Plugins")  
+  Select "**Use PHP to serve cache files**" and enable "**Late init**".
+
+- [W3 Total Cache](https://wordpress.org/plugins/w3-total-cache/ "W3 Total Cache &mdash; WordPress Plugins")  
+  Select "**Disk: Basic**" and enable "**Late initialization**" for page cache.
+
+- [Wordfence](https://wordpress.org/plugins/wordfence/ "Wordfence Security &mdash; WordPress Plugins")  
+  Select "**Basic Caching**" at Performance Settings and put 
+  `ip-geo-block-mu.php` in this package into your `wp-content/mu-plugins`
+  directory.
+
+If your plugin serves caching by `mod_rewrite` using `.htaccess` (e.g. WP 
+Fastest Cache) or caching by `advanced-cache.php` drop-in (Comet Cache), 
+"**Blocking on front-end**" feature might lead to generate inconsistent 
+pages. 
+
+= Does this plugin validate all the requests to the server? =
+
+Unfortunately, no. 
 
 = Do I have to turn on all the selection to enhance security? =
 

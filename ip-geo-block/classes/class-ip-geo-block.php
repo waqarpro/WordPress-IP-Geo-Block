@@ -338,11 +338,11 @@ class IP_Geo_Block {
 		  default: // 4xx Client Error, 5xx Server Error
 			status_header( $code ); // @since 2.0.0
 			if ( function_exists( 'trackback_response' ) )
-				trackback_response( $code, $mesg ); // @since 0.71
+				trackback_response( $code, wp_kses( $mesg, $GLOBALS['allowedtags'] ) ); // @since 0.71
 			elseif ( ! defined( 'DOING_AJAX' ) && ! defined( 'XMLRPC_REQUEST' ) ) {
 				defined( 'STYLESHEETPATH' ) && FALSE !== ( @include( get_stylesheet_directory() .'/'.$code.'.php' ) ) or // child  theme
 				defined( 'TEMPLATEPATH'   ) && FALSE !== ( @include( get_template_directory()   .'/'.$code.'.php' ) ) or // parent theme
-				wp_die( $mesg, '', array( 'response' => $code, 'back_link' => TRUE ) );
+				wp_die( wp_kses( $mesg, $GLOBALS['allowedtags'] ), '', array( 'response' => $code, 'back_link' => TRUE ) );
 			}
 			exit;
 		}
@@ -414,22 +414,20 @@ class IP_Geo_Block {
 		if ( $settings['save_statistics'] )
 			IP_Geo_Block_Logs::update_stat( $hook, $validate, $settings );
 
-		if ( $die ) {
-			// record log (0:no, 1:blocked, 2:passed, 3:unauth, 4:auth, 5:all)
-			$var = (int)apply_filters( self::PLUGIN_NAME . '-record-logs', $settings['validation']['reclogs'], $hook, $validate );
-			$block = ( 'passed' !== $validate['result'] );
-			if ( ( 1 === $var &&   $block ) || // blocked
-			     ( 2 === $var && ! $block ) || // passed
-			     ( 3 === $var && ! $validate['auth'] ) || // unauthenticated
-			     ( 4 === $var &&   $validate['auth'] ) || // authenticated
-			     ( 5 === $var ) ) { // all
-				IP_Geo_Block_Logs::record_logs( $hook, $validate, $settings );
-			}
-
-			// send response code to refuse
-			if ( $block )
-				$this->send_response( $hook, $settings['response_code'] );
+		// record log (0:no, 1:blocked, 2:passed, 3:unauth, 4:auth, 5:all)
+		$var = (int)apply_filters( self::PLUGIN_NAME . '-record-logs', $settings['validation']['reclogs'], $hook, $validate );
+		$block = ( 'passed' !== $validate['result'] );
+		if ( ( 1 === $var &&   $block ) || // blocked
+		     ( 2 === $var && ! $block ) || // passed
+		     ( 3 === $var && ! $validate['auth'] ) || // unauthenticated
+		     ( 4 === $var &&   $validate['auth'] ) || // authenticated
+		     ( 5 === $var ) ) { // all
+			IP_Geo_Block_Logs::record_logs( $hook, $validate, $settings );
 		}
+
+		// send response code to refuse
+		if ( $block && $die )
+			$this->send_response( $hook, $settings['response_code'] );
 
 		return $validate;
 	}
@@ -755,7 +753,9 @@ class IP_Geo_Block {
 		}
 
 		add_filter( self::PLUGIN_NAME . '-public', array( $this, 'check_bots' ), 10, 2 );
-		$this->validate_ip( 'public', $settings );
+
+		// validate country by IP address (block: true, die: false)
+		$this->validate_ip( 'public', $settings, TRUE, ! $settings['public']['simulate'] );
 	}
 
 	public function check_bots( $validate, $settings ) {

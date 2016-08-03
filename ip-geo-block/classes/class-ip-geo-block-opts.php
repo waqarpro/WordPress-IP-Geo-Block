@@ -114,7 +114,8 @@ class IP_Geo_Block_Opts {
 		'redirect_uri'    => NULL,    // URI for redirection on blocking
 		'network_wide'    => FALSE,   // settings page on network dashboard
 		'public'          => array(
-			'matching_rule'  => 0,    // -1:neither, 0:white list, 1:black list
+			'simulate'       => FALSE,// just simulate, never block
+			'matching_rule'  => -1,   // -1:follow, 0:white list, 1:black list
 			'white_list'     => NULL, // Comma separeted country code
 			'black_list'     => 'ZZ', // Comma separeted country code
 			'ua_list'        => "Google:DNS,bot:DNS,slurp:DNS,spider:DNS\narchive:DNS,*:FEED,Twitterbot:US\nPinterest:US,AOL:US",
@@ -150,9 +151,8 @@ class IP_Geo_Block_Opts {
 			$version = $settings['version'];
 
 			// refresh if it's too old
-			if ( version_compare( $version, '2.0.0' ) < 0 ) {
+			if ( version_compare( $version, '2.0.0' ) < 0 )
 				$settings = $default;
-			}
 
 			if ( version_compare( $version, '2.0.8' ) < 0 )
 				$settings['priority'] = $default['priority'];

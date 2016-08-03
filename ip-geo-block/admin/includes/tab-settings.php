@@ -674,6 +674,23 @@ class IP_Geo_Block_Admin_Tab {
 			)
 		);
 
+		// Simulation mode
+		$key = 'simulate';
+		add_settings_field(
+			$option_name.'_'.$field.'_'.$key,
+			'<dfn title="' . __( 'It enables to simulate the validation before deployment.', 'ip-geo-block' ) . '">' . __( 'Simulation mode', 'ip-geo-block' ) . '</dfn>',
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'checkbox',
+				'option' => $option_name,
+				'field' => $field,
+				'sub-field' => $key,
+				'value' => $options[ $field ][ $key ],
+			)
+		);
+
 		/*----------------------------------------*
 		 * Geolocation service settings
 		 *----------------------------------------*/

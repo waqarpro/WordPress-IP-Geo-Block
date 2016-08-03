@@ -222,7 +222,7 @@ class IP_Geo_Block_Admin {
 		$key = IP_Geo_Block::PLUGIN_NAME . '-notice';
 		if ( FALSE !== ( $notices = get_transient( $key ) ) ) {
 			foreach ( $notices as $msg => $type ) {
-				echo "\n<div class=\"notice is-dismissible ", esc_attr( $type ), "\"><p><strong>IP Geo Block:</strong> ", esc_html( $msg ), "</p></div>\n";
+				echo "\n<div class=\"notice is-dismissible ", esc_attr( $type ), "\"><p><strong>IP Geo Block:</strong> ", wp_kses( $msg, $GLOBALS['allowedtags'] ), "</p></div>\n";
 			}
 		}
 	}
