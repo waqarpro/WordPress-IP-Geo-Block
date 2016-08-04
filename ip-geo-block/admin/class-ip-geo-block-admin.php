@@ -222,7 +222,7 @@ class IP_Geo_Block_Admin {
 		$key = IP_Geo_Block::PLUGIN_NAME . '-notice';
 		if ( FALSE !== ( $notices = get_transient( $key ) ) ) {
 			foreach ( $notices as $msg => $type ) {
-				echo "\n<div class=\"notice is-dismissible ", esc_attr( $type ), "\"><p><strong>IP Geo Block:</strong> ", wp_kses( $msg, $GLOBALS['allowedtags'] ), "</p></div>\n";
+				echo "\n<div class=\"notice is-dismissible ", esc_attr( $type ), "\"><p><strong>IP Geo Block:</strong> ", IP_Geo_Block::kses( $msg ), "</p></div>\n";
 			}
 		}
 	}
@@ -630,8 +630,7 @@ class IP_Geo_Block_Admin {
 					$output[ $key ]['pos'] = (int)$input[ $key ]['pos'];
 				}
 				if ( isset( $input[ $key ]['msg'] ) ) {
-					global $allowedtags;
-					$output[ $key ]['msg'] = wp_kses( $input[ $key ]['msg'], $allowedtags );
+					$output[ $key ]['msg'] = IP_Geo_Block::kses( $input[ $key ]['msg'] );
 				}
 				break;
 
@@ -655,7 +654,7 @@ class IP_Geo_Block_Admin {
 					elseif ( isset( $input[ $key ] ) ) {
 						$output[ $key ] = is_int( $default[ $key ] ) ?
 							(int)$input[ $key ] :
-							wp_kses( trim( $input[ $key ] ), array() );
+							IP_Geo_Block::kses( trim( $input[ $key ] ), FALSE );
 					}
 				}
 
@@ -689,7 +688,7 @@ class IP_Geo_Block_Admin {
 						else {
 							$output[ $key ][ $sub ] = ( is_int( $default[ $key ][ $sub ] ) ?
 								(int)$input[ $key ][ $sub ] :
-								wp_kses( preg_replace( '/[^-,:!*+\.\/\w\s]/', '', $input[ $key ][ $sub ] ), array() )
+								IP_Geo_Block::kses( preg_replace( '/[^-,:!*+\.\/\w\s]/', '', $input[ $key ][ $sub ] ), FALSE )
 							);
 						}
 					}

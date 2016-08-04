@@ -230,9 +230,14 @@ class IP_Geo_Block {
 	 * Render a text message at the comment form.
 	 *
 	 */
+	public static function kses( $str, $allow_tags = TRUE ) {
+		global $allowedtags;
+		return wp_kses( $str, $allow_tags ? $allowedtags : array() );
+	}
+
 	public function comment_form_message() {
 		$settings = self::get_option();
-		echo '<p id="', self::PLUGIN_NAME, '-msg">', wp_kses( $settings['comment']['msg'], $GLOBALS['allowedtags'] ), '</p>', "\n";
+		echo '<p id="', self::PLUGIN_NAME, '-msg">', self::kses( $settings['comment']['msg'] ), '</p>', "\n";
 	}
 
 	/**
@@ -338,11 +343,11 @@ class IP_Geo_Block {
 		  default: // 4xx Client Error, 5xx Server Error
 			status_header( $code ); // @since 2.0.0
 			if ( function_exists( 'trackback_response' ) )
-				trackback_response( $code, wp_kses( $mesg, $GLOBALS['allowedtags'] ) ); // @since 0.71
+				trackback_response( $code, self::kses( $mesg ) ); // @since 0.71
 			elseif ( ! defined( 'DOING_AJAX' ) && ! defined( 'XMLRPC_REQUEST' ) ) {
 				defined( 'STYLESHEETPATH' ) && FALSE !== ( @include( get_stylesheet_directory() .'/'.$code.'.php' ) ) or // child  theme
 				defined( 'TEMPLATEPATH'   ) && FALSE !== ( @include( get_template_directory()   .'/'.$code.'.php' ) ) or // parent theme
-				wp_die( wp_kses( $mesg, $GLOBALS['allowedtags'] ), '', array( 'response' => $code, 'back_link' => TRUE ) );
+				wp_die( self::kses( $mesg ), '', array( 'response' => $code, 'back_link' => TRUE ) );
 			}
 			exit;
 		}

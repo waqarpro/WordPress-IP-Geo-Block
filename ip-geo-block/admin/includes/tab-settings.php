@@ -678,7 +678,7 @@ class IP_Geo_Block_Admin_Tab {
 		$key = 'simulate';
 		add_settings_field(
 			$option_name.'_'.$field.'_'.$key,
-			'<dfn title="' . __( 'It enables to simulate the validation before deployment.', 'ip-geo-block' ) . '">' . __( 'Simulation mode', 'ip-geo-block' ) . '</dfn>',
+			'<dfn title="' . __( 'It enables to simulate validation without deployment. The results can be found at &#8220;Pubic facing pages&#8221; in Logs.', 'ip-geo-block' ) . '">' . __( 'Simulation mode', 'ip-geo-block' ) . '</dfn>',
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -1116,9 +1116,8 @@ endif;
 	public static function note_public() {
 		echo
 			'<ul class="ip-geo-block-note">', "\n",
-				'<li>', __( 'Please configure your caching plugin to use PHP and late initialization to prevent serving inconsistent pages.', 'ip-geo-block' ), '</li>', "\n",
-				'<li>', __( 'If your caching plugin does not support late initialization, please drop <code>ip-geo-block-mu.php</code> into your <code>mu-plugins</code> directory.', 'ip-geo-block' ), '</li>', "\n",
-				'<li>', __( 'For more details, please refer to the document <a href="http://www.ipgeoblock.com/codex/living-with-caching-plugin.html">Living with caching plugin</a>.', 'ip-geo-block' ), '</li>', "\n",
+				'<li>', __( 'There are some restrictions when you enable "Block by country" with your caching plugin. For more details, please refer to the document <a href="http://www.ipgeoblock.com/codex/living-with-caching-plugin.html">Living with caching plugin</a>.', 'ip-geo-block' ), '</li>', "\n",
+				'<li>', __( 'If you find any issues or have something to suggest, please feel free to open an issue at <a class="ip-geo-block-link" href="http://wordpress.org/support/plugin/ip-geo-block" title="WordPress &#8250; Support &raquo; IP Geo Block" target=_blank>support forum</a>.', 'ip-geo-block' ), '</li>', "\n",
 			'</ul>', "\n";
 	}
 
