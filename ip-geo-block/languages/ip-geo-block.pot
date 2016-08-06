@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2016-08-05 00:50+0900\n"
-"PO-Revision-Date: 2016-08-05 00:50+0900\n"
+"POT-Creation-Date: 2016-08-05 23:48+0900\n"
+"PO-Revision-Date: 2016-08-05 23:48+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -454,12 +454,13 @@ msgstr ""
 
 #: admin/includes/tab-settings.php:663
 msgid ""
-"Where the &#8220;qualification&#8221; can be country code, IP address with "
-"CIDR, &#8220;DNS&#8221; or &#8220;FEED&#8221;."
+"A part of user agent string and qualification separated by a colon where the "
+"&#8220;qualification&#8221; can be &#8220;DNS&#8221;, &#8220;FEED&#8221;, "
+"country code or IP address with CIDR."
 msgstr ""
 
 #: admin/includes/tab-settings.php:663
-msgid "Permitted user agent string and qualification"
+msgid "Permitted UA string and qualification"
 msgstr ""
 
 #: admin/includes/tab-settings.php:681
@@ -710,9 +711,9 @@ msgstr ""
 #: admin/includes/tab-settings.php:1119
 msgid ""
 "There are some restrictions when you enable \"Block by country\" with your "
-"caching plugin. For more details, please refer to the document <a href="
-"\"http://www.ipgeoblock.com/codex/living-with-caching-plugin.html\">Living "
-"with caching plugin</a>."
+"caching plugin. For more details, please refer to the documents at <a href="
+"\"http://www.ipgeoblock.com/codex/#blocking-on-front-end\" title=\"Codex | "
+"IP Geo Block\">Blocking on front-end</a>."
 msgstr ""
 
 #: admin/includes/tab-settings.php:1120

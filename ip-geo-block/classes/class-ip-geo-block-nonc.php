@@ -82,7 +82,7 @@ class IP_Geo_Block_Nonce {
 	 *
 	 */
 	private static function nonce_tick() {
-		return ceil( time() / ( HOUR_IN_SECONDS * 6 ) ); // DAY_IN_SECONDS / 2
+		return ceil( time() / ( DAY_IN_SECONDS / 2 ) );
 	}
 
 	/**

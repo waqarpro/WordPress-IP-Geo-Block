@@ -660,7 +660,7 @@ class IP_Geo_Block_Admin_Tab {
 		$key = 'ua_list';
 		add_settings_field(
 			$option_name.'_'.$field.'_'.$key,
-			'<dfn title="' . __( 'Where the &#8220;qualification&#8221; can be country code, IP address with CIDR, &#8220;DNS&#8221; or &#8220;FEED&#8221;.', 'ip-geo-block' ) . '">' . __( 'Permitted user agent string and qualification', 'ip-geo-block' ) . '</dfn>',
+			'<dfn title="' . __( 'A part of user agent string and qualification separated by a colon where the &#8220;qualification&#8221; can be &#8220;DNS&#8221;, &#8220;FEED&#8221;, country code or IP address with CIDR.', 'ip-geo-block' ) . '">' . __( 'Permitted UA string and qualification', 'ip-geo-block' ) . '</dfn>',
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -1116,7 +1116,7 @@ endif;
 	public static function note_public() {
 		echo
 			'<ul class="ip-geo-block-note">', "\n",
-				'<li>', __( 'There are some restrictions when you enable "Block by country" with your caching plugin. For more details, please refer to the document <a href="http://www.ipgeoblock.com/codex/living-with-caching-plugin.html">Living with caching plugin</a>.', 'ip-geo-block' ), '</li>', "\n",
+				'<li>', __( 'There are some restrictions when you enable "Block by country" with your caching plugin. For more details, please refer to the documents at <a href="http://www.ipgeoblock.com/codex/#blocking-on-front-end" title="Codex | IP Geo Block">Blocking on front-end</a>.', 'ip-geo-block' ), '</li>', "\n",
 				'<li>', __( 'If you find any issues or have something to suggest, please feel free to open an issue at <a class="ip-geo-block-link" href="http://wordpress.org/support/plugin/ip-geo-block" title="WordPress &#8250; Support &raquo; IP Geo Block" target=_blank>support forum</a>.', 'ip-geo-block' ), '</li>', "\n",
 			'</ul>', "\n";
 	}
