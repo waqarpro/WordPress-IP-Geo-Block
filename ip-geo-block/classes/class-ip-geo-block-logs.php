@@ -542,33 +542,19 @@ class IP_Geo_Block_Logs {
 			if ( empty( $statistics['providers'][ $provider ] ) )
 				$statistics['providers'][ $provider ] = array( 'count' => 0, 'time' => 0.0 );
 
-			$statistics['providers'][ $provider ]['count']++;
-			$statistics['providers'][ $provider ]['time'] += (float)$validate['time'];
+			$statistics['providers'][ $provider ]['count']++; // undefined in auth_fail()
+			$statistics['providers'][ $provider ]['time'] += (float)@$validate['time'];
 
-			$blocked = 'passed' !== $validate['result'] ? 'blocked' : 'passed';
-			if ( 'blocked' === $blocked ) {
+			if ( 'passed' !== $validate['result'] ) {
 				// Blocked by type of IP address
 				if ( filter_var( $validate['ip'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) )
 					$statistics['IPv4']++;
 				elseif ( filter_var( $validate['ip'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) )
 					$statistics['IPv6']++;
 
-				// Blocked
-				if ( empty( $statistics['blocked'] ) )
-					$statistics['blocked'] = 0;
-				$statistics['blocked']++;
-
-				// Blocked by countries
-				$key = $validate['code'];
-				if ( empty( $statistics['countries'][ $key ] ) )
-					$statistics['countries'][ $key ] = 0;
-				$statistics['countries'][ $key ]++;
-
-				// Blocked per day
-				$key = mktime( 0, 0, 0 );
-				if ( empty( $statistics['daystats'][ $key ][ $hook ] ) )
-					$statistics['daystats'][ $key ][ $hook ] = 0;
-				$statistics['daystats'][ $key ][ $hook ]++;
+				@$statistics['blocked'  ]++;
+				@$statistics['countries'][ $validate['code'] ]++;
+				@$statistics['daystats' ][ mktime( 0, 0, 0 ) ][ $hook ]++;
 			}
 
 			if ( count( $statistics['daystats'] ) > 30 ) {

@@ -16,11 +16,17 @@ class IP_Geo_Block_Nonce {
 	 *
 	 */
 	public static function create_nonce( $action = -1 ) {
-		$uid = self::get_current_user();
-		$tok = self::get_session_token();
-		$exp = self::nonce_tick();
+		if ( defined( 'IP_GEO_BLOCK_BEFORE_INIT' ) ) {
+			$uid = self::get_current_user();
+			$tok = self::get_session_token();
+			$exp = self::nonce_tick();
 
-		return substr( self::hash_nonce( $exp . '|' . $action . '|' . $uid . '|' . $tok ), -12, 10 );
+			return substr( self::hash_nonce( $exp . '|' . $action . '|' . $uid . '|' . $tok ), -12, 10 );
+		}
+
+		else {
+			return wp_create_nonce( $action );
+		}
 	}
 
 	/**
@@ -28,18 +34,24 @@ class IP_Geo_Block_Nonce {
 	 *
 	 */
 	public static function verify_nonce( $nonce, $action = -1 ) {
-		$uid = self::get_current_user();
-		$tok = self::get_session_token();
-		$exp = self::nonce_tick();
+		if ( defined( 'IP_GEO_BLOCK_BEFORE_INIT' ) ) {
+			$uid = self::get_current_user();
+			$tok = self::get_session_token();
+			$exp = self::nonce_tick();
 
-		// Nonce generated 0-12 hours ago
-		$expected = substr( self::hash_nonce( $exp . '|' . $action . '|' . $uid . '|' . $tok ), -12, 10 );
+			// Nonce generated 0-12 hours ago
+			$expected = substr( self::hash_nonce( $exp . '|' . $action . '|' . $uid . '|' . $tok ), -12, 10 );
 
-		// PHP 5 >= 5.6.0 or wp-includes/compat.php
-		if ( function_exists( 'hash_equals' ) )
-			return hash_equals( $expected, (string)$nonce );
-		else
-			return self::hash_equals( $expected, (string)$nonce );
+			// PHP 5 >= 5.6.0 or wp-includes/compat.php
+			if ( function_exists( 'hash_equals' ) )
+				return hash_equals( $expected, (string)$nonce );
+			else
+				return self::hash_equals( $expected, (string)$nonce );
+		}
+
+		else {
+			return wp_verify_nonce( $nonce, $action );
+		}
 	}
 
 	/**

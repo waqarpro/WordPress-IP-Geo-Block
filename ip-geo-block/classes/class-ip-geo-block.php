@@ -605,7 +605,7 @@ class IP_Geo_Block {
 			$cache = IP_Geo_Block_API_Cache::update_cache( $cache['hook'], $validate, $settings );
 
 			// validate xmlrpc system.multicall ($HTTP_RAW_POST_DATA has already populated in xmlrpc.php)
-			if ( defined( 'XMLRPC_REQUEST' ) && FALSE !== stripos( $HTTP_RAW_POST_DATA, 'system.multicall' ) )
+			if ( defined( 'XMLRPC_REQUEST' ) && FALSE !== stripos( $GLOBALS['HTTP_RAW_POST_DATA'], 'system.multicall' ) )
 				$validate['result'] = 'multi';
 
 			// (1) blocked, (3) unauthenticated, (5) all
