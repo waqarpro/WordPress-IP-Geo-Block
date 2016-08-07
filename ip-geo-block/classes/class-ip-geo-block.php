@@ -662,13 +662,13 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function check_nonce( $validate, $settings ) {
-		if ( empty( $_REQUEST['_wpnonce'] ) ) {
-			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-nonc.php' );
-			$action = self::PLUGIN_NAME . '-auth-nonce';
-			if ( ! IP_Geo_Block_Nonce::verify_nonce( self::retrieve_nonce( $action ), $action ) ) {
-				if ( empty( $validate['result'] ) || 'passed' === $validate['result'] )
-					$validate['result'] = 'wp-zep'; // can't overwrite existing result
-			}
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-nonc.php' );
+
+		$action = self::PLUGIN_NAME . '-auth-nonce';
+
+		if ( ! IP_Geo_Block_Nonce::verify_nonce( self::retrieve_nonce( $action ), $action ) ) {
+			if ( empty( $validate['result'] ) || 'passed' === $validate['result'] )
+				$validate['result'] = 'wp-zep'; // can't overwrite existing result
 		}
 
 		return $validate;
