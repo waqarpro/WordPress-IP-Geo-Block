@@ -287,6 +287,37 @@ class IP_Geo_Block_Admin_Tab {
 			)
 		);
 
+		// Validation timing
+		$field = 'validation';
+		$key = 'timing';
+		$options[ $field ][ $key ] = file_exists( WP_CONTENT_DIR . '/mu-plugins/ip-geo-block-mu.php' ) ? 1 : 0;
+
+		add_settings_field(
+			$option_name.'_'.$field.'_'.$key,
+			'<dfn title="' . __( '', 'ip-geo-block' ) . '">' . __( 'Validation timing', 'ip-geo-block' ) . '</dfn>',
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'select',
+				'option' => $option_name,
+				'field' => $field,
+				'sub-field' => $key,
+				'value' => $options[ $field ][ $key ],
+				'list' => array(
+					 0 => __( '&#8220;init&#8221; action hook',                 'ip-geo-block' ),
+					 1 => __( '&#8220;mu-plugins&#8221; (ip-geo-block-mu.php)', 'ip-geo-block' ),
+//					 2 => __( '&#8220;drop-in&#8221; (advanced-cache.php)',     'ip-geo-block' ),
+				),
+				'desc' => array(
+					 0 => __( 'Validate at init action hook same as typical plugins.', 'ip-geo-block' ), // 標準的な他のプラグインと同様、init アクション・フックで検証
+					 1 => __( 'Validate at an earlier stage than other plugins.',      'ip-geo-block' ), // 標準的な他のプラグインに比べ、より早い段階で検証
+//					 2 => __( 'Validate at a very early stage of the WordPress core.', 'ip-geo-block' ), // WordPressコアのごく初期段階で検証
+				),
+				'after' => '<div class="ip-geo-block-desc"></div>',
+			)
+		);
+
 		/*----------------------------------------*
 		 * Back-end target settings
 		 *----------------------------------------*/

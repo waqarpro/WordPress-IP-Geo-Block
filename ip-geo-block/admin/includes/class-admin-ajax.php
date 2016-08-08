@@ -237,6 +237,7 @@ class IP_Geo_Block_Admin_Ajax {
 			'[response_code]',
 			'[login_fails]',
 			'[redirect_uri]',            // 3.0.0
+			'[validation][timing]',      // 3.0.0
 			'[validation][proxy]',
 			'[validation][comment]',
 			'[validation][xmlrpc]',
@@ -282,6 +283,7 @@ class IP_Geo_Block_Admin_Ajax {
 			'[validation][postkey]',
 			'[update][auto]',
 			'[anonymize]',
+			'[backup_logs]',             // 3.0.0
 			'[cache_hold]',
 			'[cache_time]',
 			'[cache_time_gc]',           // 3.0.0

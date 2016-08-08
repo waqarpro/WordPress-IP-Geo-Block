@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '3.0.0b2';
+	const VERSION = '3.0.0b3';
 	const GEOAPI_NAME = 'ip-geo-api';
 	const PLUGIN_NAME = 'ip-geo-block';
 	const PLUGIN_SLUG = 'ip-geo-block'; // fallback for ip-geo-api 1.1.3
@@ -55,7 +55,7 @@ class IP_Geo_Block {
 
 		// check the package version and upgrade if needed
 		if ( version_compare( $settings['version'], self::VERSION ) < 0 || $settings['matching_rule'] < 0 )
-			$loader->add_action( 'init', 'ip_geo_block_activate', $priority );
+			add_action( 'init', 'ip_geo_block_activate', $priority );
 
 		// Garbage collection for IP address cache
 		add_action( self::CACHE_NAME, array( $this, 'exec_cache_gc' ) );

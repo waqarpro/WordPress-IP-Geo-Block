@@ -15,43 +15,45 @@ class IP_Geo_Block_Nonce {
 	 * Creates a cryptographic tied to the action, user, session, and time.
 	 *
 	 */
+	private static function _create_nonce( $action = -1, $exp = FALSE ) {
+		$uid = self::get_current_user();
+		$tok = self::get_session_token();
+		$exp = $exp ? $exp : self::nonce_tick();
+
+		return substr( self::hash_nonce( $exp . '|' . $action . '|' . $uid . '|' . $tok ), -12, 10 );
+	}
+
 	public static function create_nonce( $action = -1 ) {
-		if ( defined( 'IP_GEO_BLOCK_BEFORE_INIT' ) ) {
-			$uid = self::get_current_user();
-			$tok = self::get_session_token();
-			$exp = self::nonce_tick();
-
-			return substr( self::hash_nonce( $exp . '|' . $action . '|' . $uid . '|' . $tok ), -12, 10 );
-		}
-
-		else {
-			return wp_create_nonce( $action );
-		}
+//		if ( defined( 'IP_GEO_BLOCK_BEFORE_INIT' ) )
+			return self::_create_nonce( $action );
+//		else
+//			return wp_create_nonce( $action );
 	}
 
 	/**
 	 * Verify that correct nonce was used with time limit.
 	 *
 	 */
+	private static function _verify_nonce( $nonce, $action = -1, $exp = FALSE ) {
+		$uid = self::get_current_user();
+		$tok = self::get_session_token();
+		$exp = $exp ? $exp : self::nonce_tick();
+
+		// Nonce generated 0-12 hours ago
+		$expected = substr( self::hash_nonce( $exp . '|' . $action . '|' . $uid . '|' . $tok ), -12, 10 );
+
+		// PHP 5 >= 5.6.0 or wp-includes/compat.php
+		if ( function_exists( 'hash_equals' ) )
+			return hash_equals( $expected, (string)$nonce );
+		else
+			return self::hash_equals( $expected, (string)$nonce );
+	}
+
 	public static function verify_nonce( $nonce, $action = -1 ) {
-		if ( defined( 'IP_GEO_BLOCK_BEFORE_INIT' ) ) {
-			$uid = self::get_current_user();
-			$tok = self::get_session_token();
-			$exp = self::nonce_tick();
-
-			// Nonce generated 0-12 hours ago
-			$expected = substr( self::hash_nonce( $exp . '|' . $action . '|' . $uid . '|' . $tok ), -12, 10 );
-
-			// PHP 5 >= 5.6.0 or wp-includes/compat.php
-			if ( function_exists( 'hash_equals' ) )
-				return hash_equals( $expected, (string)$nonce );
-			else
-				return self::hash_equals( $expected, (string)$nonce );
-		}
-
-		else {
-			return wp_verify_nonce( $nonce, $action );
-		}
+//		if ( defined( 'IP_GEO_BLOCK_BEFORE_INIT' ) )
+			return self::_verify_nonce( $nonce, $action );
+//		else
+//			return wp_verify_nonce( $nonce, $action );
 	}
 
 	/**

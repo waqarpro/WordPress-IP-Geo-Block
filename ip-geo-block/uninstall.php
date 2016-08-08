@@ -62,6 +62,16 @@ class IP_Geo_Block_Uninstall {
 				switch_to_blog( $current_blog_id );
 			}
 		}
+
+		// additional uninstllation
+		switch ( (int)$settings['validation']['timing'] ) {
+		  case 1: // mu-plugins
+			@unlink( WP_CONTENT_DIR . 'mu-plugins/ip-geo-block-mu.php' );
+			break;
+		  case 2: // advanced-cache.php
+			//@unlink( WP_CONTENT_DIR . 'advanced-cache.php' );
+			break;
+		}
 	}
 
 }
