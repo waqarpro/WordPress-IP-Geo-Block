@@ -241,6 +241,16 @@ class IP_Geo_Block_Opts {
 					$settings['rewrite'   ][ $tmp ] = $default['rewrite'   ][ $tmp ];
 					$settings['exception' ][ $tmp ] = $default['exception' ][ $tmp ];
 				}
+
+				// avoid blocking by WP-ZEP
+				set_transient( IP_Geo_Block::PLUGIN_NAME . '-update-settings', array(
+					'validation' => array(
+						'admin' => $settings['validation']['admin'],
+						'ajax'  => $settings['validation']['ajax' ],
+					)
+				);
+				$settings['validation']['admin'] &= ~ 2; // mask WP-ZEP
+				$settings['validation']['ajax' ] &= ~ 2; // mask WP-ZEP
 			}
 
 			// save package version number

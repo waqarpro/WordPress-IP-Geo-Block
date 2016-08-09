@@ -46,6 +46,10 @@ class IP_Geo_Block_Admin {
 		// If multisite, then enque the authentication script for network admin
 		if ( is_multisite() )
 			add_action( 'network_admin_menu', 'IP_Geo_Block::enqueue_nonce' );
+
+		// Update setting data
+		if ( get_transient( IP_Geo_Block::PLUGIN_NAME . '-update-settings' ) )
+			add_action( 'admin_init', array( $this, 'update_settings' ) );
 	}
 
 	/**
@@ -851,6 +855,31 @@ class IP_Geo_Block_Admin {
 		$this->show_setting_notice( 'updated', __( 'Settings saved.' ) );
 
 		return $options;
+	}
+
+	/**
+	 * Update setting data
+	 *
+	 */
+	public function update_settings() {
+		if ( current_user_can( 'manage_options' ) ) {
+			$settings = IP_Geo_Block::get_option();
+			$data = get_transient( IP_Geo_Block::PLUGIN_NAME . '-update-settings' );
+
+			foreach ( $data as $key => $value ) {
+				if ( is_array( $value ) ) {
+					foreach ( $value as $k => $v ) {
+						$settings[ $key ][ $k ] = $v;
+					}
+				}
+				else {
+					$settings[ $key ] = $value;
+				}
+			}
+
+			// update option table
+			update_option( IP_Geo_Block::OPTION_NAME, $settings );
+		}
 	}
 
 	/**
