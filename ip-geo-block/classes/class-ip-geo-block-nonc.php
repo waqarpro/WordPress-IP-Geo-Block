@@ -15,29 +15,22 @@ class IP_Geo_Block_Nonce {
 	 * Creates a cryptographic tied to the action, user, session, and time.
 	 *
 	 */
-	private static function _create_nonce( $action = -1, $exp = FALSE ) {
+	public static function create_nonce( $action = -1 ) {
 		$uid = self::get_current_user();
 		$tok = self::get_session_token();
-		$exp = $exp ? $exp : self::nonce_tick();
+		$exp = self::nonce_tick();
 
 		return substr( self::hash_nonce( $exp . '|' . $action . '|' . $uid . '|' . $tok ), -12, 10 );
-	}
-
-	public static function create_nonce( $action = -1 ) {
-//		if ( defined( 'IP_GEO_BLOCK_BEFORE_INIT' ) )
-			return self::_create_nonce( $action );
-//		else
-//			return wp_create_nonce( $action );
 	}
 
 	/**
 	 * Verify that correct nonce was used with time limit.
 	 *
 	 */
-	private static function _verify_nonce( $nonce, $action = -1, $exp = FALSE ) {
+	public static function verify_nonce( $nonce, $action = -1 ) {
 		$uid = self::get_current_user();
 		$tok = self::get_session_token();
-		$exp = $exp ? $exp : self::nonce_tick();
+		$exp = self::nonce_tick();
 
 		// Nonce generated 0-12 hours ago
 		$expected = substr( self::hash_nonce( $exp . '|' . $action . '|' . $uid . '|' . $tok ), -12, 10 );
@@ -47,13 +40,6 @@ class IP_Geo_Block_Nonce {
 			return hash_equals( $expected, (string)$nonce );
 		else
 			return self::hash_equals( $expected, (string)$nonce );
-	}
-
-	public static function verify_nonce( $nonce, $action = -1 ) {
-//		if ( defined( 'IP_GEO_BLOCK_BEFORE_INIT' ) )
-			return self::_verify_nonce( $nonce, $action );
-//		else
-//			return wp_verify_nonce( $nonce, $action );
 	}
 
 	/**
@@ -115,6 +101,11 @@ class IP_Geo_Block_Nonce {
 		}
 
 		$num += $sum;
+
+		// add something which a visitor can't control
+//		$num .= substr( SECURE_AUTH_KEY, 1, 6 ); // @since 2.6
+
+		// add something unique
 //		if ( isset( $_SERVER['HTTP_USER_AGENT'] ) && is_string( $_SERVER['HTTP_USER_AGENT'] ) )
 //			$num .= preg_replace( '/[^-,:!*+\.\/\w\s]/', '', $_SERVER['HTTP_USER_AGENT'] );
 

@@ -47,9 +47,9 @@ class IP_Geo_Block_Admin {
 		if ( is_multisite() )
 			add_action( 'network_admin_menu', 'IP_Geo_Block::enqueue_nonce' );
 
-		// Update setting data
-		if ( get_transient( IP_Geo_Block::PLUGIN_NAME . '-update-settings' ) )
-			add_action( 'admin_init', array( $this, 'update_settings' ) );
+		// Upgrade setting data
+		if ( get_transient( IP_Geo_Block::PLUGIN_NAME . '-upgrade-options' ) )
+			add_action( 'admin_init', array( $this, 'upgrade_options' ) );
 	}
 
 	/**
@@ -828,8 +828,8 @@ class IP_Geo_Block_Admin {
 			break;
 
 		  case 1: // mu-plugins
-			$path = WP_CONTENT_DIR . '/mu-plugins/';
 			$file = 'ip-geo-block-mu.php';
+			$path = WP_CONTENT_DIR . '/mu-plugins/';
 
 			if ( ! file_exists( $path . $file ) ) {
 				if ( ! file_exists( $path ) )
@@ -838,7 +838,8 @@ class IP_Geo_Block_Admin {
 				if ( ! @copy( IP_GEO_BLOCK_PATH . 'wp-content/mu-plugins/' . $file, $path . $file ) ) {
 					$options['validation']['timing'] = 0;
 					$this->show_setting_notice( 'error', sprintf(
-						__( 'Unable to install %s. Please check permission.', 'ip-geo-block' ), $path . $file
+						__( 'Unable to write %s. Please check permission.', 'ip-geo-block' ),
+						$path . $file
 					) );
 				}
 			}
@@ -858,13 +859,13 @@ class IP_Geo_Block_Admin {
 	}
 
 	/**
-	 * Update setting data
+	 * Upgrade some of setting data
 	 *
 	 */
-	public function update_settings() {
+	public function upgrade_options() {
 		if ( current_user_can( 'manage_options' ) ) {
 			$settings = IP_Geo_Block::get_option();
-			$data = get_transient( IP_Geo_Block::PLUGIN_NAME . '-update-settings' );
+			$data = get_transient( IP_Geo_Block::PLUGIN_NAME . '-upgrade-options' );
 
 			foreach ( $data as $key => $value ) {
 				if ( is_array( $value ) ) {

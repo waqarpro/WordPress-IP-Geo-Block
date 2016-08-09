@@ -294,7 +294,7 @@ class IP_Geo_Block_Admin_Tab {
 
 		add_settings_field(
 			$option_name.'_'.$field.'_'.$key,
-			'<dfn title="' . __( '', 'ip-geo-block' ) . '">' . __( 'Validation timing', 'ip-geo-block' ) . '</dfn>',
+			'<dfn title="' . __( 'Select when to run the validation.', 'ip-geo-block' ) . '">' . __( 'Validation timing', 'ip-geo-block' ) . '</dfn>',
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -310,9 +310,9 @@ class IP_Geo_Block_Admin_Tab {
 //					 2 => __( '&#8220;drop-in&#8221; (advanced-cache.php)',     'ip-geo-block' ),
 				),
 				'desc' => array(
-					 0 => __( 'Validate at init action hook same as typical plugins.', 'ip-geo-block' ), // 標準的な他のプラグインと同様、init アクション・フックで検証
-					 1 => __( 'Validate at an earlier stage than other plugins.',      'ip-geo-block' ), // 標準的な他のプラグインに比べ、より早い段階で検証
-//					 2 => __( 'Validate at a very early stage of the WordPress core.', 'ip-geo-block' ), // WordPressコアのごく初期段階で検証
+					 0 => __( 'Validate at init action hook same as typical plugins.', 'ip-geo-block' ),
+					 1 => __( 'Validate at an earlier stage than other plugins to reduce load of server.', 'ip-geo-block' ),
+//					 2 => __( 'Validate at a very early stage of the WordPress core to minimize load of server.', 'ip-geo-block' ),
 				),
 				'after' => '<div class="ip-geo-block-desc"></div>',
 			)

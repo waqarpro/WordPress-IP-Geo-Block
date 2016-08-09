@@ -242,15 +242,7 @@ class IP_Geo_Block_Opts {
 					$settings['exception' ][ $tmp ] = $default['exception' ][ $tmp ];
 				}
 
-				// avoid blocking by WP-ZEP
-				set_transient( IP_Geo_Block::PLUGIN_NAME . '-update-settings', array(
-					'validation' => array(
-						'admin' => $settings['validation']['admin'],
-						'ajax'  => $settings['validation']['ajax' ],
-					)
-				);
-				$settings['validation']['admin'] &= ~ 2; // mask WP-ZEP
-				$settings['validation']['ajax' ] &= ~ 2; // mask WP-ZEP
+				$settings = self::upgrade_options( $settings );
 			}
 
 			// save package version number
@@ -265,6 +257,24 @@ class IP_Geo_Block_Opts {
 		update_option( IP_Geo_Block::OPTION_NAME, $settings );
 
 		// return upgraded settings
+		return $settings;
+	}
+
+	/**
+	 * Trigger to upgrade options
+	 *
+	 */
+	private static function upgrade_options( $settings ) {
+		set_transient( IP_Geo_Block::PLUGIN_NAME . '-upgrade-options',
+			array( 'validation' => array(
+				'admin' => $settings['validation']['admin'],
+				'ajax'  => $settings['validation']['ajax' ],
+			) )
+		);
+
+		$settings['validation']['admin'] &= ~ 2; // mask WP-ZEP
+		$settings['validation']['ajax' ] &= ~ 2; // mask WP-ZEP
+
 		return $settings;
 	}
 

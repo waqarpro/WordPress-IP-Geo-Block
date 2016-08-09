@@ -331,9 +331,20 @@ Fastest Cache) or caching by `advanced-cache.php` drop-in (Comet Cache),
 "**Blocking on front-end**" feature might lead to generate inconsistent 
 pages. 
 
+For more details, please refer to some documents at 
+[Blocking on front-end](http://www.ipgeoblock.com/codex/#blocking-on-front-end "Codex | IP Geo Block").
+
 = Does this plugin validate all the requests to the server? =
 
-Unfortunately, no. 
+Unfortunately, no. This plugin can't handle the requests that are not parsed by 
+WordPress. In other words, a standalone file (PHP, CGI or something excutable) 
+that is unrelated to WordPress can't be validated by this plugin event if it 
+is in the WordPress install directory.
+
+But there're exceptions: When you enable "**Force to load WP core**" for 
+**Plugins area** or **Themes area**, a standalone PHP file becomes to be 
+blocked. Sometimes this kind of file in a plugin or theme has vulnerability.
+This function is provided in such a case.
 
 = Do I have to turn on all the selection to enhance security? =
 
@@ -352,9 +363,8 @@ follows:
 - **Bad signatures in query**  
   It blocks the request which has not been covered in the above three.
 
-See more details in "
-[The best practice of target settings](http://www.ipgeoblock.com/codex/the-best-practice-of-target-settings.html 'The best practice of target settings | IP Geo Block')
-".
+See more details in 
+"[The best practice of target settings](http://www.ipgeoblock.com/codex/the-best-practice-of-target-settings.html 'The best practice of target settings | IP Geo Block')".
 
 = How can I test that this plugin works? =
 
@@ -366,11 +376,10 @@ You can add an IP address to the `X-Forwarded-For` header to emulate the
 access behind the proxy. In this case, you should add `HTTP_X_FORWARDED_FOR` 
 into the "**$_SERVER keys for extra IPs**" on "**Settings**" tab.
 
-See more details in "
-[Using VPN browser addon](http://www.ipgeoblock.com/codex/using-vpn-browser-addon.html 'Using VPN browser addon | IP Geo Block')
-" and "
-[Using WordPress post simulator](http://www.ipgeoblock.com/codex/using-post-simulator.html 'Using WordPress post simulator | IP Geo Block')
-".
+See more details in 
+"[Using VPN browser addon](http://www.ipgeoblock.com/codex/using-vpn-browser-addon.html 'Using VPN browser addon | IP Geo Block')"
+and
+"[Using WordPress post simulator](http://www.ipgeoblock.com/codex/using-post-simulator.html 'Using WordPress post simulator | IP Geo Block')".
 
 = Some admin function doesn't work when WP-ZEP is enabled. =
 
@@ -436,6 +445,7 @@ For more details, see
 * **Important:** Update geo location api libraries for maxmind and ip2locatoin.
   Please confirm the directory for local geo location dabase (`ip-geo-api`) can
   be writable.
+* **New feature:** Add selection of validation timing.
 * **New feature:** Add the function of blocking front-end.
 * **New feature:** Add IP address and country code cache by cookie.
 * **New feature:** Add getting host information using reverse DNS lookup.
