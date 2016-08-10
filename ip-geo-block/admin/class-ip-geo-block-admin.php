@@ -813,8 +813,7 @@ class IP_Geo_Block_Admin {
 			}
 
 			$this->show_setting_notice( 'error', sprintf(
-				__( 'Unable to write %s. Please check permission.', 'ip-geo-block' ),
-				implode( ', ', $file )
+				__( 'Unable to write %s. Please check permission.', 'ip-geo-block' ), implode( ', ', $file )
 			) );
 		}
 
@@ -838,8 +837,7 @@ class IP_Geo_Block_Admin {
 				if ( ! @copy( IP_GEO_BLOCK_PATH . 'wp-content/mu-plugins/' . $file, $path . $file ) ) {
 					$options['validation']['timing'] = 0;
 					$this->show_setting_notice( 'error', sprintf(
-						__( 'Unable to write %s. Please check permission.', 'ip-geo-block' ),
-						$path . $file
+						__( 'Unable to write %s. Please check permission.', 'ip-geo-block' ), $path . $file
 					) );
 				}
 			}
@@ -878,8 +876,9 @@ class IP_Geo_Block_Admin {
 				}
 			}
 
-			// update option table
+			// finish to upgrade the option table
 			update_option( IP_Geo_Block::OPTION_NAME, $settings );
+			delete_transient( IP_Geo_Block::PLUGIN_NAME . '-upgrade-options' );
 		}
 	}
 
