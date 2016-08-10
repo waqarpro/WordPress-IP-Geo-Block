@@ -687,11 +687,11 @@ class IP_Geo_Block_Admin_Tab {
 			)
 		);
 
-		// Permitted pair of user agent : qualification
+		// UA string and qualification
 		$key = 'ua_list';
 		add_settings_field(
 			$option_name.'_'.$field.'_'.$key,
-			'<dfn title="' . __( 'A part of user agent string and qualification separated by a colon where the &#8220;qualification&#8221; can be &#8220;DNS&#8221;, &#8220;FEED&#8221;, country code or IP address with CIDR.', 'ip-geo-block' ) . '">' . __( 'Permitted UA string and qualification', 'ip-geo-block' ) . '</dfn>',
+			'<dfn title="' . __( 'A part of user agent string and a qualification connected with a separator that indicates an applicable rule and can be &#8220;:&#8221; (pass) or &#8220;#&#8221; (block). A &#8220;qualification&#8221; can be &#8220;DNS&#8221;, &#8220;FEED&#8221;, country code or IP address with CIDR. A negative operator &#8220;!&#8221; can be placed just before a &#8220;qualification&#8221;.', 'ip-geo-block' ) . '">' . __( 'UA string and qualification', 'ip-geo-block' ) . '</dfn>',
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,

@@ -769,15 +769,25 @@ class IP_Geo_Block {
 		if ( isset( $_SERVER['HTTP_USER_AGENT'] ) ) {
 			$agent = $_SERVER['HTTP_USER_AGENT'];
 			$country = $validate['code'];
+
+			// requested uri is feed?
 			$is_feed = IP_Geo_Block_Lkup::is_feed( $this->request_uri );
 
-			foreach ( $this->multiexplode( array( ",", "\n" ), $settings['public']['ua_list'] ) as $bot ) {
-				list( $name, $code ) = explode( ':', $bot, 2 );
+			foreach ( $this->multiexplode( array( ",", "\n" ), $settings['public']['ua_list'] ) as $pat ) {
+				@list( $name, $code ) = $this->multiexplode( array( ':', '#' ), $pat );
+
+				// 0:whitelist, 1:blacklist
+				$which = FALSE !== strpos( $pat, ':' ) ? 0 : 1;
+
+				if ( '!' === substr( $code, 0, 1 ) ) {
+					$code = substr( $code, 1 );
+					$which = ! $which;
+				}
 
 				if ( $name && ( FALSE !== strpos( $agent, $name ) || '*' === $name ) ) {
 					if ( 'FEED' === $code ) {
 						if ( $is_feed )
-							return $validate + array( 'result' => 'passed' ); // can't overwrite existing result
+							return $validate + array( 'result' => $which ? 'blocked' : 'passed' );
 					}
 
 					elseif ( 'DNS' === $code ) {
@@ -785,14 +795,14 @@ class IP_Geo_Block {
 							$validate['host'] = IP_Geo_Block_Lkup::gethostbyaddr( $validate['ip'] );
 
 						if ( $validate['host'] !== $validate['ip'] )
-							return $validate + array( 'result' => 'passed' ); // can't overwrite existing result
+							return $validate + array( 'result' => $which ? 'blocked' : 'passed' );
 					}
 
 					elseif ( $country === $code )
-						return $validate + array( 'result' => 'passed' ); // can't overwrite existing result
+						return $validate + array( 'result' => $which ? 'blocked' : 'passed' );
 
 					elseif ( filter_var( $code, FILTER_VALIDATE_IP ) ) {
-						$validate = $this->check_ips( $validate, $code, 0 ); // only 'white_list'
+						$validate = $this->check_ips( $validate, $code, $which );
 						if ( isset( $validate['result'] ) )
 							return $validate;
 					}

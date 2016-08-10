@@ -21,7 +21,7 @@ the original feature 'Zero-day Exploit Prevention' (WP-ZEP).
 
 Up to version 2.x, this plugin has been dedicated to protect the back-end of 
 your site. And from version 3.x, it becomes to be able to block the public 
-facing pages on front-end.
+facing pages aka front-end.
 
 The protection based on the IP address is not a perfect solution for everyone.
 But for some site owners or some certain cases such as 'zero-day attack', 
@@ -310,8 +310,8 @@ can also help you.
 
 = Does this plugin works well with caching plugin? =
 
-For the back-end protection, the answer is YES. But for front-end protection, 
-the answer depends on the plugin you are using.
+For the back-end protection, the answer is YES. But for the front-end, the 
+answer depends on the plugin you are using.
 
 Currently, the following caching plugins and configurations can be supported:
 
@@ -343,8 +343,8 @@ is in the WordPress install directory.
 
 But there're exceptions: When you enable "**Force to load WP core**" for 
 **Plugins area** or **Themes area**, a standalone PHP file becomes to be 
-blocked. Sometimes this kind of file in a plugin or theme has vulnerability.
-This function is provided in such a case.
+able to be blocked. Sometimes this kind of file in a plugin or theme has 
+vulnerability. This function is provided against such a case.
 
 = Do I have to turn on all the selection to enhance security? =
 
@@ -366,7 +366,7 @@ follows:
 See more details in 
 "[The best practice of target settings](http://www.ipgeoblock.com/codex/the-best-practice-of-target-settings.html 'The best practice of target settings | IP Geo Block')".
 
-= How can I test that this plugin works? =
+= How can I test this plugin works? =
 
 The easiest way is to use 
   [free proxy browser addon](https://www.google.com/search?q=free+proxy+browser+addon "free proxy browser addon - Google Search").
@@ -384,7 +384,7 @@ and
 = Some admin function doesn't work when WP-ZEP is enabled. =
 
 There are a few cases that WP-ZEP would not work. One is redirection at server 
-side (caused by PHP or `.htaccess`) and client side (by caused JavaScript 
+side (caused by PHP or `.htaccess`) and client side (caused by JavaScript 
 location object or meta tag for refresh).
 
 Another is the case related to the content type. This plugin will only support 
@@ -430,6 +430,12 @@ For more details, see
 [the documents](http://www.ipgeoblock.com/codex/ "Codex | IP Geo Block").
 
 == Other Notes ==
+
+= Known issues =
+
+* No image is shown after drag & drop a image in grid view at "Media Library".
+  For more details, please refer to 
+  [this ticket at Github](https://github.com/tokkonopapa/WordPress-IP-Geo-Block/issues/2 "No image is shown after drag & drop a image in grid view at "Media Library". - Issue #2 - tokkonopapa/WordPress-IP-Geo-Block - GitHub").
 
 == Screenshots ==
 

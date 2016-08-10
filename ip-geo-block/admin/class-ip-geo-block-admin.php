@@ -692,7 +692,7 @@ class IP_Geo_Block_Admin {
 						else {
 							$output[ $key ][ $sub ] = ( is_int( $default[ $key ][ $sub ] ) ?
 								(int)$input[ $key ][ $sub ] :
-								IP_Geo_Block::kses( preg_replace( '/[^-,:!*+\.\/\w\s]/', '', $input[ $key ][ $sub ] ), FALSE )
+								IP_Geo_Block::kses( preg_replace( '/[^-,:!*#+\.\/\w\s]/', '', $input[ $key ][ $sub ] ), FALSE )
 							);
 						}
 					}
@@ -857,13 +857,15 @@ class IP_Geo_Block_Admin {
 	}
 
 	/**
-	 * Upgrade some of setting data
+	 * Upgrade the specified options
 	 *
 	 */
 	public function upgrade_options() {
-		if ( current_user_can( 'manage_options' ) ) {
+		if ( current_user_can( 'manage_options' ) and
+		     $data = get_transient( IP_Geo_Block::PLUGIN_NAME . '-upgrade-options' ) ) {
+			// upgrade options only once
+			delete_transient( IP_Geo_Block::PLUGIN_NAME . '-upgrade-options' );
 			$settings = IP_Geo_Block::get_option();
-			$data = get_transient( IP_Geo_Block::PLUGIN_NAME . '-upgrade-options' );
 
 			foreach ( $data as $key => $value ) {
 				if ( is_array( $value ) ) {
@@ -876,9 +878,7 @@ class IP_Geo_Block_Admin {
 				}
 			}
 
-			// finish to upgrade the option table
 			update_option( IP_Geo_Block::OPTION_NAME, $settings );
-			delete_transient( IP_Geo_Block::PLUGIN_NAME . '-upgrade-options' );
 		}
 	}
 

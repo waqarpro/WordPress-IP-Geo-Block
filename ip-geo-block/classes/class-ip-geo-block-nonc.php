@@ -15,8 +15,8 @@ class IP_Geo_Block_Nonce {
 	 * Creates a cryptographic tied to the action, user, session, and time.
 	 *
 	 */
-	public static function create_nonce( $action = -1 ) {
-		$uid = self::get_current_user();
+	public static function create_nonce( $action = -1, $ip_addr = NULL ) {
+		$uid = self::get_current_user( $ip_addr );
 		$tok = self::get_session_token();
 		$exp = self::nonce_tick();
 
@@ -27,8 +27,8 @@ class IP_Geo_Block_Nonce {
 	 * Verify that correct nonce was used with time limit.
 	 *
 	 */
-	public static function verify_nonce( $nonce, $action = -1 ) {
-		$uid = self::get_current_user();
+	public static function verify_nonce( $nonce, $action = -1, $ip_addr = NULL ) {
+		$uid = self::get_current_user( $ip_addr );
 		$tok = self::get_session_token();
 		$exp = self::nonce_tick();
 
@@ -89,27 +89,38 @@ class IP_Geo_Block_Nonce {
 	 * Retrieve the current user identification.
 	 *
 	 */
-	private static function get_current_user() {
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-lkup.php' );
+	private static function get_current_user( $ip_addr ) {
+		if ( $ip_addr ) {
+			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-lkup.php' );
 
-		$sum = 0;
-		$num = '';
+			$num = '';
+			$sum = 0;
 
-		foreach ( unpack( 'C*', IP_Geo_Block_Lkup::inet_pton( IP_Geo_Block::get_ip_address() ) ) as $byte ) {
-			$sum += $byte;
-			$num .= (string)( $byte % 10 );
+			foreach ( unpack( 'C*', IP_Geo_Block_Lkup::inet_pton( $ip_addr ) ) as $byte ) {
+				$sum += $byte;
+				$num .= (string)( $byte % 10 );
+			}
+
+			$num += $sum;
 		}
 
-		$num += $sum;
-
+		elseif ( isset( $_COOKIE ) ) {
+			 foreach ( array_keys( $_COOKIE ) as $key ) {
+				if ( 0 === strpos( $key, 'wp-settings-' ) ) {
+					$num = preg_replace( '/\D/', '', $key ); // get numerical characters
+					break;
+				}
+			}
+		}
+/*
 		// add something which a visitor can't control
-//		$num .= substr( SECURE_AUTH_KEY, 1, 6 ); // @since 2.6
+		$num .= substr( SECURE_AUTH_KEY, 1, 6 ); // @since 2.6
 
 		// add something unique
-//		if ( isset( $_SERVER['HTTP_USER_AGENT'] ) && is_string( $_SERVER['HTTP_USER_AGENT'] ) )
-//			$num .= preg_replace( '/[^-,:!*+\.\/\w\s]/', '', $_SERVER['HTTP_USER_AGENT'] );
-
-		return $num;
+		if ( isset( $_SERVER['HTTP_USER_AGENT'] ) && is_string( $_SERVER['HTTP_USER_AGENT'] ) )
+			$num .= preg_replace( '/[^-,:!*+\.\/\w\s]/', '', $_SERVER['HTTP_USER_AGENT'] );
+*/
+		return isset( $num ) ? $num : '0';
 	}
 
 	/**
