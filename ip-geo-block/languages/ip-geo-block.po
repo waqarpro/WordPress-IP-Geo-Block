@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2016-08-10 00:22+0900\n"
-"PO-Revision-Date: 2016-08-10 00:24+0900\n"
+"POT-Creation-Date: 2016-08-11 17:30+0900\n"
+"PO-Revision-Date: 2016-08-11 17:31+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -119,7 +119,7 @@ msgid "Enable"
 msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:816
-#: admin/class-ip-geo-block-admin.php:841
+#: admin/class-ip-geo-block-admin.php:840
 #: classes/class-ip-geo-block-gzip.php:97
 #: classes/class-ip-geo-block-opts.php:296
 #, php-format
@@ -480,13 +480,16 @@ msgstr ""
 
 #: admin/includes/tab-settings.php:694
 msgid ""
-"A part of user agent string and qualification separated by a colon where the "
-"&#8220;qualification&#8221; can be &#8220;DNS&#8221;, &#8220;FEED&#8221;, "
-"country code or IP address with CIDR."
+"A part of user agent string and a qualification connected with a separator "
+"that indicates an applicable rule and can be &#8220;:&#8221; (pass) or "
+"&#8220;#&#8221; (block). A &#8220;qualification&#8221; can be &#8220;"
+"DNS&#8221;, &#8220;FEED&#8221;, country code or IP address with CIDR. A "
+"negative operator &#8220;!&#8221; can be placed just before a &#8220;"
+"qualification&#8221;."
 msgstr ""
 
 #: admin/includes/tab-settings.php:694
-msgid "Permitted UA string and qualification"
+msgid "UA string and qualification"
 msgstr ""
 
 #: admin/includes/tab-settings.php:712

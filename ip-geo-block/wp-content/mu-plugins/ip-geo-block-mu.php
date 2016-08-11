@@ -10,10 +10,10 @@
  * @link      http://www.ipgeoblock.com/
  * @copyright 2013-2016 tokkonopapa
  *
- * Plugin Name:       IP Geo Block MU
+ * Plugin Name:       IP Geo Block
  * Plugin URI:        http://wordpress.org/plugins/ip-geo-block/
  * Description:       It blocks any spams, login attempts and malicious access to the admin area posted from outside your nation, and also prevents zero-day exploit.
- * Version:           3.0.0a
+ * Version:           3.0.0
  * Author:            tokkonopapa
  * Author URI:        http://www.ipgeoblock.com/
  * Text Domain:       ip-geo-block
@@ -28,12 +28,6 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 /*----------------------------------------------------------------------------*
- * Validation must be executed before `init` action hook
- *----------------------------------------------------------------------------*/
-if ( ! defined( 'IP_GEO_BLOCK_BEFORE_INIT' ) )
-	define( 'IP_GEO_BLOCK_BEFORE_INIT', TRUE );
-
-/*----------------------------------------------------------------------------*
  * Detect plugin. For use on Front End only.
  *----------------------------------------------------------------------------*/
 include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
@@ -44,11 +38,20 @@ if ( is_plugin_active( $plugin_name ) || is_plugin_active_for_network( $plugin_n
 	// Load plugin class
 	include_once( WP_PLUGIN_DIR . '/' . $plugin_name );
 
-	// Remove instanciation
-	remove_action( 'plugins_loaded', array( 'IP_Geo_Block', 'run' ) );
+	$settings = IP_Geo_Block::get_option();
 
-	// Instanciate immediately
-	IP_Geo_Block::get_instance();
+	// check setup had already done
+	if ( $settings['matching_rule'] >= 0 &&
+	     version_compare( $settings['version'], IP_Geo_Block::VERSION ) >= 0 ) {
+		// Validation must be executed before `init` action hook
+		define( 'IP_GEO_BLOCK_BEFORE_INIT', TRUE );
+
+		// Remove instanciation
+		remove_action( 'plugins_loaded', array( 'IP_Geo_Block', 'run' ) );
+
+		// Instanciate immediately
+		IP_Geo_Block::get_instance();
+	}
 }
 
 unset( $plugin_name );

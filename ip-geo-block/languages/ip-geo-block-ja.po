@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2016-08-10 00:22+0900\n"
-"PO-Revision-Date: 2016-08-10 00:33+0900\n"
+"POT-Creation-Date: 2016-08-11 17:30+0900\n"
+"PO-Revision-Date: 2016-08-11 18:05+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -133,7 +133,7 @@ msgid "Enable"
 msgstr "有効"
 
 #: admin/class-ip-geo-block-admin.php:816
-#: admin/class-ip-geo-block-admin.php:841
+#: admin/class-ip-geo-block-admin.php:840
 #: classes/class-ip-geo-block-gzip.php:97
 #: classes/class-ip-geo-block-opts.php:296
 #, php-format
@@ -538,25 +538,29 @@ msgstr "「検証ルールの設定」に従う"
 
 #: admin/includes/tab-settings.php:694
 msgid ""
-"A part of user agent string and qualification separated by a colon where the "
-"&#8220;qualification&#8221; can be &#8220;DNS&#8221;, &#8220;FEED&#8221;, "
-"country code or IP address with CIDR."
+"A part of user agent string and a qualification connected with a separator "
+"that indicates an applicable rule and can be &#8220;:&#8221; (pass) or "
+"&#8220;#&#8221; (block). A &#8220;qualification&#8221; can be &#8220;"
+"DNS&#8221;, &#8220;FEED&#8221;, country code or IP address with CIDR. A "
+"negative operator &#8220;!&#8221; can be placed just before a &#8220;"
+"qualification&#8221;."
 msgstr ""
-"コロンで区切られたユーザーエージェント文字列の一部と「条件」のペア。「条件」"
-"は次のうちの1つ：国コード、CIDR記法IPアドレス、&#8220;DNS&#8221;、または"
-"&nbsp;&#8220;FEED&#8221;"
+"適用されるルールを表す記号（「:」は通過、「#」は遮断）で区切られたユーザー"
+"エージェント文字列の一部と「条件」のペアです。「条件」には「DNS」、「FEED」、"
+"国コード、または&nbsp;IPアドレス（CIDR記法）が使えます。また否定を表す記号"
+"「!」を「条件」の直前に配置する事が出来ます。"
 
 #: admin/includes/tab-settings.php:694
-msgid "Permitted UA string and qualification"
-msgstr "許可するユーザーエージェント文字列とその条件"
+msgid "UA string and qualification"
+msgstr "ユーザーエージェント文字列と条件"
 
 #: admin/includes/tab-settings.php:712
 msgid ""
 "It enables to simulate validation without deployment. The results can be "
 "found at &#8220;Pubic facing pages&#8221; in Logs."
 msgstr ""
-"機能を有効にする事なく検証だけをシミュレートします。結果はログで確認する事が"
-"出来ます。"
+"機能を有効にする事なくリクエストの検証をシミュレートします。結果はログで確認"
+"する事が出来ます。"
 
 #: admin/includes/tab-settings.php:712
 msgid "Simulation mode"
@@ -688,7 +692,7 @@ msgstr "ガベージコレクション周期 [秒]"
 
 #: admin/includes/tab-settings.php:975
 msgid "Number of entries to be displayed in cache"
-msgstr "キャッシュ中IPアドレスの表示数"
+msgstr "「キャッシュ中のIPアドレス」に表示する最大数"
 
 #: admin/includes/tab-settings.php:993
 msgid "Submission settings"
