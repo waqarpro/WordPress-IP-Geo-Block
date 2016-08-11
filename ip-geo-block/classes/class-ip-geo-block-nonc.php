@@ -32,14 +32,34 @@ class IP_Geo_Block_Nonce {
 		$tok = self::get_session_token();
 		$exp = self::nonce_tick();
 
-		// Nonce generated 0-12 hours ago
-		$expected = substr( self::hash_nonce( $exp . '|' . $action . '|' . $uid . '|' . $tok ), -12, 10 );
-
 		// PHP 5 >= 5.6.0 or wp-includes/compat.php
-		if ( function_exists( 'hash_equals' ) )
-			return hash_equals( $expected, (string)$nonce );
-		else
-			return self::hash_equals( $expected, (string)$nonce );
+		if ( function_exists( 'hash_equals' ) ) {
+			// Nonce generated 0-12 hours ago
+			$expected = substr( self::hash_nonce( $exp . '|' . $action . '|' . $uid . '|' . $tok ), -12, 10 );
+			if ( hash_equals( $expected, (string)$nonce ) ) {
+				return 1;
+			}
+
+			// Nonce generated 12-24 hours ago
+			$expected = substr( self::hash_nonce( ( $exp - 1 ) . '|' . $action . '|' . $uid . '|' . $tok ), -12, 10 );
+			if ( hash_equals( $expected, (string)$nonce ) ) {
+				return 2;
+			}
+		}
+
+		else {
+			// Nonce generated 0-12 hours ago
+			$expected = substr( self::hash_nonce( $exp . '|' . $action . '|' . $uid . '|' . $tok ), -12, 10 );
+			if ( self::hash_equals( $expected, (string)$nonce ) ) {
+				return 1;
+			}
+
+			// Nonce generated 12-24 hours ago
+			$expected = substr( self::hash_nonce( ( $exp - 1 ) . '|' . $action . '|' . $uid . '|' . $tok ), -12, 10 );
+			if ( self::hash_equals( $expected, (string)$nonce ) ) {
+				return 2;
+			}
+		}
 	}
 
 	/**
