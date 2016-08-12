@@ -32,17 +32,17 @@ if ( ! defined( 'WPINC' ) ) {
  *----------------------------------------------------------------------------*/
 include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 
-$plugin_name = 'ip-geo-block/ip-geo-block.php';
+$plugin = 'ip-geo-block/ip-geo-block.php';
 
-if ( is_plugin_active( $plugin_name ) || is_plugin_active_for_network( $plugin_name ) ) {
+if ( is_plugin_active( $plugin ) || is_plugin_active_for_network( $plugin ) ) {
 	// Load plugin class
-	include_once( WP_PLUGIN_DIR . '/' . $plugin_name );
+	include_once( WP_PLUGIN_DIR . '/' . $plugin );
 
-	$settings = IP_Geo_Block::get_option();
+	$plugin = IP_Geo_Block::get_option();
 
 	// check setup had already done
-	if ( $settings['matching_rule'] >= 0 &&
-	     version_compare( $settings['version'], IP_Geo_Block::VERSION ) >= 0 ) {
+	if ( $plugin['matching_rule'] >= 0 &&
+	     version_compare( $plugin['version'], IP_Geo_Block::VERSION ) >= 0 ) {
 		// Validation must be executed before `init` action hook
 		define( 'IP_GEO_BLOCK_BEFORE_INIT', TRUE );
 
@@ -54,4 +54,4 @@ if ( is_plugin_active( $plugin_name ) || is_plugin_active_for_network( $plugin_n
 	}
 }
 
-unset( $plugin_name );
+unset( $plugin );
