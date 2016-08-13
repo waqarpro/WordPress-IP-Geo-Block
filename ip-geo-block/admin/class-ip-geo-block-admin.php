@@ -131,12 +131,15 @@ class IP_Geo_Block_Admin {
 
 		  case 2:
 			// js for google map
+			$key = apply_filters( IP_Geo_Block::PLUGIN_NAME . '-google-map-api-key', '' );
 			wp_enqueue_script( IP_Geo_Block::PLUGIN_NAME . '-google-map',
-				'//maps.google.com/maps/api/js?sensor=false',
+				'//maps.googleapis.com/maps/api/js' . ( $key ? '?key=' . $key : '' ),
 				$dependency, IP_Geo_Block::VERSION, $footer
 			);
 			wp_enqueue_script( IP_Geo_Block::PLUGIN_NAME . '-gmap-js',
-				plugins_url( 'js/gmap.min.js', __FILE__ ),
+				plugins_url( ! defined( 'IP_GEO_BLOCK_DEBUG' ) || ! IP_GEO_BLOCK_DEBUG ?
+					'js/gmap.min.js' : 'js/gmap.js', __FILE__
+				),
 				$dependency, IP_Geo_Block::VERSION, $footer
 			);
 			break;

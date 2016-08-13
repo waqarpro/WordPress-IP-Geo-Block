@@ -129,7 +129,7 @@ class IP_Geo_Block_Loader {
 		 * This part will be executed at the very beginning of WordPress core.
 		 * Execute callbacks that are specified by the component with 'init'.
 		 */
-		if ( ! function_exists( 'add_filter' ) || defined( 'IP_GEO_BLOCK_BEFORE_INIT' ) ) {
+		if ( defined( 'IP_GEO_BLOCK_BEFORE_INIT' ) ) {
 			foreach ( $this->actions as $index => $hook ) {
 				if ( in_array( $hook['hook'], array( 'init', 'wp_loaded' ) ) ) {
 					// Execute callback directly

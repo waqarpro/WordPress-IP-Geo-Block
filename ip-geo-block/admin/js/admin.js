@@ -5,6 +5,14 @@
  * This software is released under the MIT License.
  */
 var ip_geo_block_time = new Date();
+    ip_geo_block_gmap_error = null;
+
+function gm_authFailure() {
+	// https://developers.google.com/maps/documentation/javascript/events?hl=en#auth-errors
+	ip_geo_block_gmap_error = 'Google Map API authentication failure.';
+};
+
+//gm_authFailure(); // just test
 
 (function ($) {
 	'use strict';
@@ -647,10 +655,18 @@ var ip_geo_block_time = new Date();
 		   * Search
 		   *----------------------------------------*/
 		  case 2:
-			// Initialize map if exists
-			$(ID('#', 'map')).each(function () {
-				$(this).GmapRS();
-			});
+			if (!ip_geo_block_gmap_error) {
+				// Initialize map if exists
+				$(ID('#', 'map')).each(function () {
+					$(this).GmapRS();
+				});
+			} else {
+				$(ID('#', 'map')).each(function () {
+					$(this).html(
+						'<iframe src="//maps.google.com/maps?output=embed" frameborder="0" style="width:100%; height:400px; border:0" allowfullscreen></iframe>'
+					)
+				});
+			}
 
 			// Search Geolocation
 			$(ID('@', 'get_location')).on('click', function (event) {
@@ -673,14 +689,38 @@ var ip_geo_block_time = new Date();
 							}
 						}
 
-						$(ID('#', 'map')).GmapRS('addMarker', {
-							latitude: data.latitude || 0,
-							longitude: data.longitude || 0,
-							title: ip,
-							content: '<ul>' + info + '</ul>',
-							show: true,
-							zoom: 8
-						});
+						if (!ip_geo_block_gmap_error) {
+							$(ID('#', 'map')).GmapRS('addMarker', {
+								latitude: data.latitude || 0,
+								longitude: data.longitude || 0,
+								title: ip,
+								content: '<ul>' + info + '</ul>',
+								show: true,
+								zoom: 8
+							});
+						} else {
+							var latitude = sanitize(data.latitude || 0),
+							    longitude = sanitize(data.longitude || 0);
+
+							$(ID('#', 'map')).css({
+								height: '600px',
+								backgroundColor: 'transparent'
+							}).html(
+								'<ul style="margin-top:0; margin-left:1em;">' +
+									'<li>' +
+										'<span class="' + ID('title' ) + '">' + 'IP address' + ' : </span>' +
+										'<span class="' + ID('result') + '">' + sanitize(ip) + '</span>' +
+									'</li>' +
+									info +
+									/*'<li>' +
+										'<span class="' + ID('title' ) + '">' + 'show map' + ' : </span>' +
+										'<span class="' + ID('result') + '">' + '<a href="//maps.google.com/maps?q=' + latitude + ',' + longitude + '">Click here</a>' + '</span>' +
+									'</li>' +*/
+								'</ul>'
+								+ '<iframe src="//maps.google.com/maps?q=' + latitude + ',' + longitude + '&output=embed" frameborder="0" style="width:100%; height:400px; border:0" allowfullscreen></iframe>'
+								/*+ '<iframe src="//www.google.com/maps/embed/v1/place?key=...&q=%20&center=' + latitude + ',' + longitude + '&zoom=11" frameborder="0" style="width:100%; height:400px; border:0" allowfullscreen></iframe>'*/
+							);
+						}
 					});
 				}
 
