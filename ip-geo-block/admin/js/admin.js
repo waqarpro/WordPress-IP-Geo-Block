@@ -5,14 +5,6 @@
  * This software is released under the MIT License.
  */
 var ip_geo_block_time = new Date();
-    ip_geo_block_gmap_error = null;
-
-function gm_authFailure() {
-	// https://developers.google.com/maps/documentation/javascript/events?hl=en#auth-errors
-	ip_geo_block_gmap_error = 'Google Map API authentication failure.';
-};
-
-//gm_authFailure(); // just test
 
 (function ($) {
 	'use strict';
@@ -127,9 +119,13 @@ function gm_authFailure() {
 		}
 	}
 
-	// Encode to prevent blocking before post ajax
+	// Encode/Decode to prevent blocking before post ajax
 	function base64_encode(str) {
 		return window.btoa(str);
+	}
+
+	function base64_decode(str) {
+		return window.atob(str);
 	}
 
 	// Equivalent for PHP's str_rot13
@@ -140,9 +136,13 @@ function gm_authFailure() {
 		});
 	}
 
-	// Wrapper for scrambling strings
-	function scramble_str(str) {
+	// Wrapper for encode/decode strings
+	function encode_str(str) {
 		return base64_encode(str_rot13(str));
+	}
+
+	function decode_str(str) {
+		return str_rot13(base64_decode(str));
 	}
 
 	// File Reader
@@ -530,7 +530,7 @@ function gm_authFailure() {
 					}
 				});
 
-				json[id += '[signature]'] = scramble_str(json[id]);
+				json[id += '[signature]'] = encode_str(json[id]);
 				$(ID('#', 'export-data')).val(JSON.stringify(json));
 				$(ID('#', 'export-form')).trigger('submit');
 
@@ -549,7 +549,7 @@ function gm_authFailure() {
 					readfile(file, function (data) {
 						var id = name + '[signature]';
 						data = JSON.parse(data);
-						data[id] = scramble_str(data[id]);
+						data[id] = encode_str(data[id]);
 						ajax_post('export-import', {
 							cmd: 'validate',
 							data: JSON.stringify(data)
@@ -603,19 +603,34 @@ function gm_authFailure() {
 				return false;
 			});
 
-			// Submit
-			$('#submit').on('click', function (event) {
-				var elm = $(ID('@', 'signature'));
-				elm.val(scramble_str(elm.val()));
-				return true;
-			});
-
 			// Exceptions
 			$('ul.' + name + '_exception dfn').on('click', function (event) {
 				var $this = $(this).parent();
 				$this.children('li').toggle();
 				$this.toggleClass(ID('dropup')).toggleClass(ID('dropdown'));
 				return false;
+			});
+
+			// Decode
+			$(ID('#', 'decode')).on('click', function (event) {
+				var elm = $(ID('@', 'signature')),
+				    str = elm.val();
+				if (str.search(/,/) === -1) {
+					elm.val(decode_str(str));
+				} else {
+					elm.val(encode_str(str));
+				}
+				return false;
+			});
+
+			// Submit
+			$('#submit').on('click', function (event) {
+				var elm = $(ID('@', 'signature')),
+				    str = elm.val();
+				if (str.search(/,/) !== -1) {
+					elm.val(encode_str(str));
+				}
+				return true;
 			});
 
 			break;
@@ -655,16 +670,17 @@ function gm_authFailure() {
 		   * Search
 		   *----------------------------------------*/
 		  case 2:
-			if (!ip_geo_block_gmap_error) {
+			var map = $(ID('#', 'map'));
+			if ('object' === typeof google) {
 				// Initialize map if exists
-				$(ID('#', 'map')).each(function () {
+				map.each(function () {
 					$(this).GmapRS();
 				});
 			} else {
-				$(ID('#', 'map')).each(function () {
-					$(this).html(
+				map.each(function () {
+					$(this).empty().html(
 						'<iframe src="//maps.google.com/maps?output=embed" frameborder="0" style="width:100%; height:400px; border:0" allowfullscreen></iframe>'
-					)
+					);
 				});
 			}
 
@@ -689,8 +705,8 @@ function gm_authFailure() {
 							}
 						}
 
-						if (!ip_geo_block_gmap_error) {
-							$(ID('#', 'map')).GmapRS('addMarker', {
+						if ('object' === typeof google) {
+							map.GmapRS('addMarker', {
 								latitude: data.latitude || 0,
 								longitude: data.longitude || 0,
 								title: ip,
@@ -699,13 +715,13 @@ function gm_authFailure() {
 								zoom: 8
 							});
 						} else {
-							var latitude = sanitize(data.latitude || 0),
-							    longitude = sanitize(data.longitude || 0);
+							var latitude = sanitize(data.latitude || '0'),
+							    longitude = sanitize(data.longitude || '0');
 
-							$(ID('#', 'map')).css({
+							map.css({
 								height: '600px',
 								backgroundColor: 'transparent'
-							}).html(
+							}).empty().html(
 								'<ul style="margin-top:0; margin-left:1em;">' +
 									'<li>' +
 										'<span class="' + ID('title' ) + '">' + 'IP address' + ' : </span>' +
@@ -717,7 +733,7 @@ function gm_authFailure() {
 										'<span class="' + ID('result') + '">' + '<a href="//maps.google.com/maps?q=' + latitude + ',' + longitude + '">Click here</a>' + '</span>' +
 									'</li>' +*/
 								'</ul>'
-								+ '<iframe src="//maps.google.com/maps?q=' + latitude + ',' + longitude + '&output=embed" frameborder="0" style="width:100%; height:400px; border:0" allowfullscreen></iframe>'
+								+ '<iframe src="//maps.google.com/maps?q=' + latitude + ',' + longitude + '&z=11&output=embed" frameborder="0" style="width:100%; height:400px; border:0" allowfullscreen></iframe>'
 								/*+ '<iframe src="//www.google.com/maps/embed/v1/place?key=...&q=%20&center=' + latitude + ',' + longitude + '&zoom=11" frameborder="0" style="width:100%; height:400px; border:0" allowfullscreen></iframe>'*/
 							);
 						}

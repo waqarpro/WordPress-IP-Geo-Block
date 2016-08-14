@@ -290,8 +290,9 @@ class IP_Geo_Block_Admin_Ajax {
 			'[cache_cookie]',            // 3.0.0
 			'[comment][pos]',
 			'[comment][msg]',
-			'[network_wide]',            // 3.0.0
 			'[clean_uninstall]',
+			'[network_wide]',            // 3.0.0
+			'[api_key][GoogleMap]',      // 3.0.0
 		);
 		$json = array();
 		$prfx = IP_Geo_Block::OPTION_NAME;

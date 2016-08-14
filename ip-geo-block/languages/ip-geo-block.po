@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2016-08-11 17:30+0900\n"
-"PO-Revision-Date: 2016-08-11 17:31+0900\n"
+"POT-Creation-Date: 2016-08-14 23:10+0900\n"
+"PO-Revision-Date: 2016-08-14 23:12+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -25,25 +25,25 @@ msgid ""
 "posted from outside your nation, and also prevents zero-day exploit."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:197
+#: admin/class-ip-geo-block-admin.php:202
 msgid "Contribute at GitHub"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:214
-#: admin/class-ip-geo-block-admin.php:370
+#: admin/class-ip-geo-block-admin.php:219
+#: admin/class-ip-geo-block-admin.php:375
 msgid "Settings"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:260
-#: admin/class-ip-geo-block-admin.php:261
+#: admin/class-ip-geo-block-admin.php:265
+#: admin/class-ip-geo-block-admin.php:266
 msgid "IP Geo Block"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:282
+#: admin/class-ip-geo-block-admin.php:287
 msgid "You need WordPress 3.7+."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:290
+#: admin/class-ip-geo-block-admin.php:295
 #, php-format
 msgid ""
 "Now downloading geolocation databases in background. After a little while, "
@@ -51,77 +51,77 @@ msgid ""
 "strong>&#8221; at <a href=\"%s\">Validation rule settings</a>."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:296
+#: admin/class-ip-geo-block-admin.php:301
 #, php-format
 msgid ""
 "The &#8220;<strong>Matching rule</strong>&#8221; is not set properly. Please "
 "confirm it at <a href=\"%s\">Validation rule settings</a>."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:305
+#: admin/class-ip-geo-block-admin.php:310
 msgid "Matching rule has been updated."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:316
+#: admin/class-ip-geo-block-admin.php:321
 msgid ""
 "Once you logout, you will be unable to login again because your country code "
 "or IP address is in the blacklist."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:317
+#: admin/class-ip-geo-block-admin.php:322
 msgid ""
 "Once you logout, you will be unable to login again because your country code "
 "or IP address is not in the whitelist."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:320
+#: admin/class-ip-geo-block-admin.php:325
 #, php-format
 msgid "Please check your <a href=\"%s\">Validation rule settings</a>."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:371
+#: admin/class-ip-geo-block-admin.php:376
 msgid "Statistics"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:372
+#: admin/class-ip-geo-block-admin.php:377
 msgid "Logs"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:373
+#: admin/class-ip-geo-block-admin.php:378
 msgid "Search"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:374
+#: admin/class-ip-geo-block-admin.php:379
 msgid "Attribution"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:386
+#: admin/class-ip-geo-block-admin.php:391
 msgid "Toggle all"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:409
+#: admin/class-ip-geo-block-admin.php:414
 msgid "Thanks for providing these great services for free."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:410
+#: admin/class-ip-geo-block-admin.php:415
 msgid ""
 "(Most browsers will redirect you to each site <a href=\"http://www."
 "ipgeoblock.com/etc/referer.html\" title=\"Referer Checker\">without referrer "
 "when you click the link</a>.)"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:415
+#: admin/class-ip-geo-block-admin.php:420
 msgid "Back to top"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:507
+#: admin/class-ip-geo-block-admin.php:512
 msgid "Enable"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:816
-#: admin/class-ip-geo-block-admin.php:840
+#: admin/class-ip-geo-block-admin.php:822
+#: admin/class-ip-geo-block-admin.php:846
 #: classes/class-ip-geo-block-gzip.php:97
-#: classes/class-ip-geo-block-opts.php:296
+#: classes/class-ip-geo-block-opts.php:300
 #, php-format
 msgid "Unable to write %s. Please check permission."
 msgstr ""
@@ -342,7 +342,10 @@ msgid ""
 "<dfn title=\"It validates malicious signatures independently of &#8220;Block "
 "by country&#8221; and &#8220;Prevent Zero-day Exploit&#8221; for the target "
 "&#8220;Admin area&#8221;, &#8220;Admin ajax/post&#8221;, &#8220;Plugins "
-"area&#8221; and &#8220;Themes area&#8221;.\">Bad signatures in query</dfn>"
+"area&#8221; and &#8220;Themes area&#8221;.\">Bad signatures in query</dfn> "
+"(<a href=\"javascript:void(0);\" id=\"ip-geo-block-decode\" title=\"When you "
+"find ugly character string in the text area, please click to restore."
+"\"><span id=\"ip-geo-block-cycle\"></span></a>)"
 msgstr ""
 
 #: admin/includes/tab-settings.php:240
@@ -710,7 +713,13 @@ msgstr ""
 msgid "Create now"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1134
+#: admin/includes/tab-settings.php:1130
+msgid ""
+"<dfn title=\"Valid key for Google Maps JavaScript API\">Google Maps API key</"
+"dfn>"
+msgstr ""
+
+#: admin/includes/tab-settings.php:1152
 msgid ""
 "To enhance the protection ability, please refer to &#8220;<a href=\"http://"
 "www.ipgeoblock.com/codex/the-best-practice-of-target-settings.html\" title="
@@ -718,7 +727,7 @@ msgid ""
 "target settings</a>&#8221;."
 msgstr ""
 
-#: admin/includes/tab-settings.php:1135
+#: admin/includes/tab-settings.php:1153
 msgid ""
 "If you have any troubles with these, please open an issue at <a class=\"ip-"
 "geo-block-link\" href=\"http://wordpress.org/support/plugin/ip-geo-block\" "
@@ -726,18 +735,18 @@ msgid ""
 "target=_blank>support forum</a>."
 msgstr ""
 
-#: admin/includes/tab-settings.php:1142
+#: admin/includes/tab-settings.php:1160
 msgid ""
 "While Maxmind and IP2Location will fetch the local database, others will "
 "pass an IP address to the APIs via HTTP."
 msgstr ""
 
-#: admin/includes/tab-settings.php:1143
+#: admin/includes/tab-settings.php:1161
 msgid ""
 "Please select the appropriate APIs to fit the privacy law in your country."
 msgstr ""
 
-#: admin/includes/tab-settings.php:1150
+#: admin/includes/tab-settings.php:1168
 msgid ""
 "There are some restrictions when you enable \"Block by country\" with your "
 "caching plugin. For more details, please refer to the documents at <a href="
@@ -745,7 +754,7 @@ msgid ""
 "IP Geo Block\">Blocking on front-end</a>."
 msgstr ""
 
-#: admin/includes/tab-settings.php:1151
+#: admin/includes/tab-settings.php:1169
 msgid ""
 "If you find any issues or have something to suggest, please feel free to "
 "open an issue at <a class=\"ip-geo-block-link\" href=\"http://wordpress.org/"

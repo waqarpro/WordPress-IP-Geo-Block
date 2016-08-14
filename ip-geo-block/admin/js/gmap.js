@@ -1,10 +1,19 @@
-/*
-* Project: GmapRS - google map for WordPress IP Geo Block
-* Description: A really simple google map plugin based on jQuery-boilerplate.
-* Version: 0.2.3
-* Copyright (c) 2013 tokkonopapa (tokkonopapa@yahoo.com)
-* This software is released under the MIT License.
-*/
+/**
+ * Project: GmapRS - google map for WordPress IP Geo Block
+ * Description: A really simple google map plugin based on jQuery-boilerplate.
+ * Version: 0.2.4
+ * Copyright (c) 2013-2016 tokkonopapa (tokkonopapa@yahoo.com)
+ * This software is released under the MIT License.
+ */
+var ip_geo_block_gmap_error = null;
+
+function gm_authFailure() {
+	// https://developers.google.com/maps/documentation/javascript/events?hl=en#auth-errors
+	ip_geo_block_gmap_error = 'Google Map API authentication failure.';
+};
+
+//gm_authFailure(); // just test
+
 (function($, window, document) {
 	$(function($) {
 		var e = "GmapRS",

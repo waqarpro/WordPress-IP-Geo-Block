@@ -457,6 +457,10 @@ For more details, see
 * **New feature:** Add getting host information using reverse DNS lookup.
 * **New filter hook:** Add `ip-geo-block-public` to validate requests on 
   front-end.
+* **Improvement:** Add fallback for Google Maps API key 
+  ([@](https://wordpress.org/support/topic/226-problem-with-search-resp-google-maps "WordPress &#8250; Support &raquo; [2.2.6] Problem with SEARCH resp. Google Maps"))
+  and corruption of "Bad signatures"
+  ([@](https://wordpress.org/support/topic/226-problem-with-bad-signatures-in-query "WordPress &#8250; Support &raquo; [2.2.6] Problem with &quot;Bad signatures in query&quot;")).
 * **Bug fix:** Fix inadequate validation of "**Bad signatures in query**".
 * See more details at
     [Call for testing 3.0.0 beta](http://www.ipgeoblock.com/changelog/call-for-testing-3.0.0b.html "Call for testing 3.0.0 beta | IP Geo Block")
