@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2016-08-14 23:10+0900\n"
-"PO-Revision-Date: 2016-08-14 23:12+0900\n"
+"POT-Creation-Date: 2016-08-18 18:08+0900\n"
+"PO-Revision-Date: 2016-08-18 18:10+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -25,25 +25,25 @@ msgid ""
 "posted from outside your nation, and also prevents zero-day exploit."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:202
+#: admin/class-ip-geo-block-admin.php:196
 msgid "Contribute at GitHub"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:219
-#: admin/class-ip-geo-block-admin.php:375
+#: admin/class-ip-geo-block-admin.php:213
+#: admin/class-ip-geo-block-admin.php:369
 msgid "Settings"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:265
-#: admin/class-ip-geo-block-admin.php:266
+#: admin/class-ip-geo-block-admin.php:259
+#: admin/class-ip-geo-block-admin.php:260
 msgid "IP Geo Block"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:287
+#: admin/class-ip-geo-block-admin.php:281
 msgid "You need WordPress 3.7+."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:295
+#: admin/class-ip-geo-block-admin.php:289
 #, php-format
 msgid ""
 "Now downloading geolocation databases in background. After a little while, "
@@ -51,77 +51,77 @@ msgid ""
 "strong>&#8221; at <a href=\"%s\">Validation rule settings</a>."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:301
+#: admin/class-ip-geo-block-admin.php:295
 #, php-format
 msgid ""
 "The &#8220;<strong>Matching rule</strong>&#8221; is not set properly. Please "
 "confirm it at <a href=\"%s\">Validation rule settings</a>."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:310
+#: admin/class-ip-geo-block-admin.php:304
 msgid "Matching rule has been updated."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:321
+#: admin/class-ip-geo-block-admin.php:315
 msgid ""
 "Once you logout, you will be unable to login again because your country code "
 "or IP address is in the blacklist."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:322
+#: admin/class-ip-geo-block-admin.php:316
 msgid ""
 "Once you logout, you will be unable to login again because your country code "
 "or IP address is not in the whitelist."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:325
+#: admin/class-ip-geo-block-admin.php:319
 #, php-format
 msgid "Please check your <a href=\"%s\">Validation rule settings</a>."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:376
+#: admin/class-ip-geo-block-admin.php:370
 msgid "Statistics"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:377
+#: admin/class-ip-geo-block-admin.php:371
 msgid "Logs"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:378
+#: admin/class-ip-geo-block-admin.php:372
 msgid "Search"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:379
+#: admin/class-ip-geo-block-admin.php:373
 msgid "Attribution"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:391
+#: admin/class-ip-geo-block-admin.php:385
 msgid "Toggle all"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:414
+#: admin/class-ip-geo-block-admin.php:408
 msgid "Thanks for providing these great services for free."
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:415
+#: admin/class-ip-geo-block-admin.php:409
 msgid ""
 "(Most browsers will redirect you to each site <a href=\"http://www."
 "ipgeoblock.com/etc/referer.html\" title=\"Referer Checker\">without referrer "
 "when you click the link</a>.)"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:420
+#: admin/class-ip-geo-block-admin.php:414
 msgid "Back to top"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:512
+#: admin/class-ip-geo-block-admin.php:506
 msgid "Enable"
 msgstr ""
 
-#: admin/class-ip-geo-block-admin.php:822
-#: admin/class-ip-geo-block-admin.php:846
-#: classes/class-ip-geo-block-gzip.php:97
-#: classes/class-ip-geo-block-opts.php:300
+#: admin/class-ip-geo-block-admin.php:816
+#: admin/class-ip-geo-block-admin.php:840
+#: classes/class-ip-geo-block-opts.php:283
+#: classes/class-ip-geo-block-util.php:134
 #, php-format
 msgid "Unable to write %s. Please check permission."
 msgstr ""
@@ -151,7 +151,7 @@ msgstr ""
 msgid "Export logs"
 msgstr ""
 
-#: admin/includes/tab-accesslog.php:55 admin/includes/tab-settings.php:1065
+#: admin/includes/tab-accesslog.php:55 admin/includes/tab-settings.php:1086
 msgid "Export to the local file"
 msgstr ""
 
@@ -343,9 +343,9 @@ msgid ""
 "by country&#8221; and &#8220;Prevent Zero-day Exploit&#8221; for the target "
 "&#8220;Admin area&#8221;, &#8220;Admin ajax/post&#8221;, &#8220;Plugins "
 "area&#8221; and &#8220;Themes area&#8221;.\">Bad signatures in query</dfn> "
-"(<a href=\"javascript:void(0);\" id=\"ip-geo-block-decode\" title=\"When you "
-"find ugly character string in the text area, please click to restore."
-"\"><span id=\"ip-geo-block-cycle\"></span></a>)"
+"<nobr>(<a href=\"javascript:void(0);\" id=\"ip-geo-block-decode\" title="
+"\"When you find ugly character string in the text area, please click to "
+"restore.\"><span id=\"ip-geo-block-cycle\"></span></a>)</nobr>"
 msgstr ""
 
 #: admin/includes/tab-settings.php:240
@@ -534,7 +534,7 @@ msgstr ""
 msgid "database"
 msgstr ""
 
-#: admin/includes/tab-settings.php:787 classes/class-ip-geo-block-gzip.php:142
+#: admin/includes/tab-settings.php:787 classes/class-ip-geo-block-util.php:179
 #, php-format
 msgid "Last update: %s"
 msgstr ""
@@ -651,75 +651,75 @@ msgstr ""
 msgid "Remove all settings at uninstallation"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1052
-msgid ""
-"You need to click the &#8220;Save Changes&#8221; button for imported "
-"settings to take effect."
-msgstr ""
-
-#: admin/includes/tab-settings.php:1058
-msgid "Export / Import settings"
-msgstr ""
-
-#: admin/includes/tab-settings.php:1065
-msgid "Export settings"
-msgstr ""
-
-#: admin/includes/tab-settings.php:1066
-msgid "Import from the local file"
-msgstr ""
-
-#: admin/includes/tab-settings.php:1066
-msgid "Import settings"
-msgstr ""
-
-#: admin/includes/tab-settings.php:1075
-msgid "Import pre-defined settings"
-msgstr ""
-
-#: admin/includes/tab-settings.php:1082
-msgid ""
-"Import the default settings to revert to the &#8220;Right after "
-"installing&#8221; state"
-msgstr ""
-
-#: admin/includes/tab-settings.php:1082
-msgid "Default settings"
-msgstr ""
-
-#: admin/includes/tab-settings.php:1083
-msgid ""
-"Import the preferred settings mainly for the &#8220;Validation target "
-"settings&#8221;"
-msgstr ""
-
-#: admin/includes/tab-settings.php:1083
-msgid "Best practice"
-msgstr ""
-
-#: admin/includes/tab-settings.php:1094
-msgid "Delete DB table for validation logs"
-msgstr ""
-
-#: admin/includes/tab-settings.php:1102
-msgid "Delete now"
-msgstr ""
-
-#: admin/includes/tab-settings.php:1110
-msgid "Create DB table for validation logs"
-msgstr ""
-
-#: admin/includes/tab-settings.php:1118
-msgid "Create now"
-msgstr ""
-
-#: admin/includes/tab-settings.php:1130
+#: admin/includes/tab-settings.php:1059
 msgid ""
 "<dfn title=\"Valid key for Google Maps JavaScript API\">Google Maps API key</"
 "dfn>"
 msgstr ""
 
-#: admin/includes/tab-settings.php:1152
+#: admin/includes/tab-settings.php:1073
+msgid ""
+"You need to click the &#8220;Save Changes&#8221; button for imported "
+"settings to take effect."
+msgstr ""
+
+#: admin/includes/tab-settings.php:1079
+msgid "Export / Import settings"
+msgstr ""
+
+#: admin/includes/tab-settings.php:1086
+msgid "Export settings"
+msgstr ""
+
+#: admin/includes/tab-settings.php:1087
+msgid "Import from the local file"
+msgstr ""
+
+#: admin/includes/tab-settings.php:1087
+msgid "Import settings"
+msgstr ""
+
+#: admin/includes/tab-settings.php:1096
+msgid "Import pre-defined settings"
+msgstr ""
+
+#: admin/includes/tab-settings.php:1103
+msgid ""
+"Import the default settings to revert to the &#8220;Right after "
+"installing&#8221; state"
+msgstr ""
+
+#: admin/includes/tab-settings.php:1103
+msgid "Default settings"
+msgstr ""
+
+#: admin/includes/tab-settings.php:1104
+msgid ""
+"Import the preferred settings mainly for the &#8220;Validation target "
+"settings&#8221;"
+msgstr ""
+
+#: admin/includes/tab-settings.php:1104
+msgid "Best practice"
+msgstr ""
+
+#: admin/includes/tab-settings.php:1115
+msgid "Delete DB table for validation logs"
+msgstr ""
+
+#: admin/includes/tab-settings.php:1123
+msgid "Delete now"
+msgstr ""
+
+#: admin/includes/tab-settings.php:1131
+msgid "Create DB table for validation logs"
+msgstr ""
+
+#: admin/includes/tab-settings.php:1139
+msgid "Create now"
+msgstr ""
+
+#: admin/includes/tab-settings.php:1155
 msgid ""
 "To enhance the protection ability, please refer to &#8220;<a href=\"http://"
 "www.ipgeoblock.com/codex/the-best-practice-of-target-settings.html\" title="
@@ -727,7 +727,7 @@ msgid ""
 "target settings</a>&#8221;."
 msgstr ""
 
-#: admin/includes/tab-settings.php:1153
+#: admin/includes/tab-settings.php:1156
 msgid ""
 "If you have any troubles with these, please open an issue at <a class=\"ip-"
 "geo-block-link\" href=\"http://wordpress.org/support/plugin/ip-geo-block\" "
@@ -735,18 +735,18 @@ msgid ""
 "target=_blank>support forum</a>."
 msgstr ""
 
-#: admin/includes/tab-settings.php:1160
+#: admin/includes/tab-settings.php:1163
 msgid ""
 "While Maxmind and IP2Location will fetch the local database, others will "
 "pass an IP address to the APIs via HTTP."
 msgstr ""
 
-#: admin/includes/tab-settings.php:1161
+#: admin/includes/tab-settings.php:1164
 msgid ""
 "Please select the appropriate APIs to fit the privacy law in your country."
 msgstr ""
 
-#: admin/includes/tab-settings.php:1168
+#: admin/includes/tab-settings.php:1171
 msgid ""
 "There are some restrictions when you enable \"Block by country\" with your "
 "caching plugin. For more details, please refer to the documents at <a href="
@@ -754,7 +754,7 @@ msgid ""
 "IP Geo Block\">Blocking on front-end</a>."
 msgstr ""
 
-#: admin/includes/tab-settings.php:1169
+#: admin/includes/tab-settings.php:1172
 msgid ""
 "If you find any issues or have something to suggest, please feel free to "
 "open an issue at <a class=\"ip-geo-block-link\" href=\"http://wordpress.org/"
@@ -834,19 +834,10 @@ msgid ""
 "statistics."
 msgstr ""
 
-#: classes/class-ip-geo-block-apis.php:709
+#: classes/class-ip-geo-block-apis.php:708
 msgid ""
 "You need to select at least one IP geolocation service. Otherwise "
 "<strong>you'll be blocked</strong> after the cache expires."
-msgstr ""
-
-#: classes/class-ip-geo-block-gzip.php:60
-msgid "Your database file is up-to-date."
-msgstr ""
-
-#: classes/class-ip-geo-block-gzip.php:89
-#, php-format
-msgid "Unable to read %s. Please check permission."
 msgstr ""
 
 #: classes/class-ip-geo-block-logs.php:129
@@ -854,6 +845,15 @@ msgstr ""
 msgid ""
 "Creating a DB table %s had failed. Once de-activate this plugin, and then "
 "activate again."
+msgstr ""
+
+#: classes/class-ip-geo-block-util.php:97
+msgid "Your database file is up-to-date."
+msgstr ""
+
+#: classes/class-ip-geo-block-util.php:126
+#, php-format
+msgid "Unable to read %s. Please check permission."
 msgstr ""
 
 #: wp-content/ip-geo-api/ip2location/class-ip2location.php:145

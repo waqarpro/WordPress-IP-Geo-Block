@@ -5,16 +5,13 @@
  * Copyright (c) 2013-2016 tokkonopapa (tokkonopapa@yahoo.com)
  * This software is released under the MIT License.
  */
-var ip_geo_block_gmap_error = null;
-
+// https://developers.google.com/maps/documentation/javascript/events?hl=en#auth-errors
 function gm_authFailure() {
-	// https://developers.google.com/maps/documentation/javascript/events?hl=en#auth-errors
-	ip_geo_block_gmap_error = 'Google Map API authentication failure.';
+	jQuery(window).trigger('ip_geo_block_gmap_error');
 };
 
-//gm_authFailure(); // just test
-
 (function($, window, document) {
+	'use strict';
 	$(function($) {
 		var e = "GmapRS",
 			d = "plugin_" + e,

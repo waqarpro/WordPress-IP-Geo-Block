@@ -40,8 +40,6 @@ class IP_Geo_Block_Uninstall {
 		if ( ! current_user_can( 'activate_plugins' ) )
 			return;
 
-		check_admin_referer( 'bulk-plugins' );
-
 		$settings = IP_Geo_Block::get_option( 'settings' );
 
 		if ( $settings['clean_uninstall'] ) {
@@ -64,14 +62,8 @@ class IP_Geo_Block_Uninstall {
 		}
 
 		// additional uninstllation
-		switch ( (int)$settings['validation']['timing'] ) {
-		  case 1: // mu-plugins
+		if ( file_exists( WP_CONTENT_DIR . 'mu-plugins/ip-geo-block-mu.php' ) )
 			@unlink( WP_CONTENT_DIR . 'mu-plugins/ip-geo-block-mu.php' );
-			break;
-		  case 2: // advanced-cache.php
-			//@unlink( WP_CONTENT_DIR . 'advanced-cache.php' );
-			break;
-		}
 	}
 
 }

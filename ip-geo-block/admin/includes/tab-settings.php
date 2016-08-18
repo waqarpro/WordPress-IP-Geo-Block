@@ -220,7 +220,7 @@ class IP_Geo_Block_Admin_Tab {
 		$field = 'signature';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( '<dfn title="It validates malicious signatures independently of &#8220;Block by country&#8221; and &#8220;Prevent Zero-day Exploit&#8221; for the target &#8220;Admin area&#8221;, &#8220;Admin ajax/post&#8221;, &#8220;Plugins area&#8221; and &#8220;Themes area&#8221;.">Bad signatures in query</dfn> (<a href="javascript:void(0);" id="ip-geo-block-decode" title="When you find ugly character string in the text area, please click to restore."><span id="ip-geo-block-cycle"></span></a>)', 'ip-geo-block' ),
+			__( '<dfn title="It validates malicious signatures independently of &#8220;Block by country&#8221; and &#8220;Prevent Zero-day Exploit&#8221; for the target &#8220;Admin area&#8221;, &#8220;Admin ajax/post&#8221;, &#8220;Plugins area&#8221; and &#8220;Themes area&#8221;.">Bad signatures in query</dfn> <nobr>(<a href="javascript:void(0);" id="ip-geo-block-decode" title="When you find ugly character string in the text area, please click to restore."><span id="ip-geo-block-cycle"></span></a>)</nobr>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -1049,6 +1049,27 @@ class IP_Geo_Block_Admin_Tab {
 			)
 		);
 
+		// Google Maps API key
+		$field = 'api_key';
+		$key = 'GoogleMap';
+		if ( 'default' !== $options[ $field ][ $key ] or
+		     defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ) {
+			add_settings_field(
+				$option_name.'_'.$field,
+				__( '<dfn title="Valid key for Google Maps JavaScript API">Google Maps API key</dfn>', 'ip-geo-block' ),
+				array( $context, 'callback_field' ),
+				$option_slug,
+				$section,
+				array(
+					'type' => 'text',
+					'option' => $option_name,
+					'field' => $field,
+					'sub-field' => $key,
+					'value' => $options[ $field ][ $key ],
+				)
+			);
+		}
+
 		$desc = __( 'You need to click the &#8220;Save Changes&#8221; button for imported settings to take effect.', 'ip-geo-block' );
 
 		// Export / Import settings
@@ -1121,24 +1142,6 @@ if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 		);
 
 endif;
-
-		// Google Maps API key
-		$field = 'api_key';
-		$key = 'GoogleMap';
-		add_settings_field(
-			$option_name.'_'.$field,
-			__( '<dfn title="Valid key for Google Maps JavaScript API">Google Maps API key</dfn>', 'ip-geo-block' ),
-			array( $context, 'callback_field' ),
-			$option_slug,
-			$section,
-			array(
-				'type' => 'text',
-				'option' => $option_name,
-				'field' => $field,
-				'sub-field' => $key,
-				'value' => $options[ $field ][ $key ],
-			)
-		);
 
 	}
 

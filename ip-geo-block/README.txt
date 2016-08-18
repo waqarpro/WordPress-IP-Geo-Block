@@ -3,8 +3,8 @@ Contributors: tokkonopapa
 Donate link:
 Tags: buddypress, bbPress, comment, pingback, trackback, spam, IP address, geo, geolocation, xmlrpc, login, wp-admin, admin, ajax, security, brute force, firewall, vulnerability
 Requires at least: 3.7
-Tested up to: 4.5.3
-Stable tag: 2.2.6
+Tested up to: 4.6
+Stable tag: 2.2.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -457,15 +457,19 @@ For more details, see
 * **New feature:** Add getting host information using reverse DNS lookup.
 * **New filter hook:** Add `ip-geo-block-public` to validate requests on 
   front-end.
-* **Improvement:** Add fallback for Google Maps API key 
-  ([@](https://wordpress.org/support/topic/226-problem-with-search-resp-google-maps "WordPress &#8250; Support &raquo; [2.2.6] Problem with SEARCH resp. Google Maps"))
-  and corruption of "Bad signatures"
-  ([@](https://wordpress.org/support/topic/226-problem-with-bad-signatures-in-query "WordPress &#8250; Support &raquo; [2.2.6] Problem with &quot;Bad signatures in query&quot;")).
-* **Bug fix:** Fix inadequate validation of "**Bad signatures in query**".
 * See more details at
     [Call for testing 3.0.0 beta](http://www.ipgeoblock.com/changelog/call-for-testing-3.0.0b.html "Call for testing 3.0.0 beta | IP Geo Block")
   and
     [release 3.0.0](http://www.ipgeoblock.com/changelog/release-3.0.0.html "3.0.0 Release Note | IP Geo Block").
+
+= 2.2.7 =
+* **Bug fix:** Fix inadequate validation of "**Bad signatures in query**".
+* **Improvement:** Add fallback for Google Maps API key 
+  ([@](https://wordpress.org/support/topic/226-problem-with-search-resp-google-maps "WordPress &#8250; Support &raquo; [2.2.6] Problem with SEARCH resp. Google Maps"))
+  and corruption of "Bad signatures"
+  ([@](https://wordpress.org/support/topic/226-problem-with-bad-signatures-in-query "WordPress &#8250; Support &raquo; [2.2.6] Problem with &quot;Bad signatures in query&quot;")).
+* **Update:** Update geolocation service api.
+* Find details about Google Maps API in [2.2.7 Release Note](http://www.ipgeoblock.com/changelog/release-2.2.7.html "2.2.7 Release Note").
 
 = 2.2.6 =
 * **New feature:** Add saving csv file of logs in "Logs" tab.

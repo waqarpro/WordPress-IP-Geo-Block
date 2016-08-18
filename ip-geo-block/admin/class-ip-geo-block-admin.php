@@ -46,10 +46,6 @@ class IP_Geo_Block_Admin {
 		// If multisite, then enque the authentication script for network admin
 		if ( is_multisite() )
 			add_action( 'network_admin_menu', 'IP_Geo_Block::enqueue_nonce' );
-
-		// Upgrade setting data
-		if ( get_transient( IP_Geo_Block::PLUGIN_NAME . '-upgrade-options' ) )
-			add_action( 'admin_init', array( $this, 'upgrade_options' ) );
 	}
 
 	/**
@@ -106,8 +102,6 @@ class IP_Geo_Block_Admin {
 	 *
 	 */
 	public function enqueue_admin_assets() {
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-nonc.php' );
-
 		$footer = TRUE;
 		$dependency = array( 'jquery' );
 
@@ -140,7 +134,7 @@ class IP_Geo_Block_Admin {
 					$dependency, IP_Geo_Block::VERSION, $footer
 				);
 				wp_enqueue_script( IP_Geo_Block::PLUGIN_NAME . '-google-map',
-					'//maps.googleapis.com/maps/api/js' . ( $key ? '?key=' . $key : '' ),
+					'//maps.googleapis.com/maps/api/js' . ( ! $key || 'default' === $key ? '' : "?key=$key" ),
 					$dependency, IP_Geo_Block::VERSION, $footer
 				);
 			}
@@ -173,7 +167,7 @@ class IP_Geo_Block_Admin {
 			array(
 				'action' => 'ip_geo_block',
 				'url' => admin_url( 'admin-ajax.php' ),
-				'nonce' => IP_Geo_Block_Nonce::create_nonce( $this->get_ajax_action() ),
+				'nonce' => IP_Geo_Block_Util::create_nonce( $this->get_ajax_action() ),
 			)
 		);
 		wp_enqueue_script( $handle );
@@ -186,7 +180,7 @@ class IP_Geo_Block_Admin {
 	public function add_revision_nonce( $revisions_data, $revision, $post ) {
 		$revisions_data['restoreUrl'] = add_query_arg(
 			$nonce = IP_Geo_Block::PLUGIN_NAME . '-auth-nonce',
-			IP_Geo_Block_Nonce::create_nonce( $nonce ),
+			IP_Geo_Block_Util::create_nonce( $nonce ),
 			$revisions_data['restoreUrl']
 		);
 
@@ -231,7 +225,7 @@ class IP_Geo_Block_Admin {
 		$key = IP_Geo_Block::PLUGIN_NAME . '-notice';
 		if ( FALSE !== ( $notices = get_transient( $key ) ) ) {
 			foreach ( $notices as $msg => $type ) {
-				echo "\n<div class=\"notice is-dismissible ", esc_attr( $type ), "\"><p><strong>IP Geo Block:</strong> ", IP_Geo_Block::kses( $msg ), "</p></div>\n";
+				echo "\n<div class=\"notice is-dismissible ", esc_attr( $type ), "\"><p><strong>IP Geo Block:</strong> ", IP_Geo_Block_Util::kses( $msg ), "</p></div>\n";
 			}
 		}
 	}
@@ -417,7 +411,7 @@ class IP_Geo_Block_Admin {
 <?php if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ) {
 	echo '<p>', get_num_queries(), ' queries. ', timer_stop(0), ' seconds. ', memory_get_usage(), " bytes.</p>\n";
 } ?>
-	<p style="text-align:right">[ <a id="ip-geo-block-back-to-top" href="#"><?php _e( 'Back to top', 'ip-geo-block' ); ?></a> ]</p>
+	<p style="margin:0; text-align:right">[ <a id="ip-geo-block-back-to-top" href="#"><?php _e( 'Back to top', 'ip-geo-block' ); ?></a> ]</p>
 </div>
 <?php
 	}
@@ -639,7 +633,7 @@ class IP_Geo_Block_Admin {
 					$output[ $key ]['pos'] = (int)$input[ $key ]['pos'];
 				}
 				if ( isset( $input[ $key ]['msg'] ) ) {
-					$output[ $key ]['msg'] = IP_Geo_Block::kses( $input[ $key ]['msg'] );
+					$output[ $key ]['msg'] = IP_Geo_Block_Util::kses( $input[ $key ]['msg'] );
 				}
 				break;
 
@@ -663,12 +657,12 @@ class IP_Geo_Block_Admin {
 					elseif ( isset( $input[ $key ] ) ) {
 						$output[ $key ] = is_int( $default[ $key ] ) ?
 							(int)$input[ $key ] :
-							IP_Geo_Block::kses( trim( $input[ $key ] ), FALSE );
+							IP_Geo_Block_Util::kses( trim( $input[ $key ] ), FALSE );
 					}
 				}
 
 				// sub field
-				else foreach ( array_keys( $val ) as $sub ) {
+				else foreach ( array_keys( (array)$val ) as $sub ) {
 					// delete old key
 					if ( ! array_key_exists( $sub, $default[ $key ] ) ) {
 						unset( $output[ $key ][ $sub ] );
@@ -697,7 +691,7 @@ class IP_Geo_Block_Admin {
 						else {
 							$output[ $key ][ $sub ] = ( is_int( $default[ $key ][ $sub ] ) ?
 								(int)$input[ $key ][ $sub ] :
-								IP_Geo_Block::kses( preg_replace( '/[^-,:!*#+\.\/\w\s]/', '', $input[ $key ][ $sub ] ), FALSE )
+								IP_Geo_Block_Util::kses( preg_replace( '/[^-,:!*#+\.\/\w\s]/', '', $input[ $key ][ $sub ] ), FALSE )
 							);
 						}
 					}
@@ -772,14 +766,14 @@ class IP_Geo_Block_Admin {
 
 		if ( $ajax ) {
 			$action = $this->get_ajax_action();
-			$nonce &= IP_Geo_Block_Nonce::verify_nonce( IP_Geo_Block::retrieve_nonce( 'nonce' ), $action );
+			$nonce &= IP_Geo_Block_Util::verify_nonce( IP_Geo_Block::retrieve_nonce( 'nonce' ), $action );
 //			$nonce &= check_admin_referer( $this->get_ajax_action(), 'nonce' );
 		}
 
 		$action = IP_Geo_Block::PLUGIN_NAME . '-auth-nonce';
-		$nonce &= IP_Geo_Block_Nonce::verify_nonce( IP_Geo_Block::retrieve_nonce( $action ), $action );
+		$nonce &= IP_Geo_Block_Util::verify_nonce( IP_Geo_Block::retrieve_nonce( $action ), $action );
 
-		if ( ! current_user_can( 'manage_options' ) || empty( $_POST ) || ! $nonce ) {
+		if ( ! current_user_can( 'manage_options' ) || ! $nonce ) {
 			status_header( 403 );
 			wp_die(
 				__( 'You do not have sufficient permissions to access this page.' ), '',
@@ -860,32 +854,6 @@ class IP_Geo_Block_Admin {
 		$this->show_setting_notice( 'updated', __( 'Settings saved.' ) );
 
 		return $options;
-	}
-
-	/**
-	 * Upgrade the specified options
-	 *
-	 */
-	public function upgrade_options() {
-		if ( current_user_can( 'manage_options' ) and
-		     $data = get_transient( IP_Geo_Block::PLUGIN_NAME . '-upgrade-options' ) ) {
-			// upgrade options only once
-			delete_transient( IP_Geo_Block::PLUGIN_NAME . '-upgrade-options' );
-			$settings = IP_Geo_Block::get_option();
-
-			foreach ( $data as $key => $value ) {
-				if ( is_array( $value ) ) {
-					foreach ( $value as $k => $v ) {
-						$settings[ $key ][ $k ] = $v;
-					}
-				}
-				else {
-					$settings[ $key ] = $value;
-				}
-			}
-
-			update_option( IP_Geo_Block::OPTION_NAME, $settings );
-		}
 	}
 
 	/**
@@ -979,6 +947,19 @@ class IP_Geo_Block_Admin {
 			// Import preference
 			require_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-ajax.php' );
 			$res = IP_Geo_Block_Admin_Ajax::preferred_to_json();
+			break;
+
+		  case 'gmap_error':
+			// Reset Google Maps API key
+			$which = IP_Geo_Block::get_option();
+			if ( $which['api_key']['GoogleMap'] === 'default' ) {
+				$which['api_key']['GoogleMap'] = NULL;
+				update_option( IP_Geo_Block::OPTION_NAME, $which );
+				$res = array(
+					'page' => 'options-general.php?page=' . IP_Geo_Block::PLUGIN_SLUG,
+					'tab' => 'tab=2'
+				);
+			}
 			break;
 
 		  case 'create-table':

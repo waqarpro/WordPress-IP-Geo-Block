@@ -37,9 +37,6 @@ class IP_Geo_Block_Opts {
 		'cache_time_gc'   => 900,     // Cache garbage collection time
 		'cache_cookie'    => TRUE,    // Cache IP address and country code by cookie
 		'backup_logs'     => NULL,    // Directory to save backup of logs
-		'api_key'         => array(   // API key
-			'GoogleMap'   => NULL,
-		),
 		// since version 1.2, 1.3
 		'login_fails'     => 5,       // Limited number of login attempts
 		'validation'      => array(   // Action hook for validation
@@ -114,6 +111,10 @@ class IP_Geo_Block_Opts {
 			 ),
 			'uploads'     => array(), // for UPLOADS/uploads
 			'languages'   => array(), // for wp-content/language
+		),
+		// since version 2.2.7
+		'api_key'         => array(   // API key
+			'GoogleMap'   => 'default',
 		),
 		// since version 3.0.0
 		'redirect_uri'    => NULL,    // URI for redirection on blocking
@@ -229,11 +230,13 @@ class IP_Geo_Block_Opts {
 				}
 			}
 
+			if ( version_compare( $version, '2.2.7' ) < 0 )
+				$settings['api_key'] = $default['api_key'];
+
 			if ( version_compare( $version, '3.0.0' ) < 0 ) {
 				$settings['cache_time_gc']        = $default['cache_time_gc'];
 				$settings['cache_cookie']         = $default['cache_cookie'];
 				$settings['backup_logs']          = $default['backup_logs'];
-				$settings['api_key']              = $default['api_key'];
 				$settings['validation']['public'] = $default['validation']['public'];
 				$settings['validation']['timing'] = $default['validation']['timing'];
 				$settings['redirect_uri']         = $default['redirect_uri'];
@@ -245,8 +248,6 @@ class IP_Geo_Block_Opts {
 					$settings['rewrite'   ][ $tmp ] = $default['rewrite'   ][ $tmp ];
 					$settings['exception' ][ $tmp ] = $default['exception' ][ $tmp ];
 				}
-
-				$settings = self::upgrade_options( $settings );
 			}
 
 			// save package version number
@@ -261,24 +262,6 @@ class IP_Geo_Block_Opts {
 		update_option( IP_Geo_Block::OPTION_NAME, $settings );
 
 		// return upgraded settings
-		return $settings;
-	}
-
-	/**
-	 * Trigger to upgrade options
-	 *
-	 */
-	private static function upgrade_options( $settings ) {
-		set_transient( IP_Geo_Block::PLUGIN_NAME . '-upgrade-options',
-			array( 'validation' => array(
-				'admin' => $settings['validation']['admin'],
-				'ajax'  => $settings['validation']['ajax' ],
-			) )
-		);
-
-		$settings['validation']['admin'] &= ~ 2; // mask WP-ZEP
-		$settings['validation']['ajax' ] &= ~ 2; // mask WP-ZEP
-
 		return $settings;
 	}
 

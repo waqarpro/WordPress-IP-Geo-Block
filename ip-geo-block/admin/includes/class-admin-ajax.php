@@ -291,8 +291,8 @@ class IP_Geo_Block_Admin_Ajax {
 			'[comment][pos]',
 			'[comment][msg]',
 			'[clean_uninstall]',
+			'[api_key][GoogleMap]',      // 2.2.7
 			'[network_wide]',            // 3.0.0
-			'[api_key][GoogleMap]',      // 3.0.0
 		);
 		$json = array();
 		$prfx = IP_Geo_Block::OPTION_NAME;

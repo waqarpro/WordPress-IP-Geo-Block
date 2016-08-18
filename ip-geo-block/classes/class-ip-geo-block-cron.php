@@ -49,8 +49,6 @@ class IP_Geo_Block_Cron {
 	 */
 	public static function exec_job( $immediate = FALSE ) {
 		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php' );
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-gzip.php' );
 
 		$settings = IP_Geo_Block::get_option();
 		$args = IP_Geo_Block::get_request_headers( $settings );

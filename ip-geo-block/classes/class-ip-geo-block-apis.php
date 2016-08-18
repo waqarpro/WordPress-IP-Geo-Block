@@ -455,7 +455,6 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 
 	public function __construct( $api_key = NULL ) {
 		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-nonc.php' );
 	}
 
 	public static function update_cache( $hook, $validate, $settings ) {
@@ -524,7 +523,7 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 class IP_Geo_Block_API_Cookie extends IP_Geo_Block_API {
 
 	public static function update_cache( $cache, $settings ) {
-		$nonce = IP_Geo_Block_Nonce::create_nonce( $cache['code'], $cache['ip'] );
+		$nonce = IP_Geo_Block_Util::create_nonce( $cache['code'], $cache['ip'] );
 
 		// no need to cache
 		unset( $cache['ip'] );
@@ -546,7 +545,7 @@ class IP_Geo_Block_API_Cookie extends IP_Geo_Block_API {
 
 			// prevent to disguise country code
 			if ( count( $cache ) === 8 &&
-			     IP_Geo_Block_Nonce::verify_nonce( $cache[0], $cache[3], $ip ) ) {
+			     IP_Geo_Block_Util::verify_nonce( $cache[0], $cache[3], $ip ) ) {
 				return array(
 					'time' => $cache[1],
 					'hook' => $cache[2],

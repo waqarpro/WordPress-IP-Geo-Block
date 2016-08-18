@@ -374,6 +374,7 @@ var ip_geo_block_time = new Date();
 			drawChart();
 		};
 
+		// Click event handler to show/hide form-table
 		if (tabNo <= 1) {
 			$('form').on('click', 'h2,h3', function (event) {
 				toggle_section($(this));
@@ -390,6 +391,7 @@ var ip_geo_block_time = new Date();
 					n += $(this).hasClass(id[0]);
 				});
 
+				// update cookie
 				title.each(function (i) {
 					$this = $(this);
 					$this.parent().nextAll().toggle(n ? false : true);
@@ -398,6 +400,7 @@ var ip_geo_block_time = new Date();
 					cookie[i + (tabNo ? maxTabs : 0)] = n ? '' : 'o';
 				});
 
+				// Save cookie
 				if ('undefined' !== typeof wpCookies) {
 					wpCookies.setHash(ID('%', 'admin'), cookie, new Date(Date.now() + 2592000000));
 				}
@@ -670,6 +673,14 @@ var ip_geo_block_time = new Date();
 		   * Search
 		   *----------------------------------------*/
 		  case 2:
+			// Google Maps API error
+			$(window).on('ip_geo_block_gmap_error', function () {
+				ajax_post(null, { cmd: 'gmap_error' }, function (data) {
+					redirect(data.page, data.tab);
+				});
+			});
+
+			// Initialize map if exists
 			var map = $(ID('#', 'map'));
 			if ('object' === typeof google) {
 				// Initialize map if exists
@@ -693,7 +704,11 @@ var ip_geo_block_time = new Date();
 						ip: ip,
 						which: $(ID('@', 'service')).val()
 					}, function (data) {
-						var key, info = '';
+						var key, info = '',
+						    latitude = sanitize(data.latitude || '0'),
+						    longitude = sanitize(data.longitude || '0'),
+						    zoom = (data.latitude || data.longitude) ? 8 : 2;
+
 						for (key in data) {
 							if (data.hasOwnProperty(key)) {
 								key = sanitize(key);
@@ -707,17 +722,14 @@ var ip_geo_block_time = new Date();
 
 						if ('object' === typeof google) {
 							map.GmapRS('addMarker', {
-								latitude: data.latitude || 0,
-								longitude: data.longitude || 0,
+								latitude: latitude,
+								longitude: longitude,
 								title: ip,
 								content: '<ul>' + info + '</ul>',
 								show: true,
-								zoom: 8
+								zoom: zoom
 							});
 						} else {
-							var latitude = sanitize(data.latitude || '0'),
-							    longitude = sanitize(data.longitude || '0');
-
 							map.css({
 								height: '600px',
 								backgroundColor: 'transparent'
@@ -733,8 +745,8 @@ var ip_geo_block_time = new Date();
 										'<span class="' + ID('result') + '">' + '<a href="//maps.google.com/maps?q=' + latitude + ',' + longitude + '">Click here</a>' + '</span>' +
 									'</li>' +*/
 								'</ul>'
-								+ '<iframe src="//maps.google.com/maps?q=' + latitude + ',' + longitude + '&z=11&output=embed" frameborder="0" style="width:100%; height:400px; border:0" allowfullscreen></iframe>'
-								/*+ '<iframe src="//www.google.com/maps/embed/v1/place?key=...&q=%20&center=' + latitude + ',' + longitude + '&zoom=11" frameborder="0" style="width:100%; height:400px; border:0" allowfullscreen></iframe>'*/
+								+ '<iframe src="//maps.google.com/maps?q=' + latitude + ',' + longitude + '&z=' + zoom + '&output=embed" frameborder="0" style="width:100%; height:400px; border:0" allowfullscreen></iframe>'
+								/*+ '<iframe src="//www.google.com/maps/embed/v1/place?key=...&q=%20&center=' + latitude + ',' + longitude + '&zoom=' + zoom + '" frameborder="0" style="width:100%; height:400px; border:0" allowfullscreen></iframe>'*/
 							);
 						}
 					});

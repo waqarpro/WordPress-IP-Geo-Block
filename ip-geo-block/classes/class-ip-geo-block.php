@@ -41,13 +41,13 @@ class IP_Geo_Block {
 	 * 
 	 */
 	private function __construct() {
-		// prepare loader class
+		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php';
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-load.php';
-		$loader = new IP_Geo_Block_Loader();
 
 		$settings = self::get_option();
 		$priority = $settings['priority'];
 		$validate = $settings['validation'];
+		$loader   = new IP_Geo_Block_Loader();
 
 		// the action hook which will be fired by cron job
 		if ( $settings['update']['auto'] )
@@ -91,7 +91,6 @@ class IP_Geo_Block {
 			'xmlrpc.php'           => 'xmlrpc',
 			'wp-login.php'         => 'login',
 			'wp-signup.php'        => 'login',
-			'index.php'            => 'public',
 		);
 
 		// wp-admin, wp-includes, wp-content/(plugins|themes|language|uploads)
@@ -109,6 +108,10 @@ class IP_Geo_Block {
 		}
 
 		else {
+			// public facing pages
+			if ( $validate['public'] /* && 'index.php' === $this->pagenow */ )
+				$loader->add_action( 'init', array( $this, 'validate_public' ), $priority );
+
 			// message text on comment form
 			if ( $settings['comment']['pos'] ) {
 				$key = ( 1 === (int)$settings['comment']['pos'] ? '_top' : '' );
@@ -168,14 +171,12 @@ class IP_Geo_Block {
 	 */
 	public static function enqueue_nonce() {
 		if ( is_user_logged_in() ) {
-			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-nonc.php' );
-
 			$handle = self::PLUGIN_NAME . '-auth-nonce';
 			$script = plugins_url(
 				! defined( 'IP_GEO_BLOCK_DEBUG' ) || ! IP_GEO_BLOCK_DEBUG ?
 				'admin/js/authenticate.min.js' : 'admin/js/authenticate.js', IP_GEO_BLOCK_BASE
 			);
-			$nonce = array( 'nonce' => IP_Geo_Block_Nonce::create_nonce( $handle ) ) + self::$wp_path;
+			$nonce = array( 'nonce' => IP_Geo_Block_Util::create_nonce( $handle ) ) + self::$wp_path;
 			wp_enqueue_script( $handle, $script, array( 'jquery' ), self::VERSION );
 			wp_localize_script( $handle, 'IP_GEO_BLOCK_AUTH', $nonce );
 		}
@@ -230,14 +231,9 @@ class IP_Geo_Block {
 	 * Render a text message at the comment form.
 	 *
 	 */
-	public static function kses( $str, $allow_tags = TRUE ) {
-		global $allowedtags;
-		return wp_kses( $str, $allow_tags ? $allowedtags : array() );
-	}
-
 	public function comment_form_message() {
 		$settings = self::get_option();
-		echo '<p id="', self::PLUGIN_NAME, '-msg">', self::kses( $settings['comment']['msg'] ), '</p>', "\n";
+		echo '<p id="', self::PLUGIN_NAME, '-msg">', IP_Geo_Block_Util::kses( $settings['comment']['msg'] ), '</p>', "\n";
 	}
 
 	/**
@@ -337,17 +333,17 @@ class IP_Geo_Block {
 			exit;
 
 		  case 3: // 3xx Redirection
-			wp_redirect( 'http://blackhole.webpagetest.org/', $code );
+			IP_Geo_Block_Util::redirect( 'http://blackhole.webpagetest.org/', $code );
 			exit;
 
 		  default: // 4xx Client Error, 5xx Server Error
 			status_header( $code ); // @since 2.0.0
 			if ( function_exists( 'trackback_response' ) )
-				trackback_response( $code, self::kses( $mesg ) ); // @since 0.71
+				trackback_response( $code, IP_Geo_Block_Util::kses( $mesg ) ); // @since 0.71
 			elseif ( ! defined( 'DOING_AJAX' ) && ! defined( 'XMLRPC_REQUEST' ) ) {
 				defined( 'STYLESHEETPATH' ) && FALSE !== ( @include( get_stylesheet_directory() .'/'.$code.'.php' ) ) or // child  theme
 				defined( 'TEMPLATEPATH'   ) && FALSE !== ( @include( get_template_directory()   .'/'.$code.'.php' ) ) or // parent theme
-				wp_die( self::kses( $mesg ), '', array( 'response' => $code, 'back_link' => TRUE ) );
+				wp_die( IP_Geo_Block_Util::kses( $mesg ), '', array( 'response' => $code, 'back_link' => TRUE ) );
 			}
 			exit;
 		}
@@ -380,10 +376,8 @@ class IP_Geo_Block {
 
 		// register auxiliary validation functions
 		$var = self::PLUGIN_NAME . '-' . $hook;
-		if ( $auth ) {
-			add_filter( $var, array( $this, 'check_auth' ), 9, 2 );
-			add_filter( $var, array( $this, 'check_fail' ), 8, 2 );
-		}
+		$auth and add_filter( $var, array( $this, 'check_auth' ), 9, 2 );
+		$auth and add_filter( $var, array( $this, 'check_fail' ), 8, 2 );
 		$settings['extra_ips'] = apply_filters( self::PLUGIN_NAME . '-extra-ips', $settings['extra_ips'], $hook );
 		$settings['extra_ips']['white_list'] and add_filter( $var, array( $this, 'check_ips_white' ), 7, 2 );
 		$settings['extra_ips']['black_list'] and add_filter( $var, array( $this, 'check_ips_black' ), 7, 2 );
@@ -545,8 +539,7 @@ class IP_Geo_Block {
 		}
 
 		// register validation of malicious signature (except in the comment and post)
-		if ( ! ( function_exists( 'is_user_logged_in' ) && is_user_logged_in() ) ||
-		     ! in_array( $this->pagenow, array( 'comment.php', 'post.php' ), TRUE ) )
+		if ( ! in_array( $this->pagenow, array( 'comment.php', 'post.php' ), TRUE ) )
 			add_filter( self::PLUGIN_NAME . '-admin', array( $this, 'check_signature' ), 6, 2 );
 
 		// validate country by IP address (1: Block by country)
@@ -662,11 +655,9 @@ class IP_Geo_Block {
 	 *
 	 */
 	public function check_nonce( $validate, $settings ) {
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-nonc.php' );
-
 		$action = self::PLUGIN_NAME . '-auth-nonce';
 
-		if ( ! IP_Geo_Block_Nonce::verify_nonce( self::retrieve_nonce( $action ), $action ) ) {
+		if ( ! IP_Geo_Block_Util::verify_nonce( self::retrieve_nonce( $action ), $action ) ) {
 			if ( empty( $validate['result'] ) || 'passed' === $validate['result'] )
 				$validate['result'] = 'wp-zep'; // can't overwrite existing result
 		}
@@ -677,10 +668,9 @@ class IP_Geo_Block {
 	private function trace_nonce() {
 		$nonce = self::PLUGIN_NAME . '-auth-nonce';
 
-		if ( empty( $_REQUEST[ $nonce ] ) && self::retrieve_nonce( $nonce ) &&
-		     is_user_logged_in() && 'GET' === $_SERVER['REQUEST_METHOD'] ) {
+		if ( empty( $_REQUEST[ $nonce ] ) && self::retrieve_nonce( $nonce ) && 'GET' === $_SERVER['REQUEST_METHOD'] ) {
 			// add nonce at add_admin_nonce() to handle the client side redirection.
-			wp_redirect( esc_url_raw( $_SERVER['REQUEST_URI'] ), 302 );
+			IP_Geo_Block_Util::redirect( esc_url_raw( $_SERVER['REQUEST_URI'] ), 302 );
 			exit;
 		}
 	}
@@ -689,7 +679,7 @@ class IP_Geo_Block {
 		if ( isset( $_REQUEST[ $key ] ) )
 			return sanitize_text_field( $_REQUEST[ $key ] );
 
-		if ( preg_match( "/$key(?:=|%3D)([\w]+)/", wp_get_referer(), $matches ) )
+		if ( preg_match( "/$key(?:=|%3D)([\w]+)/", IP_Geo_Block_Util::get_referer(), $matches ) )
 			return sanitize_text_field( $matches[1] );
 
 		return NULL;
