@@ -750,9 +750,9 @@ class IP_Geo_Block {
 	}
 
 	public function check_bots( $validate, $settings ) {
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-lkup.php' );
-
 		if ( isset( $_SERVER['HTTP_USER_AGENT'] ) ) {
+			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-lkup.php' );
+
 			// check requested url and get the name of host (from the cache if exists)
 			$is_feed = IP_Geo_Block_Lkup::is_feed( $this->request_uri );
 			if ( empty( $validate['host'] ) )
