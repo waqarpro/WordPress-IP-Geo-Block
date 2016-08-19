@@ -41,8 +41,9 @@ class IP_Geo_Block {
 	 * 
 	 */
 	private function __construct() {
-		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php';
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-load.php';
+		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php';
+		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php';
 
 		$settings = self::get_option();
 		$priority = $settings['priority'];
@@ -257,8 +258,6 @@ class IP_Geo_Block {
 	 * @return array $result country code and so on
 	 */
 	public static function get_geolocation( $ip = NULL, $providers = array(), $callback = 'get_country' ) {
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
-
 		$result = self::_get_geolocation( $ip ? $ip : self::get_ip_address(), self::get_option(), $providers, $callback );
 
 		if ( ! empty( $result['countryCode'] ) )
@@ -357,7 +356,6 @@ class IP_Geo_Block {
 	 * @param boolean $die send http response and die if validation fails
 	 */
 	public function validate_ip( $hook, $settings, $block = TRUE, $die = TRUE, $auth = TRUE ) {
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
 		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 
 		// set IP address to be validated
