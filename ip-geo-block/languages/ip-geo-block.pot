@@ -11,17 +11,10 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.5\n"
-"X-Poedit-KeywordsList: __;_e;_n;_x;esc_html_e;esc_html__;esc_attr_e;"
-"esc_attr__;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2;_x:1,2c;_n:1,2\n"
-"X-Poedit-Basepath: ../\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Poedit-SourceCharset: UTF-8\n"
-"X-Poedit-SearchPath-0: .\n"
 
-# description
+#. Description of the plugin/theme
 msgid ""
-"It blocks any spams, login attempts and malicious request to the admin area "
+"It blocks any spams, login attempts and malicious access to the admin area "
 "posted from outside your nation, and also prevents zero-day exploit."
 msgstr ""
 
@@ -384,7 +377,7 @@ msgstr ""
 
 #: admin/includes/tab-settings.php:314
 msgid ""
-"Validate at an earlier stage than other plugins to reduce load of server."
+"Validate at an earlier stage than other plugins to reduce load on server."
 msgstr ""
 
 #: admin/includes/tab-settings.php:327

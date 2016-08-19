@@ -12,18 +12,6 @@
 class IP_Geo_Block_Util {
 
 	/**
-	 * Add / Remove slash at the end of string.
-	 *
-	 */
-	public static function unslashit( $string ) {
-		return rtrim( $string, '/\\' );
-	}
-
-	public static function slashit( $string ) {
-		return self::unslashit( $string ) . '/';
-	}
-
-	/**
 	 * Return local time of day.
 	 *
 	 */
@@ -38,14 +26,6 @@ class IP_Geo_Block_Util {
 			$format = get_option( 'date_format' ) . ' ' . get_option( 'time_format' );
 
 		return date_i18n( $fmt ? $fmt : $format, $timestamp ? (int)$timestamp + $offset : FALSE );
-	}
-
-	/**
-	 * HTML/XHTML filter that only allows some elements and attributes
-	 *
-	 */
-	public static function kses( $str, $allow_tags = TRUE ) {
-		return wp_kses( $str, $allow_tags ? $GLOBALS['allowedtags'] : array() );
 	}
 
 	/**
@@ -177,11 +157,39 @@ class IP_Geo_Block_Util {
 			'code' => $code,
 			'message' => sprintf(
 				__( 'Last update: %s', 'ip-geo-block' ),
-				IP_Geo_Block_Util::localdate( $modified )
+				self::localdate( $modified )
 			),
 			'filename' => $filename,
 			'modified' => $modified,
 		);
+	}
+
+	/**
+	 * Add / Remove slash at the end of string.
+	 *
+	 *//*
+	public static function unslashit( $string ) {
+		return rtrim( $string, '/\\' );
+	}
+
+	public static function slashit( $string ) {
+		return self::unslashit( $string ) . '/';
+	}*/
+
+	/**
+	 * Explod with multiple delimiter.
+	 *
+	 */
+	public static function multiexplode ( $delimiters, $string ) {
+		return array_filter( explode( $delimiters[0], str_replace( $delimiters, $delimiters[0], $string ) ) );
+	}
+
+	/**
+	 * HTML/XHTML filter that only allows some elements and attributes
+	 *
+	 */
+	public static function kses( $str, $allow_tags = TRUE ) {
+		return wp_kses( $str, $allow_tags ? $GLOBALS['allowedtags'] : array() );
 	}
 
 	/**

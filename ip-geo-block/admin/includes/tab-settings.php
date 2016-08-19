@@ -311,8 +311,8 @@ class IP_Geo_Block_Admin_Tab {
 				),
 				'desc' => array(
 					 0 => __( 'Validate at init action hook same as typical plugins.', 'ip-geo-block' ),
-					 1 => __( 'Validate at an earlier stage than other plugins to reduce load of server.', 'ip-geo-block' ),
-//					 2 => __( 'Validate at a very early stage of the WordPress core to minimize load of server.', 'ip-geo-block' ),
+					 1 => __( 'Validate at an earlier stage than other plugins to reduce load on server.', 'ip-geo-block' ),
+//					 2 => __( 'Validate at a very early stage of the WordPress core to minimize load on server.', 'ip-geo-block' ),
 				),
 				'after' => '<div class="ip-geo-block-desc"></div>',
 			)

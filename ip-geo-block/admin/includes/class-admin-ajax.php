@@ -352,7 +352,7 @@ class IP_Geo_Block_Admin_Ajax {
 				    'plugins'     => 2,       // Validate on wp-content/plugins
 				    'themes'      => 2,       // Validate on wp-content/themes
 				),
-				'signature'       => "..,/wp-config.php,/passwd,curl,wget\nselect:.5,where:.5,union:.5\ncreate:.6,password:.4,load_file:.5",
+				'signature'       => "..,/wp-config.php,/passwd,curl,wget,eval\nselect:.5,where:.5,union:.5\ncreate:.6,password:.4,load_file:.5",
 				'rewrite'         => array(   // Apply rewrite rule
 				    'plugins'     => TRUE,    // for wp-content/plugins
 				    'themes'      => TRUE,    // for wp-content/themes

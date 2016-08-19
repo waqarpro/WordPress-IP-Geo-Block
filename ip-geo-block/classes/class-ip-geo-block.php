@@ -47,7 +47,7 @@ class IP_Geo_Block {
 		$settings = self::get_option();
 		$priority = $settings['priority'];
 		$validate = $settings['validation'];
-		$loader   = new IP_Geo_Block_Loader();
+		$loader = new IP_Geo_Block_Loader();
 
 		// the action hook which will be fired by cron job
 		if ( $settings['update']['auto'] )
@@ -638,7 +638,7 @@ class IP_Geo_Block {
 		$score = 0.0;
 		$request = strtolower( urldecode( serialize( $_GET + $_POST ) ) );
 
-		foreach ( $this->multiexplode( array( ",", "\n" ), $settings['signature'] ) as $sig ) {
+		foreach ( IP_Geo_Block_Util::multiexplode( array( ",", "\n" ), $settings['signature'] ) as $sig ) {
 			$val = explode( ':', $sig, 2 );
 
 			if ( ( $sig = trim( $val[0] ) ) && FALSE !== strpos( $request, $sig ) ) {
@@ -697,17 +697,13 @@ class IP_Geo_Block {
 		return $this->check_ips( $validate, $settings['extra_ips']['black_list'], 1 );
 	}
 
-	private function multiexplode ( $delimiters, $string ) {
-		return array_filter( explode( $delimiters[0], str_replace( $delimiters, $delimiters[0], $string ) ) );
-	}
-
 	private function check_ips( $validate, $ips, $which ) {
 		$ip = $validate['ip'];
 
 		if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ) {
 			require_once( IP_GEO_BLOCK_PATH . 'includes/Net/IPv4.php' );
 
-			foreach ( $this->multiexplode( array( ",", "\n" ), $ips ) as $i ) {
+			foreach ( IP_Geo_Block_Util::multiexplode( array( ",", "\n" ), $ips ) as $i ) {
 				$j = explode( '/', $i, 2 );
 
 				if ( filter_var( $j[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) &&
@@ -720,7 +716,7 @@ class IP_Geo_Block {
 		elseif ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) ) {
 			require_once( IP_GEO_BLOCK_PATH . 'includes/Net/IPv6.php' );
 
-			foreach ( $this->multiexplode( array( ",", "\n" ), $ips ) as $i ) {
+			foreach ( IP_Geo_Block_Util::multiexplode( array( ",", "\n" ), $ips ) as $i ) {
 				$j = explode( '/', $i, 2 );
 
 				if ( filter_var( $j[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) &&
@@ -757,44 +753,38 @@ class IP_Geo_Block {
 		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-lkup.php' );
 
 		if ( isset( $_SERVER['HTTP_USER_AGENT'] ) ) {
-			$agent = $_SERVER['HTTP_USER_AGENT'];
-			$country = $validate['code'];
-
-			// requested uri is feed?
+			// check requested url and get the name of host (from the cache if exists)
 			$is_feed = IP_Geo_Block_Lkup::is_feed( $this->request_uri );
+			if ( empty( $validate['host'] ) )
+				$validate['host'] = IP_Geo_Block_Lkup::gethostbyaddr( $validate['ip'] );
 
-			foreach ( $this->multiexplode( array( ",", "\n" ), $settings['public']['ua_list'] ) as $pat ) {
-				@list( $name, $code ) = $this->multiexplode( array( ':', '#' ), $pat );
+			foreach ( IP_Geo_Block_Util::multiexplode( array( ",", "\n" ), $settings['public']['ua_list'] ) as $pat ) {
+				@list( $name, $code ) = IP_Geo_Block_Util::multiexplode( array( ':', '#' ), $pat );
 
-				// 0:whitelist, 1:blacklist
-				$which = FALSE !== strpos( $pat, ':' ) ? 0 : 1;
+				$which = ( FALSE === strpos( $pat, ':' ) );     // 0: pass (':'), 1: block ('#')
+				$not   = ( '!' === substr( $code, 0, 1 ) );     // 0: positive, 1: negative
+				$code  = ( $not ? substr( $code, 1 ) : $code ); // qualification identifier
 
-				if ( '!' === substr( $code, 0, 1 ) ) {
-					$code = substr( $code, 1 );
-					$which = ! $which;
-				}
-
-				if ( $name && ( FALSE !== strpos( $agent, $name ) || '*' === $name ) ) {
+				if ( $name && ( FALSE !== strpos( $_SERVER['HTTP_USER_AGENT'], $name ) || '*' === $name ) ) {
 					if ( 'FEED' === $code ) {
-						if ( $is_feed )
+						if ( $not xor $is_feed )
 							return $validate + array( 'result' => $which ? 'blocked' : 'passed' );
 					}
 
 					elseif ( 'DNS' === $code ) {
-						if ( empty( $validate['host'] ) )
-							$validate['host'] = IP_Geo_Block_Lkup::gethostbyaddr( $validate['ip'] );
-
-						if ( $validate['host'] !== $validate['ip'] )
+						if ( $not xor $validate['host'] !== $validate['ip'] )
 							return $validate + array( 'result' => $which ? 'blocked' : 'passed' );
 					}
 
-					elseif ( $country === $code )
-						return $validate + array( 'result' => $which ? 'blocked' : 'passed' );
+					elseif ( 2 === strlen( $code ) ) {
+						if ( $not xor $code === $validate['code'] )
+							return $validate + array( 'result' => $which ? 'blocked' : 'passed' );
+					}
 
 					elseif ( filter_var( $code, FILTER_VALIDATE_IP ) ) {
-						$validate = $this->check_ips( $validate, $code, $which );
-						if ( isset( $validate['result'] ) )
-							return $validate;
+						$name = $this->check_ips( $validate, $code, $which );
+						if ( $not xor isset( $name['result'] ) )
+							return $validate + array( 'result' => $which ? 'blocked' : 'passed' );
 					}
 				}
 			}
