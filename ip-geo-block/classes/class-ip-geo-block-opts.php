@@ -120,12 +120,12 @@ class IP_Geo_Block_Opts {
 		'redirect_uri'    => NULL,    // URI for redirection on blocking
 		'network_wide'    => FALSE,   // settings page on network dashboard
 		'public'          => array(
-			'simulate'       => FALSE,// just simulate, never block
 			'matching_rule'  => -1,   // -1:follow, 0:white list, 1:black list
 			'white_list'     => NULL, // Comma separeted country code
 			'black_list'     => 'ZZ', // Comma separeted country code
 			'ua_list'        => "Google:DNS,bot:DNS,slurp:DNS,spider:DNS\narchive:DNS,*:FEED,Twitterbot:US\nPinterest:US,AOL:US",
 			'advanced_cache' => NULL, // name of the cache plugin which has advanced-cache.php
+			'simulate'       => FALSE,// just simulate, never block
 		),
 	);
 

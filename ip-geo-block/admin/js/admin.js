@@ -547,12 +547,14 @@ var ip_geo_block_time = new Date();
 					return false;
 				}
 
-				var file = event.target.files[0];
+				var id, file = event.target.files[0];
 				if (file) {
 					readfile(file, function (data) {
-						var id = name + '[signature]';
 						data = JSON.parse(data);
-						data[id] = encode_str(data[id]);
+						id = name + '[signature]';
+						if ('undefined' !== typeof data[id]) {
+							data[id] = encode_str(data[id]);
+						};
 						ajax_post('export-import', {
 							cmd: 'validate',
 							data: JSON.stringify(data)
