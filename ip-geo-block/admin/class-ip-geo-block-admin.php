@@ -800,7 +800,7 @@ class IP_Geo_Block_Admin {
 		$stat = IP_Geo_Block_Admin_Rewrite::activate_rewrite_all( $options['rewrite'] );
 
 		// check the status of rewrite rules
-		$diff = array_diff( $options['rewrite'], $stat );
+		$diff = array_diff_assoc( $options['rewrite'], $stat );
 		if ( ! empty( $diff ) ) {
 			$options['rewrite'] = $stat;
 

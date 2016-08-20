@@ -33,20 +33,20 @@ class IP_Geo_Block_Admin_Rewrite {
 				'</IfModule>',
 				'# END IP Geo Block',
 			),
-			'includes' => array(
-				'# BEGIN IP Geo Block',
-				'<IfModule mod_rewrite.c>',
-				'RewriteEngine on',
-				'RewriteBase %REWRITE_BASE%',
-				'RewriteRule ^.*\.php$ rewrite.php [L]',
-				'</IfModule>',
-				'<FilesMatch "\.(php[2-7]|phtml|pl|py|jsp|asp|htm|shtml|sh|cgi)$">',
-				'deny from all', // 'Options -ExecCGI',
-				'</FilesMatch>',
-				'# END IP Geo Block',
-			),
-			'uploads'   => array(), // same as 'includes'
-			'languages' => array(), // same as 'includes'
+//			'includes' => array(
+//				'# BEGIN IP Geo Block',
+//				'<IfModule mod_rewrite.c>',
+//				'RewriteEngine on',
+//				'RewriteBase %REWRITE_BASE%',
+//				'RewriteRule ^.*\.php$ rewrite.php [L]',
+//				'</IfModule>',
+//				'<FilesMatch "\.(php[2-7]|phtml|pl|py|jsp|asp|htm|shtml|sh|cgi)$">',
+//				'deny from all', // 'Options -ExecCGI',
+//				'</FilesMatch>',
+//				'# END IP Geo Block',
+//			),
+//			'uploads'   => array(), // same as 'includes'
+//			'languages' => array(), // same as 'includes'
 		),
 		'nginx' => array(
 			'plugins' => array(
@@ -64,31 +64,34 @@ class IP_Geo_Block_Admin_Rewrite {
 				'}',
 				'# END IP Geo Block',
 			),
-			'includes'  => array(),
-			'uploads'   => array(),
-			'languages' => array(),
+//			'includes'  => array(),
+//			'uploads'   => array(),
+//			'languages' => array(),
 		),
 	);
 
 	public function __construct() {
-		// copy the same rule
-		$this->rewrite_rule['apache']['uploads'  ] = 
-		$this->rewrite_rule['apache']['languages'] = $this->rewrite_rule['apache']['includes'];
-
 		// http://stackoverflow.com/questions/25017381/setting-php-document-root-on-webserver
 		$this->doc_root = str_replace( $_SERVER['SCRIPT_NAME'], '', $_SERVER['SCRIPT_FILENAME'] );
 		$this->base_uri = str_replace( $this->doc_root, '', IP_GEO_BLOCK_PATH );
 
 		// target directories
-		$upload = wp_upload_dir(); // @since 2.2.0
 		$condir = str_replace( $this->doc_root, '', WP_CONTENT_DIR );
 		$this->wp_dirs = array(
 			'plugins'   => $condir . '/plugins/',
 			'themes'    => $condir . '/themes/',
-			'languages' => $condir . '/languages/',
-			'includes'  => str_replace( $this->doc_root, '', ABSPATH ) . 'wp-includes/',
-			'uploads'   => str_replace( $this->doc_root, '', $upload['basedir'] ) . '/',
 		);
+
+//		$upload = wp_upload_dir(); // @since 2.2.0
+//		$this->wp_dirs += array(
+//			'languages' => $condir . '/languages/',
+//			'includes'  => str_replace( $this->doc_root, '', ABSPATH ) . 'wp-includes/',
+//			'uploads'   => str_replace( $this->doc_root, '', $upload['basedir'] ) . '/',
+//		);
+
+		// copy the same rule
+//		$this->rewrite_rule['apache']['uploads'  ] = 
+//		$this->rewrite_rule['apache']['languages'] = $this->rewrite_rule['apache']['includes'];
 	}
 
 	/**
