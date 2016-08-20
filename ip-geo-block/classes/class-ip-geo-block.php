@@ -774,6 +774,11 @@ class IP_Geo_Block {
 							return $validate + array( 'result' => $which ? 'blocked' : 'passed' );
 					}
 
+					elseif ( 'HOST=' === substr( $code, 0, 5 ) ) {
+						if ( $not xor FALSE !== strpos( $validate['host'], substr( $code, 5 ) ) )
+							return $validate + array( 'result' => $which ? 'blocked' : 'passed' );
+					}
+
 					elseif ( 2 === strlen( $code ) ) {
 						if ( $not xor $code === $validate['code'] )
 							return $validate + array( 'result' => $which ? 'blocked' : 'passed' );

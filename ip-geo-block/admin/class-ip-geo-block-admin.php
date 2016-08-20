@@ -691,7 +691,7 @@ class IP_Geo_Block_Admin {
 						else {
 							$output[ $key ][ $sub ] = ( is_int( $default[ $key ][ $sub ] ) ?
 								(int)$input[ $key ][ $sub ] :
-								IP_Geo_Block_Util::kses( preg_replace( '/[^-,:!*#+\.\/\w\s]/', '', $input[ $key ][ $sub ] ), FALSE )
+								IP_Geo_Block_Util::kses( preg_replace( '/[^-,:!*#+=\.\/\w\s]/', '', $input[ $key ][ $sub ] ), FALSE )
 							);
 						}
 					}
