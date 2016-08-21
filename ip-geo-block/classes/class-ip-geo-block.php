@@ -769,7 +769,7 @@ class IP_Geo_Block {
 							return $validate + array( 'result' => $which ? 'blocked' : 'passed' );
 					}
 
-					elseif ( 'DNS' === $code ) {
+					elseif ( 'HOST' === $code ) {
 						if ( $not xor $validate['host'] !== $validate['ip'] )
 							return $validate + array( 'result' => $which ? 'blocked' : 'passed' );
 					}

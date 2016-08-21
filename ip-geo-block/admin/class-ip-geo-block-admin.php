@@ -567,10 +567,6 @@ class IP_Geo_Block_Admin {
 		$output = IP_Geo_Block::get_option();
 		$default = IP_Geo_Block::get_default();
 
-		// fallback just in case
-		if ( empty( $input['version'] ) )
-			$input = $output;
-
 		// checkboxes not on the form (added after 2.0.0, just in case)
 		foreach ( array( 'anonymize', 'cache_cookie', 'network_wide' ) as $key )
 			$output[ $key ] = 0;
