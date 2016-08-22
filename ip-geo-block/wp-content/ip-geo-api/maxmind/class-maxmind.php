@@ -165,7 +165,7 @@ class IP_Geo_Block_API_Maxmind extends IP_Geo_Block_API {
 				'sub-field' => 'ipv4_path',
 				'value' => $path,
 				'disabled' => TRUE,
-				'after' => '<br /><p id="ip_geo_block_' . $field . '_ipv4" style="margin-left: 0.2em">' . $date . '</p>',
+				'after' => '<br /><p id="ip-geo-block-' . $field . '-ipv4" style="margin-left: 0.2em">' . $date . '</p>',
 			)
 		);
 
@@ -194,7 +194,7 @@ class IP_Geo_Block_API_Maxmind extends IP_Geo_Block_API {
 				'sub-field' => 'ipv6_path',
 				'value' => $path,
 				'disabled' => TRUE,
-				'after' => '<br /><p id="ip_geo_block_' . $field . '_ipv6" style="margin-left: 0.2em">' . $date . '</p>',
+				'after' => '<br /><p id="ip-geo-block-' . $field . '-ipv6" style="margin-left: 0.2em">' . $date . '</p>',
 			)
 		);
 	}

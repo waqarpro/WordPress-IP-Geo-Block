@@ -138,6 +138,12 @@ class IP_Geo_Block_Admin {
 					$dependency, IP_Geo_Block::VERSION, $footer
 				);
 			}
+			wp_enqueue_script( IP_Geo_Block::PLUGIN_NAME . '-whois-js',
+				plugins_url( ! defined( 'IP_GEO_BLOCK_DEBUG' ) || ! IP_GEO_BLOCK_DEBUG ?
+					'js/whois.min.js' : 'js/whois.js', __FILE__
+				),
+				$dependency, IP_Geo_Block::VERSION, $footer
+			);
 			break;
 
 		  case 4:
@@ -394,6 +400,7 @@ class IP_Geo_Block_Admin {
 	</form>
 <?php if ( 2 === $tab ) { ?>
 	<div id="ip-geo-block-map"></div>
+	<div id="ip-geo-block-whois"></div>
 <?php } elseif ( 3 === $tab ) {
 	// show attribution (higher priority order)
 	$providers = IP_Geo_Block_Provider::get_addons();
@@ -946,7 +953,7 @@ class IP_Geo_Block_Admin {
 			$res = IP_Geo_Block_Admin_Ajax::preferred_to_json();
 			break;
 
-		  case 'gmap_error':
+		  case 'gmap-error':
 			// Reset Google Maps API key
 			$which = IP_Geo_Block::get_option();
 			if ( $which['api_key']['GoogleMap'] === 'default' ) {

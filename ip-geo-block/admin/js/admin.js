@@ -6,7 +6,7 @@
  */
 var ip_geo_block_time = new Date();
 
-(function ($) {
+(function ($, window, document) {
 	'use strict';
 
 	function ID(selector, id) {
@@ -17,7 +17,7 @@ var ip_geo_block_time = new Date();
 			'$': 'ip-geo-block-',
 			'%': 'ip_geo_block_'
 		};
-		return id ? keys[selector] + id : keys['$'] + selector;
+		return id ? keys[selector] + id : keys.$ + selector;
 	}
 
 	function sanitize(str) {
@@ -205,7 +205,7 @@ var ip_geo_block_time = new Date();
 			});
 
 			// Additional edge case
-			var i = 'ip_geo_block_settings[providers][IPInfoDB]';
+			var i = ID('%', 'settings[providers][IPInfoDB]');
 			$(ID('@', 'providers_IPInfoDB')).prop('checked', json[i] ? true : false);
 		}
 	}
@@ -482,7 +482,7 @@ var ip_geo_block_time = new Date();
 										$(ID('@', api + '_' + key + '_path')).val(sanitize(data[key].filename));
 									}
 									if (data[key].message) {
-										$('#ip_geo_block_' + api + '_' + key).text(sanitize(data[key].message));
+										$(ID('#', api + '-' + key)).text(sanitize(data[key].message));
 									}
 								}
 							}
@@ -494,7 +494,7 @@ var ip_geo_block_time = new Date();
 			});
 
 			// Name of base class
-			var name = 'ip_geo_block_settings';
+			var name = ID('%', 'settings');
 
 			// Show/Hide description
 			$('select[name^="' + name + '"]').on('change', function (event) {
@@ -554,7 +554,7 @@ var ip_geo_block_time = new Date();
 						id = name + '[signature]';
 						if ('undefined' !== typeof data[id]) {
 							data[id] = encode_str(data[id]);
-						};
+						}
 						ajax_post('export-import', {
 							cmd: 'validate',
 							data: JSON.stringify(data)
@@ -676,8 +676,8 @@ var ip_geo_block_time = new Date();
 		   *----------------------------------------*/
 		  case 2:
 			// Google Maps API error
-			$(window).on('ip_geo_block_gmap_error', function () {
-				ajax_post(null, { cmd: 'gmap_error' }, function (data) {
+			$(window).on(ID('gmap-error'), function () {
+				ajax_post(null, { cmd: 'gmap-error' }, function (data) {
 					redirect(data.page, data.tab);
 				});
 			});
@@ -699,6 +699,9 @@ var ip_geo_block_time = new Date();
 
 			// Search Geolocation
 			$(ID('@', 'get_location')).on('click', function (event) {
+				// get whois data
+				$(window).trigger(ID('whois'));
+
 				var ip = $(ID('@', 'ip_address')).val();
 				if (ip) {
 					ajax_post('loading', {
@@ -803,4 +806,4 @@ var ip_geo_block_time = new Date();
 			break;
 		}
 	});
-}(jQuery));
+}(jQuery, window, document));

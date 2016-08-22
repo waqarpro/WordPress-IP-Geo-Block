@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '3.0.0b5';
+	const VERSION = '3.0.0b6';
 	const GEOAPI_NAME = 'ip-geo-api';
 	const PLUGIN_NAME = 'ip-geo-block';
 	const PLUGIN_SLUG = 'ip-geo-block'; // fallback for ip-geo-api 1.1.3
@@ -73,9 +73,9 @@ class IP_Geo_Block {
 			'admin'     => 'admin_url',          // @since 2.6.0
 			'plugins'   => 'plugins_url',        // @since 2.6.0
 			'themes'    => 'get_theme_root_uri', // @since 1.5.0
-			'includes'  => 'includes_url',       // @since 2.6.0
-			'uploads'   => array( $this, 'uploads_url' ),   // @since 2.2.0
-			'languages' => array( $this, 'languages_url' ), // @since 2.6.0
+//			'includes'  => 'includes_url',       // @since 2.6.0
+//			'uploads'   => array( $this, 'uploads_url' ),   // @since 2.2.0
+//			'languages' => array( $this, 'languages_url' ), // @since 2.6.0
 		);
 
 		// analize the validation target (admin|plugins|themes|includes)
@@ -751,8 +751,10 @@ class IP_Geo_Block {
 		if ( isset( $_SERVER['HTTP_USER_AGENT'] ) ) {
 			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-lkup.php' );
 
-			// check requested url and get the name of host (from the cache if exists)
+			// check requested url
 			$is_feed = IP_Geo_Block_Lkup::is_feed( $this->request_uri );
+
+			// get the name of host (from the cache if exists)
 			if ( empty( $validate['host'] ) )
 				$validate['host'] = IP_Geo_Block_Lkup::gethostbyaddr( $validate['ip'] );
 
