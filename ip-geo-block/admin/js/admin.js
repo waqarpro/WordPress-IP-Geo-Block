@@ -699,11 +699,23 @@ var ip_geo_block_time = new Date();
 
 			// Search Geolocation
 			$(ID('@', 'get_location')).on('click', function (event) {
-				// get whois data
-				$(window).trigger(ID('whois'));
-
 				var ip = $(ID('@', 'ip_address')).val();
+
 				if (ip) {
+					// Get whois data
+					$.whois(ip, function (data) {
+						var i, str = '';
+						for (i = 0; i < data.length; i++) {
+							str +=
+							'<tr>' +
+								'<td>' + data[i].name  + '</td>' +
+								'<td>' + data[i].value + '</td>' +
+							'</tr>';
+						}
+						$(ID('#', 'whois')).empty().html('<table>' + str + '</table>');
+					});
+
+					// Show map
 					ajax_post('loading', {
 						cmd: 'search',
 						ip: ip,

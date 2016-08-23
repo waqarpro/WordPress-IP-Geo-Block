@@ -1,43 +1,109 @@
 /*jslint white: true */
 /*!
- * Project: WordPress IP Geo Block
+ * Project: whois.js - get whois infomation
+ * Description: A jQuery plugin to get whois infomation from RIPE database.
+ * Version: 0.1
  * Copyright (c) 2016 tokkonopapa (tokkonopapa@yahoo.com)
  * This software is released under the MIT License.
+ *
+ * RIPE NCC
+ * @link https://apps.db.ripe.net/search/query.html
+ * @link https://labs.ripe.net/ripe-database/database-api/api-documentation
+ * @link https://github.com/RIPE-NCC/whois/wiki/WHOIS-REST-API-search
  */
-(function ($, window, document) {
+(function ($) {
 	'use strict';
-	$(window).on('ip-geo-block-whois', function () {
+
+	$.whois = function (query, callback) {
 		/**
 		 * APIs that doesn't support CORS.
 		 * These are accessed through https://developer.yahoo.com/yql/
 		 */
-		var yql = 'https://query.yahooapis.com/v1/public/yql?q=select * from xml where url="%URL%"&format=json&jsonCompat=new',
-		    url = '//rest.db.ripe.net/search%3fflags=no-filtering%26flags=resource%26query-string=',
-		    ip = $('#ip_geo_block_settings_ip_address').val().replace(/[^\d\.:]/, '');
+		var results = [],
+			yql = 'https://query.yahooapis.com/v1/public/yql?q=select * from xml where url="%URL%"&format=json&jsonCompat=new',
+			url = 'https://rest.db.ripe.net/search%3fflags=no-filtering%26flags=resource%26query-string=';
+//			app = 'https://apps.db.ripe.net/search/lookup.html?source=%SRC%&key=%KEY%&type=%TYPE%';
 
-		if (ip) {
-			$.ajax({
-				url: yql.replace(/%URL%/, window.location.protocol + url + ip),
-				method: 'GET',
-				dataType: 'json'
-			})
+		$.ajax({
+			url: yql.replace(/%URL%/, url + query),
+			method: 'GET',
+			dataType: 'json'
+		})
 
-			.done(function (data, textStatus, jqXHR) {
-				var i, j, objs, attr, $whois = $('#ip-geo-block-whois');
-				objs = data.query.results['whois-resources'].objects.object;
+		.done(function (data, textStatus, jqXHR) {
+			// http://stackoverflow.com/questions/722668/traverse-all-the-nodes-of-a-json-object-tree-with-javascript#answer-722676
+			function traverse(key, value) {
+				if (value && typeof value === 'object') {
+					if (value.errormessage) {
+						var err = value.errormessage,
+							msg = err.text.split(/\n+/);
 
-				for (i = 0; i < objs.length; i++) {
-					attr = objs[i].attributes.attribute;
+						results.push({
+							name : err.severity,
+							value: msg[1].replace(/%s/, err.args.value)
+						});
+					}
 
-					for (j = 0; j < attr.length; j++) {
-						console.log(JSON.stringify(attr[j]));
-						console.log('%s: %s', attr[j].name, attr[j].value);
+					else if ('link' === key || 'terms-and-conditions' === key) {
+						results.push({
+							name : key,
+							value: '<a href="' + value.href + '" target=_blank>' + value.href + '</a>'
+						});
+					}
+
+					else if (value.name && value.value) {
+						/*if (value.link) {
+							var src = value.link.href.match(/\w+-grs/);
+							value.value = '<a href="' + 
+								app.replace('%SRC%', src[0])
+								   .replace('%KEY%', encodeURI(value['value']))
+								   .replace('%TYPE%', value['referenced-type']) +
+								'" target=_blank>' + value.value + '</a>';
+						}*/
+
+						if (value.link) {
+							value.value = '<a href="' + value.link.href + '" target=_blank>' + value.value + '</a>';
+						}
+
+						results.push({
+							name : value.name,
+							value: value.value
+						});
+					}
+
+					else if ('primary-key' !== key) {
+						$.each(value, function(k, v) {
+							// k is either an array index or object key
+							traverse(k, v);
+						});
 					}
 				}
-			})
+			}
 
-			.fail(function (jqXHR, textStatus, errorThrown) {
+			var i, attr = data.query.results, objs = [];
+
+			for (i in attr) {
+				if (attr.hasOwnProperty(i)) {
+					objs = attr[i]; // whois-resouces
+					break;
+				}
+			}
+
+			traverse(null, objs);
+		})
+
+		.fail(function (jqXHR, textStatus, errorThrown) {
+			results.push({
+				name : textStatus,
+				value: errorThrown
 			});
-		}
-	});
-}(jQuery, window, document));
+		})
+
+		.always(function () {
+			if (callback) {
+				callback(results);
+			}
+		});
+	};
+
+})(jQuery);
