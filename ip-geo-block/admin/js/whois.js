@@ -1,7 +1,7 @@
 /*jslint white: true */
 /*!
  * Project: whois.js - get whois infomation
- * Description: A jQuery plugin to get whois infomation from RIPE database.
+ * Description: A jQuery plugin to get whois infomation from RIPE NCC database.
  * Version: 0.1
  * Copyright (c) 2016 tokkonopapa (tokkonopapa@yahoo.com)
  * This software is released under the MIT License.
@@ -47,7 +47,7 @@
 					else if ('link' === key || 'terms-and-conditions' === key) {
 						results.push({
 							name : key,
-							value: '<a href="' + value.href + '" target=_blank>' + value.href + '</a>'
+							value: '<a href="' + value.href + '.json" target=_blank>' + value.href + '</a>'
 						});
 					}
 
@@ -62,7 +62,7 @@
 						}*/
 
 						if (value.link) {
-							value.value = '<a href="' + value.link.href + '" target=_blank>' + value.value + '</a>';
+							value.value = '<a href="' + value.link.href + '.json" target=_blank>' + value.value + '</a>';
 						}
 
 						results.push({
@@ -100,6 +100,11 @@
 		})
 
 		.always(function () {
+			results.push({
+				name : 'copyright',
+				value: '<a href="https://apps.db.ripe.net/search/query.html" title="Database Query - RIPE Network Coordination Centre">RIPE NCC</a>'
+			});
+
 			if (callback) {
 				callback(results);
 			}

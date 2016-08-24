@@ -11,7 +11,7 @@ function gm_authFailure() {
 	jQuery(window).trigger('ip-geo-block-gmap-error');
 }
 
-(function ($, window, document) {
+(function ($) {
 	'use strict';
 	$(function ($) {
 		var e = "GmapRS",
@@ -120,4 +120,4 @@ function gm_authFailure() {
 			}
 		};
 	});
-}(jQuery, window, document));
+}(jQuery));

@@ -462,6 +462,11 @@ For more details, see
   and
     [release 3.0.0](http://www.ipgeoblock.com/changelog/release-3.0.0.html "3.0.0 Release Note | IP Geo Block").
 
+= 2.2.8 =
+* **Bug fix:** Fixed a issue of stripping some required characters for Google 
+  maps API key.
+* **New feature:** Whois database Lookup for IP address on search tab.
+
 = 2.2.7 =
 * **Bug fix:** Fix inadequate validation of "**Bad signatures in query**".
 * **Improvement:** Add fallback for Google Maps API key 

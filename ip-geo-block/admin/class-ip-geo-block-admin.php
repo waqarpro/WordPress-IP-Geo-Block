@@ -134,7 +134,7 @@ class IP_Geo_Block_Admin {
 					$dependency, IP_Geo_Block::VERSION, $footer
 				);
 				wp_enqueue_script( IP_Geo_Block::PLUGIN_NAME . '-google-map',
-					'//maps.googleapis.com/maps/api/js' . ( ! $key || 'default' === $key ? '' : "?key=$key" ),
+					'//maps.googleapis.com/maps/api/js' . ( 'default' !== $key ? "?key=$key" : '' ),
 					$dependency, IP_Geo_Block::VERSION, $footer
 				);
 			}

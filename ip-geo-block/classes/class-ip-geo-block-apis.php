@@ -647,9 +647,8 @@ class IP_Geo_Block_Provider {
 	 *
 	 */
 	public static function get_providers( $key = 'key', $rand = FALSE, $cache = FALSE ) {
-		$list = array();
-
 		// add internal DB
+		$list = array();
 		foreach ( self::$internals as $provider => $tmp ) {
 			if ( 'Cache' !== $provider || $cache )
 				$list[ $provider ] = $tmp[ $key ];
