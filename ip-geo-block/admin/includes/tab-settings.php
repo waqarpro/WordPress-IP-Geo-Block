@@ -488,7 +488,7 @@ class IP_Geo_Block_Admin_Tab {
 
 		// Plugins area
 		$key = 'plugins';
-		$val = esc_html( substr( IP_Geo_Block::$wp_path[ $key ], 1 ) );
+		$val = esc_html( IP_Geo_Block::$wp_path[ $key ] );
 		$tmp =  '<input type="checkbox" id="ip_geo_block_settings_rewrite_' . $key
 			. '" name="ip_geo_block_settings[rewrite][' . $key . ']" '
 			. ' value="1"' . checked( $options['rewrite'][ $key ], TRUE, FALSE )
@@ -541,7 +541,7 @@ class IP_Geo_Block_Admin_Tab {
 
 		// Themes area
 		$key = 'themes';
-		$val = esc_html( substr( IP_Geo_Block::$wp_path[ $key ], 1 ) );
+		$val = esc_html( IP_Geo_Block::$wp_path[ $key ] );
 		$tmp =  '<input type="checkbox" id="ip_geo_block_settings_rewrite_' . $key
 			. '" name="ip_geo_block_settings[rewrite][' . $key . ']" '
 			. ' value="1"' . checked( $options['rewrite'][ $key ], TRUE, FALSE )
@@ -584,7 +584,7 @@ class IP_Geo_Block_Admin_Tab {
 			$tmp .= '<label for="ip_geo_block_settings_rewrite_'.$val.'">';
 			if ( ! empty( $options['exception'][ $val ] ) )
 				$tmp .= '<dfn title="' . sprintf( __( 'except &#8220;%s&#8221;', 'ip-geo-block' ), esc_attr( implode( '&#8221;, &#8220;', $options['exception'][ $val ] ) ) ) . '"></dfn>';
-			$tmp .= esc_html( substr( $key[ $val ], 1 ) ) . "</label></li>\n";
+			$tmp .= esc_html( $key[ $val ] ) . "</label></li>\n";
 		}
 
 		$key = 'others';
