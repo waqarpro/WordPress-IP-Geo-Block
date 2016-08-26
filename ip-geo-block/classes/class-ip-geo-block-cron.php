@@ -48,8 +48,6 @@ class IP_Geo_Block_Cron {
 	 *   B. Multiple time for each blog when this plugin is individually activated
 	 */
 	public static function exec_job( $immediate = FALSE ) {
-		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
-
 		$settings = IP_Geo_Block::get_option();
 		$args = IP_Geo_Block::get_request_headers( $settings );
 

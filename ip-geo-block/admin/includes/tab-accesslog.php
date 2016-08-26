@@ -1,5 +1,4 @@
 <?php
-require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php' );
 require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 
 class IP_Geo_Block_Admin_Tab {

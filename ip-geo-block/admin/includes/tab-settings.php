@@ -1,6 +1,4 @@
 <?php
-require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php' );
-require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
 require_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php' );
 
 if ( ! function_exists( 'get_plugins' ) )

@@ -399,8 +399,8 @@ class IP_Geo_Block_Admin {
 ?>
 	</form>
 <?php if ( 2 === $tab ) { ?>
-	<div id="ip-geo-block-map"></div>
 	<div id="ip-geo-block-whois"></div>
+	<div id="ip-geo-block-map"></div>
 <?php } elseif ( 3 === $tab ) {
 	// show attribution (higher priority order)
 	$providers = IP_Geo_Block_Provider::get_addons();
@@ -600,7 +600,6 @@ class IP_Geo_Block_Admin {
 
 			switch( $key ) {
 			  case 'providers':
-				require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
 				foreach ( IP_Geo_Block_Provider::get_providers() as $provider => $api ) {
 					// need no key
 					if ( NULL === $api ) {
@@ -903,7 +902,6 @@ class IP_Geo_Block_Admin {
 
 		  case 'clear-cache':
 			// Delete cache of IP address
-			require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php' );
 			IP_Geo_Block_API_Cache::clear_cache();
 			$res = array(
 				'page' => 'options-general.php?page=' . IP_Geo_Block::PLUGIN_NAME,

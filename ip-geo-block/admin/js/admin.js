@@ -700,7 +700,6 @@ var ip_geo_block_time = new Date();
 			// Search Geolocation
 			$(ID('@', 'get_location')).on('click', function (event) {
 				var ip = $(ID('@', 'ip_address')).val();
-
 				if (ip) {
 					// Get whois data
 					$.whois(ip, function (data) {
@@ -712,7 +711,20 @@ var ip_geo_block_time = new Date();
 								'<td>' + data[i].value + '</td>' +
 							'</tr>';
 						}
-						$(ID('#', 'whois')).empty().html('<table>' + str + '</table>');
+
+						$(ID('#', 'whois')).hide().empty().html(
+							'<fieldset class="' + ID('field') + '">' +
+							'<legend><h2 class="' + ID('dropdown') + '">Whois</h2></legend>' +
+							'<table>' + str + '</table>' +
+							'<fieldset>'
+						).fadeIn('slow')
+
+						.on('click', 'h2', function (event) {
+							var $this = $(this);
+							$this.parent().nextAll().toggle();
+							$this.toggleClass(ID('dropup')).toggleClass(ID('dropdown'));
+							return false;
+						});
 					});
 
 					// Show map
@@ -771,6 +783,11 @@ var ip_geo_block_time = new Date();
 
 				return false;
 			});
+
+			// Preset IP address
+			if ($(ID('@', 'ip_address')).val()) {
+				$(ID('@', 'get_location')).trigger('click');
+			}
 			break;
 
 		  /*----------------------------------------
@@ -819,3 +836,11 @@ var ip_geo_block_time = new Date();
 		}
 	});
 }(jQuery, window, document));
+
+/**
+ * Jump to search tab with opening new window.
+ */
+function ip_geo_block_geoip(elm) {
+	'use strict';
+	window.open(window.location.href.replace(/tab=\d/, 'tab=2') + '&ip=' + elm.text);
+}
