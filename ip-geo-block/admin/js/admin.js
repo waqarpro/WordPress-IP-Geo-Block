@@ -320,7 +320,9 @@ var ip_geo_block_time = new Date();
 
 		// Get tab number and check wpCookies in wp-includes/js/utils.js
 		var cookie = ('undefined' !== typeof wpCookies && wpCookies.getHash(ID('%', 'admin'))) || {},
-		    maxTabs = 9, tabNo = /&tab=(\d)/.exec(window.location.href);
+		    tabIndex = [0, 9, 10],
+		    tabNo = /&tab=(\d)/.exec(window.location.href);
+
 		tabNo = Number(tabNo && tabNo[1]);
 
 		// Make form style with fieldset and legend
@@ -341,7 +343,7 @@ var ip_geo_block_time = new Date();
 
 			// Initialize show/hide form-table on tab 0, 1
 			if (tabNo <= 1) {
-				index += (tabNo ? maxTabs : 0);
+				index += tabIndex[tabNo];
 				if ('undefined' === typeof cookie[index] || cookie[index]) { // 'undefined' or 'o'
 					title.addClass(ID('dropdown')).parent().nextAll().show();
 				} else {
@@ -366,7 +368,7 @@ var ip_geo_block_time = new Date();
 
 			// Save cookie
 			if ('undefined' !== typeof wpCookies) {
-				cookie[index + (tabNo ? maxTabs : 0)] = title.hasClass(ID('dropdown')) ? 'o' : '';
+				cookie[index + tabIndex[tabNo]] = title.hasClass(ID('dropdown')) ? 'o' : '';
 				wpCookies.setHash(ID('%', 'admin'), cookie, new Date(Date.now() + 2592000000));
 			}
 
@@ -397,7 +399,7 @@ var ip_geo_block_time = new Date();
 					$this.parent().nextAll().toggle(n ? false : true);
 					$this.removeClass(id.join(' '))
 					     .addClass(n ? id[1] : id[0]);
-					cookie[i + (tabNo ? maxTabs : 0)] = n ? '' : 'o';
+					cookie[i + tabIndex[tabNo]] = n ? '' : 'o';
 				});
 
 				// Save cookie
@@ -699,8 +701,12 @@ var ip_geo_block_time = new Date();
 
 			// Search Geolocation
 			$(ID('@', 'get_location')).on('click', function (event) {
-				var ip = $(ID('@', 'ip_address')).val();
+				var whois = $(ID('#', 'whois')),
+				    ip = $(ID('@', 'ip_address')).val();
+
 				if (ip) {
+					whois.hide().empty();
+
 					// Get whois data
 					$.whois(ip, function (data) {
 						var i, str = '';
@@ -712,14 +718,14 @@ var ip_geo_block_time = new Date();
 							'</tr>';
 						}
 
-						$(ID('#', 'whois')).hide().empty().html(
+						whois.html(
 							'<fieldset class="' + ID('field') + '">' +
-							'<legend><h2 class="' + ID('dropdown') + '">Whois</h2></legend>' +
-							'<table>' + str + '</table>' +
+							'<legend><h2 id="' + ID('whois-title') + '" class="' + ID('dropdown') + '">Whois</h2></legend>' +
+							'<table class="' + ID('table') + '">' + str + '</table>' +
 							'<fieldset>'
-						).fadeIn('slow')
+						).fadeIn('slow');
 
-						.on('click', 'h2', function (event) {
+						$(ID('#', 'whois-title')).on('click', function (event) {
 							var $this = $(this);
 							$this.parent().nextAll().toggle();
 							$this.toggleClass(ID('dropup')).toggleClass(ID('dropdown'));

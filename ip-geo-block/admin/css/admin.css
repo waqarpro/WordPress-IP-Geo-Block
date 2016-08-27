@@ -168,12 +168,15 @@ table.ip-geo-block-stat-table td {
     line-height: 1.5em;
     word-wrap: break-word;
 }
-table.ip-geo-block-table tr:nth-child(even),
 table.ip-geo-block-stat-table tr:nth-child(even) {
     background-color: #f7f7f7;
 }
-table.ip-geo-block-table tr:nth-child(odd),
 table.ip-geo-block-stat-table tr:nth-child(odd) {
+}
+table.ip-geo-block-table {
+    white-space: normal;
+    word-wrap: break-word;
+    word-break: break-all;
 }
 
 /* for footable */
