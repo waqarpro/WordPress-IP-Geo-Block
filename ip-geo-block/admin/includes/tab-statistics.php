@@ -120,7 +120,7 @@ if ( $options['save_statistics'] ) :
 				'type' => 'html',
 				'option' => $option_name,
 				'field' => $field,
-				'value' => '<table class="'.$option_slug.'-stat-table">' .
+				'value' => '<table class="'.$option_slug.'-statistics-table">' .
 					'<thead><tr><th>IPv4</th><th>IPv6</th></tr></thead><tbody><tr>' .
 					'<td>' . esc_html( $statistics['IPv4'] ) . '</td>' .
 					'<td>' . esc_html( $statistics['IPv6'] ) . '</td>' .
@@ -129,7 +129,7 @@ if ( $options['save_statistics'] ) :
 		);
 
 		$field = 'service';
-		$html  = '<table class="'.$option_slug.'-stat-table"><thead><tr>';
+		$html  = '<table class="'.$option_slug.'-statistics-table"><thead><tr>';
 		$html .= '<th>' . __( 'Name of API',     'ip-geo-block' ) . '</th>';
 		$html .= '<th>' . __( 'Calls',           'ip-geo-block' ) . '</th>';
 		$html .= '<th>' . __( 'Response [msec]', 'ip-geo-block' ) . '</th>';
@@ -215,7 +215,7 @@ endif;
 		);
 
 		$field = 'cache';
-		$html  = '<table class="'.$option_slug.'-stat-table"><thead><tr>';
+		$html  = '<table class="'.$option_slug.'-statistics-table"><thead><tr>';
 		$html .= '<th>' . __( 'IP address',            'ip-geo-block' ) . '</th>';
 		$html .= '<th>' . __( 'Country code / Access', 'ip-geo-block' ) . '</th>';
 		$html .= '<th>' . __( 'Elapsed [sec] / Calls', 'ip-geo-block' ) . '</th>';
