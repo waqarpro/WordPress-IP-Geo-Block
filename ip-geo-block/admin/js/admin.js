@@ -819,6 +819,11 @@ var ip_geo_block_time = new Date();
 					if (typeof $.fn.footable === 'function') {
 						$(ID('.', 'log')).fadeIn('slow').footable();
 					}
+
+					// Jump to search tab with opening new window
+					$('tbody[id^="' + ID('$', 'log-') + '"]').on('click', 'a', function (event) {
+						window.open(window.location.href.replace(/tab=\d/, 'tab=2') + '&ip=' + $(this).text());
+					});
 				});
 			}
 
@@ -842,11 +847,3 @@ var ip_geo_block_time = new Date();
 		}
 	});
 }(jQuery, window, document));
-
-/**
- * Jump to search tab with opening new window.
- */
-function ip_geo(elm) {
-	'use strict';
-	window.open(window.location.href.replace(/tab=\d/, 'tab=2') + '&ip=' + elm.text);
-}
