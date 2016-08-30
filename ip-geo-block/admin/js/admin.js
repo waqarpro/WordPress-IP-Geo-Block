@@ -518,6 +518,14 @@ var ip_geo_block_time = new Date();
 				return false;
 			}).trigger('change');
 
+			// Enable / Disable for Public facing pages
+			$(ID('@', 'validation_public')).on('change', function (event) {
+				var disabled = ! $(this).is(':checked');
+				$.each(['matching_rule', 'ua_list', 'simulate'], function (i, val) {
+					$(ID('@', 'public_' + val)).prop('disabled', disabled);
+				});
+			}).trigger('change');
+
 			// Export / Import settings
 			add_hidden_form('validate');
 
