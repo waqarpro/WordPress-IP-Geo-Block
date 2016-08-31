@@ -308,9 +308,9 @@ class IP_Geo_Block_Admin_Tab {
 //					 2 => __( '&#8220;drop-in&#8221; (advanced-cache.php)',     'ip-geo-block' ),
 				),
 				'desc' => array(
-					 0 => __( 'Validate at init action hook same as typical plugins.', 'ip-geo-block' ),
-					 1 => __( 'Validate at an earlier stage than other plugins to reduce load on server.', 'ip-geo-block' ),
-//					 2 => __( 'Validate at a very early stage of the WordPress core to minimize load on server.', 'ip-geo-block' ),
+					 0 => __( 'Validate at &#8220;init&#8221; action hook in the same manner as typical plugins.', 'ip-geo-block' ),
+					 1 => __( 'Validate at an earlier phase than other typical plugins. It can reduce load on server but has <a href=\'http://www.ipgeoblock.com/codex/validation-timing.html\' title=\'Validation timing | IP Geo Block\'>some restrictions</a>.', 'ip-geo-block' ),
+//					 2 => __( 'Validate at a very early phase of WordPress core. It can minimize load on server but has <a href=\'http://www.ipgeoblock.com/codex/validation-timing.html\' title=\'Validation timing | IP Geo Block\'>some restrictions</a>.', 'ip-geo-block' ),
 				),
 				'after' => '<div class="ip-geo-block-desc"></div>',
 			)

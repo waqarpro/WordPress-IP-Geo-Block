@@ -308,6 +308,21 @@ that you should upload the original one to deactivate above feature.
 [This release note](http://www.ipgeoblock.com/changelog/release-2.1.3.html "2.1.3 Release Note")
 can also help you.
 
+= How can I fix "Unable to write" error?
+
+When you enable "**Force to load WP core**" options, this plugin will try to 
+configure `.htaccess` in your `/wp-content/plugins/` and `/wp-content/themes/` 
+directory in order to protect your site against the malicous attacks to the 
+[OMG plugins and shemes](http://www.ipgeoblock.com/article/exposure-of-wp-config-php.html "Prevent exposure of wp-config.php | IP Geo Block").
+
+But some servers doesn't give reading / writing permission against `.htaccess` 
+to WordPress. In this case, you can configure these `.htaccess` files by your 
+own hand instead of enabling "**Force to load WP core**" options.
+
+Please refer to 
+"[How to fix permission troubles?](http://www.ipgeoblock.com/codex/how-to-fix-permission-troubles.html 'How to fix permission troubles? | IP Geo Block')"
+in order to fix this error.
+
 = Does this plugin works well with caching plugin? =
 
 For the back-end protection, the answer is YES. But for the front-end, the 
@@ -334,18 +349,6 @@ pages.
 For more details, please refer to some documents at 
 [Blocking on front-end](http://www.ipgeoblock.com/codex/#blocking-on-front-end "Codex | IP Geo Block").
 
-= Does this plugin validate all the requests to the server? =
-
-Unfortunately, no. This plugin can't handle the requests that are not parsed by 
-WordPress. In other words, a standalone file (PHP, CGI or something excutable) 
-that is unrelated to WordPress can't be validated by this plugin event if it 
-is in the WordPress install directory.
-
-But there're exceptions: When you enable "**Force to load WP core**" for 
-**Plugins area** or **Themes area**, a standalone PHP file becomes to be 
-able to be blocked. Sometimes this kind of file in a plugin or theme has 
-vulnerability. This function is provided against such a case.
-
 = Do I have to turn on all the selection to enhance security? =
 
 Yes. Roughly speaking, the strategy of this plugin has been constructed as 
@@ -365,6 +368,18 @@ follows:
 
 See more details in 
 "[The best practice of target settings](http://www.ipgeoblock.com/codex/the-best-practice-of-target-settings.html 'The best practice of target settings | IP Geo Block')".
+
+= Does this plugin validate all the requests to the server? =
+
+Unfortunately, no. This plugin can't handle the requests that are not parsed by 
+WordPress. In other words, a standalone file (PHP, CGI or something excutable) 
+that is unrelated to WordPress can't be validated by this plugin event if it 
+is in the WordPress install directory.
+
+But there're exceptions: When you enable "**Force to load WP core**" for 
+**Plugins area** or **Themes area**, a standalone PHP file becomes to be 
+able to be blocked. Sometimes this kind of file in a plugin or theme has 
+vulnerability. This function is provided against such a case.
 
 = How can I test this plugin works? =
 

@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2016-08-27 22:02+0900\n"
-"PO-Revision-Date: 2016-08-27 22:03+0900\n"
+"POT-Creation-Date: 2016-08-31 21:37+0900\n"
+"PO-Revision-Date: 2016-08-31 21:38+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -120,7 +120,7 @@ msgstr ""
 
 #: admin/class-ip-geo-block-admin.php:819
 #: admin/class-ip-geo-block-admin.php:844
-#: classes/class-ip-geo-block-opts.php:283
+#: classes/class-ip-geo-block-opts.php:282
 #: classes/class-ip-geo-block-util.php:114
 #, php-format
 msgid "Unable to write %s. Please check the permission."
@@ -386,12 +386,16 @@ msgid "&#8220;mu-plugins&#8221; (ip-geo-block-mu.php)"
 msgstr ""
 
 #: admin/includes/tab-settings.php:311
-msgid "Validate at init action hook same as typical plugins."
+msgid ""
+"Validate at &#8220;init&#8221; action hook in the same manner as typical "
+"plugins."
 msgstr ""
 
 #: admin/includes/tab-settings.php:312
 msgid ""
-"Validate at an earlier stage than other plugins to reduce load on server."
+"Validate at an earlier phase than other typical plugins. It can reduce load "
+"on server but has <a href='http://www.ipgeoblock.com/codex/validation-timing."
+"html' title='Validation timing | IP Geo Block'>some restrictions</a>."
 msgstr ""
 
 #: admin/includes/tab-settings.php:325
