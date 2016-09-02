@@ -69,24 +69,7 @@ class IP_Geo_Block_Admin {
 	 *
 	 */
 	public function add_admin_nonce( $location, $status ) {
-		$key = IP_Geo_Block::PLUGIN_NAME . '-auth-nonce';
-
-		if ( $nonce = IP_Geo_Block::retrieve_nonce( $key ) ) { // must be sanitized
-			$host = parse_url( $location, PHP_URL_HOST );
-
-			// check if the location is internal
-			if ( ! $host || $host === parse_url( home_url(), PHP_URL_HOST ) ) {
-				$location = esc_url_raw( add_query_arg(
-					array(
-						$key => false, // delete onece
-						$key => $nonce // add again
-					),
-					$location
-				) );
-			}
-		}
-
-		return $location;
+		return IP_Geo_Block_Util::rebuild_nonce( $location, $status );
 	}
 
 	/**

@@ -258,6 +258,7 @@ class IP_Geo_Block_Util {
 	/**
 	 * Retrieve the current session token from the logged_in cookie.
 	 *
+	 * Note: Arrogating logged_in cookie never cause the privilege escalation.
 	 */
 	private static function get_session_token() {
 		$cookie = self::parse_auth_cookie( 'logged_in' );
@@ -267,8 +268,7 @@ class IP_Geo_Block_Util {
 	private static function parse_auth_cookie( $scheme ) {
 		foreach ( array_keys( $_COOKIE ) as $key ) {
 			if ( FALSE !== strpos( $key, $scheme ) ) {
-				$elements = explode( '|', $_COOKIE[ $key ] );
-				if ( count( $elements ) === 4 ) {
+				if ( count( $elements = explode( '|', $_COOKIE[ $key ] ) ) === 4 ) {
 					list( $username, $expiration, $token, $hmac ) = $elements;
 					return compact( 'username', 'expiration', 'token', 'hmac' );
 				}
@@ -403,41 +403,47 @@ class IP_Geo_Block_Util {
 	 *
 	 * @see wp-includes/pluggable.php - wp_redirect()
 	 */
-	public static function redirect($location, $status = 302) {
+	public static function rebuild_nonce( $location, $status = 302 ) {
+		$key = IP_Geo_Block::PLUGIN_NAME . '-auth-nonce';
+
+		if ( $nonce = IP_Geo_Block::retrieve_nonce( $key ) ) { // must be sanitized
+			$host = parse_url( $location, PHP_URL_HOST );
+
+			// check if the location is internal
+			if ( ! $host || $host === parse_url( home_url(), PHP_URL_HOST ) ) {
+				$location = esc_url_raw( add_query_arg(
+					array(
+						$key => false, // delete onece
+						$key => $nonce // add again
+					),
+					$location
+				) );
+			}
+		}
+
+		return $location;
+	}
+
+	public static function redirect( $location, $status = 302 ) {
 		$_is_apache = (strpos($_SERVER['SERVER_SOFTWARE'], 'Apache') !== false || strpos($_SERVER['SERVER_SOFTWARE'], 'LiteSpeed') !== false);
 		$_is_IIS = !$_is_apache && (strpos($_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS') !== false || strpos($_SERVER['SERVER_SOFTWARE'], 'ExpressionDevServer') !== false);
 
-		/**
-		 * Filters the redirect location.
-		 *
-		 * @since 2.1.0
-		 *
-		 * @param string $location The path to redirect to.
-		 * @param int    $status   Status code to use.
-		 */
-		$location = apply_filters( 'wp_redirect', $location, $status );
+		// retrieve nonce from referer and add it to the location
+		$location = self::rebuild_nonce( $location, $status );
+		$location = self::sanitize_redirect( $location );
 
-		/**
-		 * Filters the redirect status code.
-		 *
-		 * @since 2.3.0
-		 *
-		 * @param int    $status   Status code to use.
-		 * @param string $location The path to redirect to.
-		 */
-		$status = apply_filters( 'wp_redirect_status', $status, $location );
+		if ( $location ) {
+			if ( ! $_is_IIS && PHP_SAPI != 'cgi-fcgi' )
+				status_header( $status ); // This causes problems on IIS and some FastCGI setups
 
-		if ( ! $location )
+			header( "Location: $location", true, $status );
+
+			return true;
+		}
+
+		else {
 			return false;
-
-		$location = self::sanitize_redirect($location);
-
-		if ( !$_is_IIS && PHP_SAPI != 'cgi-fcgi' )
-			status_header($status); // This causes problems on IIS and some FastCGI setups
-
-		header("Location: $location", true, $status);
-
-		return true;
+		}
 	}
 
 	/**
