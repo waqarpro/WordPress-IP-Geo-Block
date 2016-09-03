@@ -2,6 +2,8 @@
 /**
  * Drop-in for IP Geo Block custom filters
  *
+ * This file should be renamed to `drop-in.php`.
+ *
  * @package   IP_Geo_Block
  * @author    tokkonopapa <tokkonopapa@yahoo.com>
  * @license   GPL-2.0+
@@ -12,8 +14,7 @@ if ( ! class_exists( 'IP_Geo_Block' ) ) {
 }
 
 /**
- * Example: Usage of `ip-geo-block-xxxxxx-(status|reason)`
- * Use case: Returns "404 Not found" to hide login page.
+ * Example: Returns "404 Not found" to hide login page.
  * Note: Use IP_Geo_Block::add_filter() instead of add_filter()
  */
 /*
