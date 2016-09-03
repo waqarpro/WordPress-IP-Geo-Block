@@ -50,6 +50,9 @@ class IP_Geo_Block {
 		$validate = $settings['validation'];
 		$loader = new IP_Geo_Block_Loader();
 
+		// include drop in if it exists
+		@include_once $settings['api_dir'] . '/drop-in.php';
+
 		// the action hook which will be fired by cron job
 		if ( $settings['update']['auto'] )
 			add_action( self::CRON_NAME, array( $this, 'update_database' ) );
@@ -142,6 +145,14 @@ class IP_Geo_Block {
 		// Run the loader to execute all of the hooks with WordPress.
 		$loader->run( $this );
 		unset( $loader );
+	}
+
+	/**
+	 * I/F for registering custom fileter
+	 *
+	 */
+	public static function add_filter( $tag, $function, $priority = 10, $args = 1 ) {
+		add_filter( $tag, $function, $priority, $args );
 	}
 
 	/**
