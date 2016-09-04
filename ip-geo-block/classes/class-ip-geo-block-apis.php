@@ -735,7 +735,7 @@ if ( class_exists( 'IP_Geo_Block' ) ) {
 
 	// Load addons by heigher priority order
 	if ( FALSE !== $plugins ) {
-		$exclude = array( '.', '..', 'index.php', 'drop-in.php' );
+		$exclude = array( '.', '..' );
 		foreach ( $plugins as $plugin ) {
 			if ( ! in_array( $plugin, $exclude, TRUE ) && is_dir( $dir.$plugin ) ) {
 				@include_once( $dir.$plugin.'/class-'.$plugin.'.php' );
