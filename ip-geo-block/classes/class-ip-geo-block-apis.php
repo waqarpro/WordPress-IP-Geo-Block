@@ -562,7 +562,24 @@ class IP_Geo_Block_API_Cookie extends IP_Geo_Block_API {
 	}
 
 }
-
+/*
+http://geoiplookup.net/
+http://geoiplookup.net/xml-api/
+http://api.geoiplookup.net/?query=175.108.204.37
+	<?xml version="1.0" encoding="iso-8859-1"?>
+	<results>
+		<result>
+			<ip>175.108.204.37</ip>
+			<host>175.108.204.37</host>
+			<isp>Kddi Corporation</isp>
+			<city>Utsunomiya</city>
+			<countrycode>JP</countrycode>
+			<countryname>Japan</countryname>
+			<latitude>36.5658</latitude>
+			<longitude>139.8836</longitude>
+		</result>
+	</results>
+*/
 /**
  * Provider support class
  *
@@ -689,7 +706,7 @@ class IP_Geo_Block_Provider {
 	 */
 	public static function diag_providers( $settings = NULL ) {
 		if ( ! $settings ) {
-			$settings = IP_Geo_Block::get_option( 'settings' );
+			$settings = IP_Geo_Block::get_option();
 			$settings = $settings['providers'];
 		}
 

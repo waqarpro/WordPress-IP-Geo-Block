@@ -59,7 +59,7 @@ and reverse-brute-force attacks to the login form and XML-RPC.
     [this plugin's blog](http://www.ipgeoblock.com/article/how-wpzep-works.html "How does WP-ZEP prevent zero-day attack? | IP Geo Block").
 
 * **Guard against login attempts:**  
-  In order to prevent the invasion through the login form and XML-RPC against
+  In order to prevent the invasion through the login form and XML-RPC by 
   the brute-force and the reverse-brute-force attacks, the number of login 
   attempts will be limited per IP address even from the permitted countries.
 
@@ -67,6 +67,13 @@ and reverse-brute-force attacks to the login form and XML-RPC.
   A malicious request to try to expose `wp-config.php` via vulnerable plugins 
   or themes can be blocked. A numerous such attacks can be found in 
     [this article](http://www.ipgeoblock.com/article/exposure-of-wp-config-php.html "Prevent exposure of wp-config.php").
+
+* ** Validation at the very beginning of WordPress core:**  
+  You can configure this plugin as a 
+  [Must Use Plugins](https://codex.wordpress.org/Must_Use_Plugins "Must Use Plugins &laquo; WordPress Codex")
+  which can help to drastically
+  [reduce the load on server](http://www.ipgeoblock.com/codex/validation-timing.html "Validation timing | IP Geo Block")
+  especially against brute-force attacks.
 
 * **Support of BuddyPress and bbPress:**  
   You can configure this plugin such that a registered user can login as the
@@ -205,6 +212,10 @@ All contributions will always be welcome. Or visit my
   the 4xx code will lead to WordPress error page, and the 5xx will pretend 
   an server error.
 
+* **Validation timing**  
+  Choose **"init" action hook** or **"mu-plugins" (ip-geo-block-mu.php)** to 
+  specify the timing of validation.
+
 = Validation target settings =
 
 * **Comment post**  
@@ -308,7 +319,7 @@ that you should upload the original one to deactivate above feature.
 [This release note](http://www.ipgeoblock.com/changelog/release-2.1.3.html "2.1.3 Release Note")
 can also help you.
 
-= How can I fix "Unable to write" error?
+= How can I fix "Unable to write" error? =
 
 When you enable "**Force to load WP core**" options, this plugin will try to 
 configure `.htaccess` in your `/wp-content/plugins/` and `/wp-content/themes/` 
@@ -320,7 +331,7 @@ to WordPress. In this case, you can configure these `.htaccess` files by your
 own hand instead of enabling "**Force to load WP core**" options.
 
 Please refer to 
-"[How to fix permission troubles?](http://www.ipgeoblock.com/codex/how-to-fix-permission-troubles.html 'How to fix permission troubles? | IP Geo Block')"
+"[How can I fix permission troubles?](http://www.ipgeoblock.com/codex/how-can-i-fix-permission-troubles.html 'How can I fix permission troubles? | IP Geo Block')"
 in order to fix this error.
 
 = Does this plugin works well with caching plugin? =
@@ -338,7 +349,8 @@ Currently, the following caching plugins and configurations can be supported:
 
 - [Wordfence](https://wordpress.org/plugins/wordfence/ "Wordfence Security &mdash; WordPress Plugins")  
   Select "**Basic Caching**" at Performance Settings and put 
-  `ip-geo-block-mu.php` in this package into your `wp-content/mu-plugins`
+  `ip-geo-block-mu.php` in this package into your 
+  [Must Use Plugins](https://codex.wordpress.org/Must_Use_Plugins "Must Use Plugins &laquo; WordPress Codex")
   directory.
 
 If your plugin serves caching by `mod_rewrite` using `.htaccess` (e.g. WP 

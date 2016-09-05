@@ -36,7 +36,7 @@ class IP_Geo_Block_Uninstall {
 	 *
 	 */
 	public static function uninstall() {
-		$settings = IP_Geo_Block::get_option( 'settings' );
+		$settings = IP_Geo_Block::get_option();
 
 		if ( $settings['clean_uninstall'] ) {
 			if ( ! is_multisite() ) {
@@ -57,9 +57,7 @@ class IP_Geo_Block_Uninstall {
 			}
 		}
 
-		// additional uninstllation
-		if ( file_exists( WP_CONTENT_DIR . '/mu-plugins/ip-geo-block-mu.php' ) )
-			@unlink( WP_CONTENT_DIR . '/mu-plugins/ip-geo-block-mu.php' );
+		IP_Geo_Block_Opts::setup_mu_plugin( FALSE );
 	}
 
 }

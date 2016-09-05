@@ -319,7 +319,7 @@ class IP_Geo_Block_Opts {
 		$src = trailingslashit( $src );
 		$dst = trailingslashit( $dst );
 
-		! @is_dir( $dst ) and @mkdir( $dst );
+		! @is_dir( $dst ) and wp_mkdir_p( $dst ); // @since 2.0.1 @mkdir( $dst );
 
 		if ( $dir = @opendir( $src ) ) {
 			while( FALSE !== ( $file = readdir( $dir ) ) ) {
@@ -348,5 +348,29 @@ class IP_Geo_Block_Opts {
 		}
 
 		return @rmdir( $dir );
-	} 
+	}
+
+	/**
+	 * Activate / Deactivate Must-use plugin
+	 *
+	 */
+	public static function setup_mu_plugin( $activate = TRUE ) {
+		if ( $activate ) {
+			if ( ! file_exists( WPMU_PLUGIN_DIR . '/ip-geo-block-mu.php' ) ) {
+				if ( ! file_exists( WPMU_PLUGIN_DIR ) )
+					wp_mkdir_p( WPMU_PLUGIN_DIR ); // @since 2.0.1 @mkdir( $path );
+
+				if ( ! @copy( IP_GEO_BLOCK_PATH . 'wp-content/mu-plugins/ip-geo-block-mu.php', WPMU_PLUGIN_DIR . '/ip-geo-block-mu.php' ) )
+					return FALSE;
+			}
+		}
+
+		else {
+			if ( file_exists( WPMU_PLUGIN_DIR . '/ip-geo-block-mu.php' ) )
+				@unlink( WPMU_PLUGIN_DIR . '/ip-geo-block-mu.php' );
+		}
+
+		return TRUE;
+	}
+
 }

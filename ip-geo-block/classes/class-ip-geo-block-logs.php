@@ -197,7 +197,7 @@ class IP_Geo_Block_Logs {
 	 */
 	public static function limit_rows( $time ) {
 		$time = intval( $time );
-		$options = IP_Geo_Block::get_option( 'settings' );
+		$options = IP_Geo_Block::get_option();
 
 		if ( $time < 80 /* msec */ )
 			return (int)$options['validation']['maxlogs'];

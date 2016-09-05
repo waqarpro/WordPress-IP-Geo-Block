@@ -218,7 +218,7 @@ class IP_Geo_Block_Admin_Tab {
 		$field = 'signature';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( '<dfn title="It validates malicious signatures independently of &#8220;Block by country&#8221; and &#8220;Prevent Zero-day Exploit&#8221; for the target &#8220;Admin area&#8221;, &#8220;Admin ajax/post&#8221;, &#8220;Plugins area&#8221; and &#8220;Themes area&#8221;.">Bad signatures in query</dfn> <nobr>(<a href="javascript:void(0);" id="ip-geo-block-decode" title="When you find ugly character string in the text area, please click to restore."><span id="ip-geo-block-cycle"></span></a>)</nobr>', 'ip-geo-block' ),
+			__( '<dfn title="It validates malicious signatures independently of &#8220;Block by country&#8221; and &#8220;Prevent Zero-day Exploit&#8221; for the target &#8220;Admin area&#8221;, &#8220;Admin ajax/post&#8221;, &#8220;Plugins area&#8221; and &#8220;Themes area&#8221;.">Bad signatures in query</dfn> <nobr>(<a href="javascript:void(0)" id="ip-geo-block-decode" title="When you find ugly character string in the text area, please click to restore."><span id="ip-geo-block-cycle"></span></a>)</nobr>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
@@ -288,7 +288,7 @@ class IP_Geo_Block_Admin_Tab {
 		// Validation timing
 		$field = 'validation';
 		$key = 'timing';
-		$options[ $field ][ $key ] = file_exists( WP_CONTENT_DIR . '/mu-plugins/ip-geo-block-mu.php' ) ? 1 : 0;
+		$options[ $field ][ $key ] = file_exists( WPMU_PLUGIN_DIR . '/ip-geo-block-mu.php' ) ? 1 : 0;
 
 		add_settings_field(
 			$option_name.'_'.$field.'_'.$key,

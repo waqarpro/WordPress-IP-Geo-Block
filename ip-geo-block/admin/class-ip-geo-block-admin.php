@@ -809,28 +809,16 @@ class IP_Geo_Block_Admin {
 		//----------------------------------------
 		switch ( (int)$options['validation']['timing'] ) {
 		  case 0: // init
-			if ( file_exists( WP_CONTENT_DIR . '/mu-plugins/ip-geo-block-mu.php' ) )
-				@unlink( WP_CONTENT_DIR . '/mu-plugins/ip-geo-block-mu.php' );
+			IP_Geo_Block_Opts::setup_mu_plugin( FALSE );
 			break;
 
 		  case 1: // mu-plugins
-			$file = 'ip-geo-block-mu.php';
-			$path = WP_CONTENT_DIR . '/mu-plugins/';
-
-			if ( ! file_exists( $path . $file ) ) {
-				if ( ! file_exists( $path ) )
-					@mkdir( $path );
-
-				if ( ! @copy( IP_GEO_BLOCK_PATH . 'wp-content/mu-plugins/' . $file, $path . $file ) ) {
-					$options['validation']['timing'] = 0;
-					$this->show_setting_notice( 'error', sprintf(
-						__( 'Unable to write %s. Please check the permission.', 'ip-geo-block' ), $path . $file
-					) );
-				}
+			if ( FALSE === IP_Geo_Block_Opts::setup_mu_plugin( TRUE ) ) {
+				$options['validation']['timing'] = 0;
+				$this->show_setting_notice( 'error', sprintf(
+					__( 'Unable to write %s. Please check the permission.', 'ip-geo-block' ), $path . $file
+				) );
 			}
-			break;
-
-		  case 2: // advanced-cache.php
 			break;
 		}
 

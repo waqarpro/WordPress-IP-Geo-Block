@@ -31,6 +31,9 @@ class IP_Geo_Block_Activate {
 
 			// activate rewrite rules
 			IP_Geo_Block_Admin_Rewrite::activate_rewrite_all( $settings['rewrite'] );
+
+			// activate mu-plugins if needed
+			IP_Geo_Block_Opts::setup_mu_plugin( $settings['validation']['timing'] );
 		}
 	}
 
@@ -56,7 +59,8 @@ class IP_Geo_Block_Activate {
 			}
 
 			switch_to_blog( $current_blog_id );
-		} else {
+		}
+		else {
 			self::activate_blog();
 		}
 
@@ -69,6 +73,7 @@ class IP_Geo_Block_Activate {
 	 */
 	public static function deactivate( $network_wide = FALSE ) {
 		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-cron.php' );
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
 		require_once( IP_GEO_BLOCK_PATH . 'admin/includes/class-admin-rewrite.php' );
 
 		// cancel schedule
@@ -77,6 +82,9 @@ class IP_Geo_Block_Activate {
 
 		// deactivate rewrite rules
 		IP_Geo_Block_Admin_Rewrite::deactivate_rewrite_all();
+
+		// deactivate mu-plugins
+		IP_Geo_Block_Opts::setup_mu_plugin( FALSE );
 	}
 
 }

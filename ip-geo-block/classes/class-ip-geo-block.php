@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '3.0.0b6';
+	const VERSION = '3.0.0b7';
 	const GEOAPI_NAME = 'ip-geo-api';
 	const PLUGIN_NAME = 'ip-geo-block';
 	const PLUGIN_SLUG = 'ip-geo-block'; // fallback for ip-geo-api 1.1.3
@@ -227,7 +227,7 @@ class IP_Geo_Block {
 	public static function get_request_headers( $settings ) {
 		return apply_filters( self::PLUGIN_NAME . '-headers', array(
 			'timeout' => (int)$settings['timeout'],
-			'user-agent' => 'WordPress/' . $GLOBALS['wp_version'] . ', ' . self::PLUGIN_NAME . ' ' . self::VERSION,
+			'user-agent' => ! empty( $_SERVER['HTTP_USER_AGENT'] ) ? $_SERVER['HTTP_USER_AGENT'] : 'WordPress/' . $GLOBALS['wp_version'] . ', ' . self::PLUGIN_NAME . ' ' . self::VERSION,
 		) );
 	}
 
@@ -354,8 +354,8 @@ class IP_Geo_Block {
 				$hook = function_exists( 'is_user_logged_in' ) && is_user_logged_in();
 				FALSE !== ( @include( get_stylesheet_directory() .'/'.$code.'.php' ) ) or // child  theme
 				FALSE !== ( @include( get_template_directory()   .'/'.$code.'.php' ) ) or // parent theme
-				wp_die(
-					IP_Geo_Block_Util::kses( $mesg ) . ( $hook ? "\n<p><a href='" . admin_url() . "'>" . __( '&laquo; Dashboard' ) . "</a></p>" : '' ),
+				wp_die( // get_dashboard_url() @since 3.1.0
+					IP_Geo_Block_Util::kses( $mesg ) . ( $hook ? "\n<p><a href='" . esc_url( get_dashboard_url() ) . "'>&laquo; " . __( 'Dashboard' ) . "</a></p>" : '' ),
 					'', array( 'response' => $code, 'back_link' => ! $hook )
 				);
 			}
