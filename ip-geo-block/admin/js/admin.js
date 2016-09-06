@@ -189,6 +189,12 @@ var ip_geo_block_time = new Date();
 		});
 	};
 
+	function set_public(status) {
+		$.each(['matching_rule', 'ua_list', 'simulate'], function (i, val) {
+			$(ID('@', 'public_' + val)).prop('disabled', status);
+		});
+	}
+
 	function deserialize_json(json) {
 		if (json) {
 			// Set fields on form
@@ -203,6 +209,9 @@ var ip_geo_block_time = new Date();
 			$.each(['matching_rule', 'validation_login', 'validation_plugins', 'validation_themes'], function (i, key) {
 				$(ID('@', key)).trigger('change');
 			});
+
+			// Public facing pages
+			set_public(!$(ID('@', 'validation_public')).is(':checked'));
 
 			// Additional edge case
 			var i = ID('%', 'settings[providers][IPInfoDB]');
@@ -520,10 +529,7 @@ var ip_geo_block_time = new Date();
 
 			// Enable / Disable for Public facing pages
 			$(ID('@', 'validation_public')).on('change', function (event) {
-				var disabled = ! $(this).is(':checked');
-				$.each(['matching_rule', 'ua_list', 'simulate'], function (i, val) {
-					$(ID('@', 'public_' + val)).prop('disabled', disabled);
-				});
+				set_public(!$(this).is(':checked'));
 			}).trigger('change');
 
 			// Export / Import settings

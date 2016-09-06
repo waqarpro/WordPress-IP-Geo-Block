@@ -169,6 +169,7 @@ class IP_Geo_Block_Admin_Ajax {
 
 		// Sanitize to fit the type of each field
 		$temp = self::json_to_settings( $data );
+		$temp = array_replace_recursive( IP_Geo_Block::get_option(), $temp );
 		$temp = $parent->validate_options( $temp );
 		$data = self::settings_to_json( $temp );
 		$json = self::json_unsafe_encode( $data );

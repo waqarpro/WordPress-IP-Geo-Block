@@ -103,7 +103,6 @@ class IP_Geo_Block_Cron {
 
 		// for multisite
 		if ( is_plugin_active_for_network( IP_GEO_BLOCK_BASE ) ) {
-
 			global $wpdb;
 			$blog_ids = $wpdb->get_col( "SELECT blog_id FROM $wpdb->blogs" );
 			$current_blog_id = get_current_blog_id();
@@ -143,13 +142,8 @@ class IP_Geo_Block_Cron {
 	 *
 	 */
 	public static function start_update_db( $immediate = TRUE ) {
-		if ( $immediate ) {
-			set_transient(
-				IP_Geo_Block::CRON_NAME,
-				IP_Geo_Block::get_ip_address(),
-				2 * MINUTE_IN_SECONDS
-			);
-		}
+		if ( $immediate )
+			set_transient( IP_Geo_Block::CRON_NAME, IP_Geo_Block::get_ip_address(), 2 * MINUTE_IN_SECONDS );
 
 		$settings = IP_Geo_Block::get_option();
 		self::schedule_cron_job( $settings['update'], NULL, $immediate );
