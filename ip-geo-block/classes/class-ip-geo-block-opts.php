@@ -36,7 +36,6 @@ class IP_Geo_Block_Opts {
 		// since version 3.0.0
 		'cache_time_gc'   => 900,     // Cache garbage collection time
 		'cache_cookie'    => TRUE,    // Cache IP address and country code by cookie
-		'backup_logs'     => NULL,    // Directory to save backup of logs
 		// since version 1.2, 1.3
 		'login_fails'     => 5,       // Limited number of login attempts
 		'validation'      => array(   // Action hook for validation
@@ -50,7 +49,7 @@ class IP_Geo_Block_Opts {
 			'postkey'     => NULL,    // Keys in $_POST
 			// since version 1.3.1
 			'maxlogs'     => 100,     // Max number of rows of log
-			'backup'      => NULL,    // Absolute path to directory for backup
+			'backup'      => NULL,    // Absolute path to directory for backup logs
 			// since version 2.1.0
 			'plugins'     => 0,       // Validate on wp-content/plugins
 			'themes'      => 0,       // Validate on wp-content/themes
@@ -236,7 +235,6 @@ class IP_Geo_Block_Opts {
 			if ( version_compare( $version, '3.0.0' ) < 0 ) {
 				$settings['cache_time_gc']        = $default['cache_time_gc'];
 				$settings['cache_cookie']         = $default['cache_cookie'];
-				$settings['backup_logs']          = $default['backup_logs'];
 				$settings['validation']['public'] = $default['validation']['public'];
 				$settings['validation']['timing'] = $default['validation']['timing'];
 				$settings['redirect_uri']         = $default['redirect_uri'];

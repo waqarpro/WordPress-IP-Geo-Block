@@ -159,6 +159,13 @@ var ip_geo_block_time = new Date();
 		reader.readAsText(file);
 	}
 
+	// Enable / Disable at front-end target settings
+	function set_front_end(checked) {
+		$.each(['matching_rule', 'ua_list', 'simulate'], function (i, val) {
+			$(ID('@', 'public_' + val)).prop('disabled', !checked);
+		});
+	}
+
 	/**
 	 * jQuery deserialize plugin based on https://gist.github.com/nissuk/835256
 	 *
@@ -189,12 +196,6 @@ var ip_geo_block_time = new Date();
 		});
 	};
 
-	function set_public(status) {
-		$.each(['matching_rule', 'ua_list', 'simulate'], function (i, val) {
-			$(ID('@', 'public_' + val)).prop('disabled', status);
-		});
-	}
-
 	function deserialize_json(json) {
 		if (json) {
 			// Set fields on form
@@ -211,7 +212,7 @@ var ip_geo_block_time = new Date();
 			});
 
 			// Public facing pages
-			set_public(!$(ID('@', 'validation_public')).is(':checked'));
+			set_front_end($(ID('@', 'validation_public')).is(':checked'));
 
 			// Additional edge case
 			var i = ID('%', 'settings[providers][IPInfoDB]');
@@ -529,7 +530,7 @@ var ip_geo_block_time = new Date();
 
 			// Enable / Disable for Public facing pages
 			$(ID('@', 'validation_public')).on('change', function (event) {
-				set_public(!$(this).is(':checked'));
+				set_front_end($(this).is(':checked'));
 			}).trigger('change');
 
 			// Export / Import settings

@@ -169,7 +169,11 @@ class IP_Geo_Block_Admin_Ajax {
 
 		// Sanitize to fit the type of each field
 		$temp = self::json_to_settings( $data );
+
+		// Integrate posted data into current settings because if can be a part of hole data
 		$temp = array_replace_recursive( IP_Geo_Block::get_option(), $temp );
+
+		// Validate options and convert to json
 		$temp = $parent->validate_options( $temp );
 		$data = self::settings_to_json( $temp );
 		$json = self::json_unsafe_encode( $data );
@@ -269,7 +273,6 @@ class IP_Geo_Block_Admin_Ajax {
 			'[public][white_list]',      // 3.0.0
 			'[public][black_list]',      // 3.0.0
 			'[public][ua_list]',         // 3.0.0
-			'[public][advanced_cache]',  // 3.0.0
 			'[public][simulate]',        // 3.0.0
 			'[providers][Maxmind]',
 			'[providers][IP2Location]',
@@ -278,7 +281,7 @@ class IP_Geo_Block_Admin_Ajax {
 			'[providers][IP-Json]',
 			'[providers][Nekudo]',
 			'[providers][Xhanch]',
-			'[providers][geoPlugin]',
+			'[providers][GeoIPLookup]',
 			'[providers][ip-api.com]',
 			'[providers][IPInfoDB]',
 			'[save_statistics]',
@@ -286,11 +289,10 @@ class IP_Geo_Block_Admin_Ajax {
 			'[validation][postkey]',
 			'[update][auto]',
 			'[anonymize]',
-			'[backup_logs]',             // 3.0.0
+			'[cache_cookie]',            // 3.0.0
+			'[cache_time_gc]',           // 3.0.0
 			'[cache_hold]',
 			'[cache_time]',
-			'[cache_time_gc]',           // 3.0.0
-			'[cache_cookie]',            // 3.0.0
 			'[comment][pos]',
 			'[comment][msg]',
 			'[clean_uninstall]',
