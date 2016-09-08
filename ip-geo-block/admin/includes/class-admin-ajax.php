@@ -136,7 +136,7 @@ class IP_Geo_Block_Admin_Ajax {
 				$html .= IP_Geo_Block_Util::localdate( $log, 'Y-m-d H:i:s' ) . "</td>";
 
 				$log = array_shift( $row );
-				$html .= '<td><a href="#!">' . $log . '</a></td>';
+				$html .= '<td><a href="#!">' . esc_html( $log ) . '</a></td>';
 
 				foreach ( $row as $log ) {
 					$html .= '<td>' . esc_html( $log ) . '</td>';
@@ -256,18 +256,18 @@ class IP_Geo_Block_Admin_Ajax {
 			'[validation][plugins]',
 			'[validation][themes]',
 			'[validation][includes]',    // 3.0.0
-		    '[validation][uploads]',     // 3.0.0
+			'[validation][uploads]',     // 3.0.0
 			'[validation][languages]',   // 3.0.0
 			'[validation][public]',      // 3.0.0
 			'[rewrite][plugins]',
 			'[rewrite][themes]',
 			'[rewrite][includes]',       // 3.0.0
-		    '[rewrite][uploads]',        // 3.0.0
+			'[rewrite][uploads]',        // 3.0.0
 			'[rewrite][languages]',      // 3.0.0
 			'[exception][plugins][*]',   // 2.2.5
 			'[exception][themes][*]',    // 2.2.5
 			'[exception][includes][*]',  // 3.0.0
-		    '[exception][uploads][*]',   // 3.0.0
+			'[exception][uploads][*]',   // 3.0.0
 			'[exception][languages][*]', // 3.0.0
 			'[public][matching_rule]',   // 3.0.0
 			'[public][white_list]',      // 3.0.0
@@ -376,11 +376,11 @@ class IP_Geo_Block_Admin_Ajax {
 			else
 				$json = json_encode( $data, $opts );
 		}
-		else { // Some options are not supported in PHP 5.3 and under
+		else { // JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES are not supported in PHP 5.3 and under
 			$json = self::json_unescaped_unicode( $data );
-			$json = str_replace(
-				array( '{"', '","', '"}', '\\/' ), // JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES
-				array( '{'.PHP_EOL.'    "', '",'.PHP_EOL.'    "', '"'.PHP_EOL.'}', '/' ),
+			$json = preg_replace(
+				array( '!{"!',              '!":!', '!(")?,"!',            '!"}!',          '!\\\\/!' ),
+				array( '{'.PHP_EOL.'    "', '": ',  '$1,'.PHP_EOL.'    "', '"'.PHP_EOL.'}', '/'       ),
 				$json
 			);
 		}
