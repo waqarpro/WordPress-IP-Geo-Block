@@ -379,7 +379,7 @@ class IP_Geo_Block_Admin_Ajax {
 		else { // JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES are not supported in PHP 5.3 and under
 			$json = self::json_unescaped_unicode( $data );
 			$json = preg_replace(
-				array( '!{"!',              '!":!', '!(")?,"!',            '!"}!',          '!\\\\/!' ),
+				array( '!{"!',              '!":!', '!("?),"!',            '!"}!',          '!\\\\/!' ),
 				array( '{'.PHP_EOL.'    "', '": ',  '$1,'.PHP_EOL.'    "', '"'.PHP_EOL.'}', '/'       ),
 				$json
 			);
