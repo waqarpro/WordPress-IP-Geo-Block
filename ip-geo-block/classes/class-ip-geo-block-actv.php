@@ -33,7 +33,7 @@ class IP_Geo_Block_Activate {
 			IP_Geo_Block_Admin_Rewrite::activate_rewrite_all( $settings['rewrite'] );
 
 			// activate mu-plugins if needed
-			IP_Geo_Block_Opts::setup_mu_plugin( $settings['validation']['timing'] );
+			IP_Geo_Block_Opts::setup_validation_timing( $settings['validation']['timing'] );
 		}
 	}
 
@@ -84,7 +84,7 @@ class IP_Geo_Block_Activate {
 		IP_Geo_Block_Admin_Rewrite::deactivate_rewrite_all();
 
 		// deactivate mu-plugins
-		IP_Geo_Block_Opts::setup_mu_plugin( FALSE );
+		IP_Geo_Block_Opts::setup_validation_timing( FALSE );
 	}
 
 }

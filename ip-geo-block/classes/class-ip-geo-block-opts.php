@@ -307,15 +307,15 @@ class IP_Geo_Block_Opts {
 		}
 
 		// filter hook in `functions.php` doesn't work at activation
-		return trailingslashit(
+		return IP_Geo_Block_Util::slashit(
 			apply_filters( IP_Geo_Block::PLUGIN_NAME . '-api-dir', $dir )
 		) . IP_Geo_Block::GEOAPI_NAME; // must add `ip-geo-api` for basename
 	}
 
 	// http://php.net/manual/function.copy.php#91010
 	private static function recurse_copy( $src, $dst ) {
-		$src = trailingslashit( $src );
-		$dst = trailingslashit( $dst );
+		$src = IP_Geo_Block_Util::slashit( $src );
+		$dst = IP_Geo_Block_Util::slashit( $dst );
 
 		! @is_dir( $dst ) and wp_mkdir_p( $dst ); // @since 2.0.1 @mkdir( $dst );
 
@@ -335,7 +335,7 @@ class IP_Geo_Block_Opts {
 
 	// http://php.net/manual/function.rmdir.php#110489
 	private static function recurse_rmdir( $dir ) {
-		$dir = trailingslashit( $dir );
+		$dir = IP_Geo_Block_Util::slashit( $dir );
 		$files = array_diff( @scandir( $dir ), array( '.', '..' ) );
 
 		foreach ( $files as $file ) {
@@ -349,23 +349,89 @@ class IP_Geo_Block_Opts {
 	}
 
 	/**
-	 * Activate / Deactivate Must-use plugin
+	 * Activate / Deactivate Must-use plugin / Advanced cache
 	 *
 	 */
-	public static function setup_mu_plugin( $activate = TRUE ) {
-		if ( $activate ) {
-			if ( ! file_exists( WPMU_PLUGIN_DIR . '/ip-geo-block-mu.php' ) ) {
+	private static function remove_mu_plugin() {
+		if ( file_exists( $src = WPMU_PLUGIN_DIR . '/ip-geo-block-mu.php' ) )
+			return @unlink( $src ) ? TRUE : $src;
+		else
+			return TRUE;
+	}
+
+	private static function is_advanced_cache() {
+		$dropins = get_dropins(); // in wp-includes/plugin.php @since 3.0.0
+		return isset( $dropins['advanced-cache.php'] ) && FALSE !== strpos( $dropins['advanced-cache.php']['Name'], 'IP Geo Block' );
+	}
+
+	private static function remove_advanced_cache() {
+		$src = WP_CONTENT_DIR . '/advanced-cache.php';
+		$dst = WP_CONTENT_DIR . '/advanced-cache-2nd.php';
+
+		if ( self::is_advanced_cache() ) {
+			if ( file_exists( $dst ) )
+				return @rename( $dst, $src ) ? TRUE : $src;
+			else
+				return @unlink( $src ) ? TRUE : $src;
+		}
+
+		return TRUE;
+	}
+
+	public static function get_validation_timing() {
+		if ( self::is_advanced_cache() )
+			return 2; // advanced-cache.php
+
+		elseif ( file_exists( WPMU_PLUGIN_DIR . '/ip-geo-block-mu.php' ) )
+			return 1; // mu-plugins
+
+		return 0;
+	}
+
+	public static function setup_validation_timing( $timing = 0 ) {
+		switch ( (int)$timing ) {
+		  case 0: // init
+			if ( TRUE !== ( $src = self::remove_mu_plugin() ) ||
+			     TRUE !== ( $src = self::remove_advanced_cache() ) )
+				return $src;
+			break;
+
+		  case 1: // mu-plugins
+			if ( TRUE !== ( $src = self::remove_advanced_cache() ) )
+				return $src;
+
+			$src = IP_GEO_BLOCK_PATH . 'wp-content/mu-plugins/ip-geo-block-mu.php';
+			$dst = WPMU_PLUGIN_DIR . '/ip-geo-block-mu.php';
+
+			if ( ! file_exists( $dst ) ) {
 				if ( ! file_exists( WPMU_PLUGIN_DIR ) )
 					wp_mkdir_p( WPMU_PLUGIN_DIR ); // @since 2.0.1 @mkdir( $path );
 
-				if ( ! @copy( IP_GEO_BLOCK_PATH . 'wp-content/mu-plugins/ip-geo-block-mu.php', WPMU_PLUGIN_DIR . '/ip-geo-block-mu.php' ) )
-					return FALSE;
+				if ( ! @copy( $src, $dst ) )
+					return $dst;
 			}
-		}
+			break;
 
-		else {
-			if ( file_exists( WPMU_PLUGIN_DIR . '/ip-geo-block-mu.php' ) )
-				@unlink( WPMU_PLUGIN_DIR . '/ip-geo-block-mu.php' );
+		  case 2: // advanced-cache.php
+			if ( TRUE !== ( $src = self::remove_mu_plugin() ) )
+				return $src;
+
+			$src = WP_CONTENT_DIR . '/advanced-cache.php';
+			$dst = WP_CONTENT_DIR . '/advanced-cache-2nd.php';
+
+			if ( ! self::is_advanced_cache() ) {
+				if ( ! @copy( $src, $dst ) )
+					return $dst;
+			}
+
+			if ( ! @copy( IP_GEO_BLOCK_PATH . 'wp-content/advanced-cache.php', $src ) ) {
+				@unlink( $dst );
+				return $src;
+			}
+
+			// set permission not to be overwriteed by other plugins.
+			@chmod( $src, fileperms( $src ) & ~(0x0080 | 0x0010 | 0x0002) );
+			break;
 		}
 
 		return TRUE;

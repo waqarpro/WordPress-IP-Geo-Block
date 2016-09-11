@@ -807,19 +807,13 @@ class IP_Geo_Block_Admin {
 		//----------------------------------------
 		// additional installation
 		//----------------------------------------
-		switch ( (int)$options['validation']['timing'] ) {
-		  case 0: // init
-			IP_Geo_Block_Opts::setup_mu_plugin( FALSE );
-			break;
-
-		  case 1: // mu-plugins
-			if ( FALSE === IP_Geo_Block_Opts::setup_mu_plugin( TRUE ) ) {
-				$options['validation']['timing'] = 0;
-				$this->show_setting_notice( 'error', sprintf(
-					__( 'Unable to write %s. Please check the permission.', 'ip-geo-block' ), $path . $file
-				) );
-			}
-			break;
+		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
+		$file = IP_Geo_Block_Opts::setup_validation_timing( $options['validation']['timing'] );
+		if ( TRUE !== $file ) {
+			$options['validation']['timing'] = 0;
+			$this->show_setting_notice( 'error', sprintf(
+				__( 'Unable to write %s. Please check the permission.', 'ip-geo-block' ), $file
+			) );
 		}
 
 		// Force to finish update matching rule

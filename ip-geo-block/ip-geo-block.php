@@ -32,8 +32,13 @@ if ( ! class_exists( 'IP_Geo_Block' ) ):
 /*----------------------------------------------------------------------------*
  * Global definition
  *----------------------------------------------------------------------------*/
-define( 'IP_GEO_BLOCK_PATH', plugin_dir_path( __FILE__ ) ); // @since 2.8
-define( 'IP_GEO_BLOCK_BASE', plugin_basename( __FILE__ ) ); // @since 1.5
+if ( ! defined( 'IP_GEO_BLOCK_ADVANCED_CACHE' ) ) :
+	define( 'IP_GEO_BLOCK_PATH', plugin_dir_path( __FILE__ ) ); // @since 2.8
+	define( 'IP_GEO_BLOCK_BASE', plugin_basename( __FILE__ ) ); // @since 1.5
+else :
+	define( 'IP_GEO_BLOCK_PATH', dirname( __FILE__ ) . '/' );
+	define( 'IP_GEO_BLOCK_BASE', basename( dirname( __FILE__ ) ) . '/' . basename( __FILE__ ) );
+endif;
 
 /*----------------------------------------------------------------------------*
  * Public-Facing Functionality
@@ -59,13 +64,16 @@ function ip_geo_block_deactivate( $network_wide = FALSE ) {
 	IP_Geo_Block_Activate::deactivate( $network_wide );
 }
 
-register_activation_hook( __FILE__, 'ip_geo_block_activate' );
-register_deactivation_hook( __FILE__, 'ip_geo_block_deactivate' );
+function ip_geo_block_register() {
+	register_activation_hook( __FILE__, 'ip_geo_block_activate' );
+	register_deactivation_hook( __FILE__, 'ip_geo_block_deactivate' );
+}
 
 /**
- * Instantiate class
+ * Register and instantiate class.
  *
  */
+add_action( 'muplugins_loaded', 'ip_geo_block_register' );
 add_action( 'plugins_loaded', array( 'IP_Geo_Block', 'get_instance' ) );
 
 /*----------------------------------------------------------------------------*
@@ -90,7 +98,7 @@ endif; // ! class_exists( 'IP_Geo_Block' )
 /**
  * Invalidate blocking behavior in case yourself is locked out.
  * @note: activate the following code and upload this file via FTP.
- */ /* -- EDIT THIS LINE AND ACTIVATE THE FOLLOWING FUNCTION -- *
+ */ /* -- EDIT THIS LINE AND ACTIVATE THE FOLLOWING FUNCTIONS -- *
 function ip_geo_block_emergency( $validate ) {
 	$validate['result'] = 'passed';
 	return $validate;

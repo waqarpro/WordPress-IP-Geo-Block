@@ -57,7 +57,7 @@ class IP_Geo_Block_Uninstall {
 			}
 		}
 
-		IP_Geo_Block_Opts::setup_mu_plugin( FALSE );
+		IP_Geo_Block_Opts::setup_validation_timing( FALSE );
 	}
 
 }
