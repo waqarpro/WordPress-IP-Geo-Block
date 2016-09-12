@@ -32,7 +32,7 @@ if ( ! class_exists( 'IP_Geo_Block' ) ):
 /*----------------------------------------------------------------------------*
  * Global definition
  *----------------------------------------------------------------------------*/
-if ( ! defined( 'IP_GEO_BLOCK_ADVANCED_CACHE' ) ) :
+if ( class_exists( 'WP' ) ) :
 	define( 'IP_GEO_BLOCK_PATH', plugin_dir_path( __FILE__ ) ); // @since 2.8
 	define( 'IP_GEO_BLOCK_BASE', plugin_basename( __FILE__ ) ); // @since 1.5
 else :
