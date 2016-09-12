@@ -47,7 +47,7 @@ if ( is_plugin_active( $plugin ) || is_plugin_active_for_network( $plugin ) ) {
 		define( 'IP_GEO_BLOCK_BEFORE_INIT', TRUE );
 
 		// Remove instanciation
-		remove_action( 'plugins_loaded', array( 'IP_Geo_Block', 'run' ) );
+		remove_action( 'plugins_loaded', array( 'IP_Geo_Block', 'get_instance' ) );
 
 		// Instanciate immediately
 		IP_Geo_Block::get_instance();

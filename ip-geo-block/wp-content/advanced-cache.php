@@ -37,7 +37,7 @@ define( 'IP_GEO_BLOCK_ADVANCED_CACHE', TRUE );
 include WP_CONTENT_DIR . '/plugins/ip-geo-block/ip-geo-block.php';
 
 // Remove instanciation
-//remove_action( 'plugins_loaded', array( 'IP_Geo_Block', 'run' ) );
+//remove_action( 'plugins_loaded', array( 'IP_Geo_Block', 'get_instance' ) );
 
 // Instanciate immediately
 //IP_Geo_Block::get_instance();
