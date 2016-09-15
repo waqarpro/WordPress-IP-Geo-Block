@@ -64,16 +64,13 @@ function ip_geo_block_deactivate( $network_wide = FALSE ) {
 	IP_Geo_Block_Activate::deactivate( $network_wide );
 }
 
-function ip_geo_block_register() {
-	register_activation_hook( __FILE__, 'ip_geo_block_activate' );
-	register_deactivation_hook( __FILE__, 'ip_geo_block_deactivate' );
-}
+register_activation_hook( __FILE__, 'ip_geo_block_activate' );
+register_deactivation_hook( __FILE__, 'ip_geo_block_deactivate' );
 
 /**
  * Register and instantiate class.
  *
  */
-add_action( 'muplugins_loaded', 'ip_geo_block_register' );
 add_action( 'plugins_loaded', array( 'IP_Geo_Block', 'get_instance' ) );
 
 /*----------------------------------------------------------------------------*

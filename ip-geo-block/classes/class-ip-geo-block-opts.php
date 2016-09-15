@@ -115,6 +115,14 @@ class IP_Geo_Block_Opts {
 		'api_key'         => array(   // API key
 			'GoogleMap'   => 'default',
 		),
+		// since version 2.2.8
+		'login_action' => array(      // Actions for wp-login.php
+			'login'        => TRUE,
+			'register'     => TRUE,
+			'resetpasss'   => TRUE,
+			'lostpassword' => TRUE,
+			'postpass'     => TRUE,
+		),
 		// since version 3.0.0
 		'redirect_uri'    => NULL,    // URI for redirection on blocking
 		'network_wide'    => FALSE,   // settings page on network dashboard
@@ -233,6 +241,13 @@ class IP_Geo_Block_Opts {
 				$settings['api_key'] = $default['api_key'];
 
 			if ( version_compare( $version, '3.0.0' ) < 0 ) {
+				$settings['login_action'] = $default['login_action'];
+				// Block by country (register, lost password)
+				if ( 2 === (int)$settings['validation']['login'] )
+					$settings['login_action']['login'] = 0;
+			}
+
+			if ( version_compare( $version, '3.0.0' ) < 0 ) {
 				$settings['cache_time_gc']        = $default['cache_time_gc'];
 				$settings['cache_cookie']         = $default['cache_cookie'];
 				$settings['validation']['public'] = $default['validation']['public'];
@@ -306,16 +321,15 @@ class IP_Geo_Block_Opts {
 			}
 		}
 
-		// filter hook in `functions.php` doesn't work at activation
-		return IP_Geo_Block_Util::slashit(
+		return trailingslashit(
 			apply_filters( IP_Geo_Block::PLUGIN_NAME . '-api-dir', $dir )
 		) . IP_Geo_Block::GEOAPI_NAME; // must add `ip-geo-api` for basename
 	}
 
 	// http://php.net/manual/function.copy.php#91010
 	private static function recurse_copy( $src, $dst ) {
-		$src = IP_Geo_Block_Util::slashit( $src );
-		$dst = IP_Geo_Block_Util::slashit( $dst );
+		$src = trailingslashit( $src );
+		$dst = trailingslashit( $dst );
 
 		! @is_dir( $dst ) and wp_mkdir_p( $dst ); // @since 2.0.1 @mkdir( $dst );
 
