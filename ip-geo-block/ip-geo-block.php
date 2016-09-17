@@ -68,7 +68,7 @@ register_activation_hook( __FILE__, 'ip_geo_block_activate' );
 register_deactivation_hook( __FILE__, 'ip_geo_block_deactivate' );
 
 /**
- * Register and instantiate class.
+ * Instantiate class
  *
  */
 add_action( 'plugins_loaded', array( 'IP_Geo_Block', 'get_instance' ) );
