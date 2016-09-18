@@ -499,7 +499,8 @@ For more details, see
 * **Bug fix:** Fixed a issue of stripping some required characters for Google 
   maps API key.
 * **New feature:** Whois database Lookup for IP address on search tab.
-* **Update:** Updated geolocation services.
+* **Update:** Updated geolocation API libraries and services.
+* Find more details in [2.2.8 Release Note](http://www.ipgeoblock.com/changelog/release-2.2.8.html "2.2.8 Release Note").
 
 = 2.2.7 =
 * **Bug fix:** Fix inadequate validation of "**Bad signatures in query**".
