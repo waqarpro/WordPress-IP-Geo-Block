@@ -53,12 +53,14 @@ class IP_Geo_Block_Opts {
 			// since version 2.1.0
 			'plugins'     => 0,       // Validate on wp-content/plugins
 			'themes'      => 0,       // Validate on wp-content/themes
+			// since version 2.2.9
+			'period'      => 30,      // recording period
+			'timing'      => 0,       // 0:init, 1:mu-plugins, 2:drop-in
 			// since version 3.0.0
 			'includes'    => 3,       // for wp-includes/
 			'uploads'     => 3,       // for UPLOADS/uploads
 			'languages'   => 3,       // for WP_CONTENT_DIR/language
 			'public'      => 0,       // Validate on public facing pages
-			'timing'      => 0,       // 0:init, 1:mu-plugins, 2:drop-in
 		),
 		'update'          => array(   // Updating IP address DB
 			'auto'        => TRUE,    // Auto updating of DB file
@@ -240,18 +242,22 @@ class IP_Geo_Block_Opts {
 			if ( version_compare( $version, '2.2.7' ) < 0 )
 				$settings['api_key'] = $default['api_key'];
 
-			if ( version_compare( $version, '3.0.0' ) < 0 ) {
+			if ( version_compare( $version, '3.0.0' ) < 0 ) { // actually 2.2.8
 				$settings['login_action'] = $default['login_action'];
 				// Block by country (register, lost password)
 				if ( 2 === (int)$settings['validation']['login'] )
 					$settings['login_action']['login'] = FALSE;
 			}
 
+			if ( version_compare( $version, '3.0.0' ) < 0 ) { // actually 2.2.9
+				$settings['validation']['period'] = $default['validation']['period'];
+				$settings['validation']['timing'] = $default['validation']['timing'];
+			}
+
 			if ( version_compare( $version, '3.0.0' ) < 0 ) {
 				$settings['cache_time_gc']        = $default['cache_time_gc'];
 				$settings['cache_cookie']         = $default['cache_cookie'];
 				$settings['validation']['public'] = $default['validation']['public'];
-				$settings['validation']['timing'] = $default['validation']['timing'];
 				$settings['redirect_uri']         = $default['redirect_uri'];
 				$settings['network_wide']         = $default['network_wide'];
 				$settings['public']               = $default['public'];
@@ -307,7 +313,7 @@ class IP_Geo_Block_Opts {
 
 	private static function get_api_dir( $settings ) {
 		// wp-content
-		$dir = $settings['api_dir'] ? dirname( $settings['api_dir'] ) : WP_CONTENT_DIR;
+		$dir = empty( $settings['api_dir'] ) ? WP_CONTENT_DIR : dirname( $settings['api_dir'] );
 
 		if ( ! @is_writable( $dir ) ) {
 			// wp-content/uploads
@@ -402,8 +408,8 @@ class IP_Geo_Block_Opts {
 		return 0;
 	}
 
-	public static function setup_validation_timing( $timing = 0 ) {
-		switch ( (int)$timing ) {
+	public static function setup_validation_timing( $settings = NULL ) {
+		switch ( $settings ? (int)$settings['validation']['timing'] : 0 ) {
 		  case 0: // init
 			if ( TRUE !== ( $src = self::remove_mu_plugin() ) ||
 			     TRUE !== ( $src = self::remove_advanced_cache() ) )
@@ -443,12 +449,25 @@ class IP_Geo_Block_Opts {
 				return $src;
 			}
 
-			// set permission not to be overwriteed by other plugins.
+			// set permission not to be overwritten by other plugins.
 			@chmod( $src, fileperms( $src ) & ~(0x0080 | 0x0010 | 0x0002) );
+
+			// put settings to config.php in ip-geo-api.
+			self::save_settings( $settings );
 			break;
 		}
 
 		return TRUE;
+	}
+
+	public static function save_settings( $settings ) {
+		$path = self::get_api_dir( $settings );
+		return $path ? file_put_contents( $path . 'config.php', "<?php\nreturn " . var_export( $settings, TRUE ) . ";\n" ) : FALSE;
+	}
+
+	public static function load_settings() {
+		$path = self::get_api_dir( NULL );
+		return $path ? require $path . 'config.php' : array();
 	}
 
 }

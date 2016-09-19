@@ -557,7 +557,7 @@ class IP_Geo_Block_Logs {
 				@$statistics['daystats' ][ mktime( 0, 0, 0 ) ][ $hook ]++;
 			}
 
-			if ( count( $statistics['daystats'] ) > 30 ) {
+			if ( count( $statistics['daystats'] ) > ( empty( $settings['period'] ) ? 30 : (int)$settings['period'] ) ) {
 				reset( $statistics['daystats'] );
 				unset( $statistics['daystats'][ key( $statistics['daystats'] ) ] );
 			}

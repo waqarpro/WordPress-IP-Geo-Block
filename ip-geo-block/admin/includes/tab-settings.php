@@ -883,6 +883,24 @@ class IP_Geo_Block_Admin_Tab {
 			)
 		);
 
+if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
+		$key = 'period';
+		add_settings_field(
+			$option_name.'_'.$field.'_'.$key,
+			__( 'Recording period of the logs (days)', 'ip-geo-block' ),
+			array( $context, 'callback_field' ),
+			$option_slug,
+			$section,
+			array(
+				'type' => 'text',
+				'option' => $option_name,
+				'field' => $field,
+				'sub-field' => $key,
+				'value' => $options[ $field ][ $key ],
+			)
+		);
+endif;
+
 		// $_POST keys to be recorded with their values in logs
 		add_settings_field(
 			$option_name.'_'.$field.'_postkey',
@@ -1114,7 +1132,6 @@ class IP_Geo_Block_Admin_Tab {
 		);
 
 if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
-
 		// Manipulate DB table for validation logs
 		$field = 'delete_table';
 		add_settings_field(
@@ -1147,7 +1164,6 @@ if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
 				'after' => '<div id="ip-geo-block-create-table"></div>',
 			)
 		);
-
 endif;
 
 	}

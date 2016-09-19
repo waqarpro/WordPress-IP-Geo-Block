@@ -808,7 +808,7 @@ class IP_Geo_Block_Admin {
 		// additional installation
 		//----------------------------------------
 		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-opts.php' );
-		$file = IP_Geo_Block_Opts::setup_validation_timing( $options['validation']['timing'] );
+		$file = IP_Geo_Block_Opts::setup_validation_timing( $options );
 		if ( TRUE !== $file ) {
 			$options['validation']['timing'] = 0;
 			$this->show_setting_notice( 'error', sprintf(
