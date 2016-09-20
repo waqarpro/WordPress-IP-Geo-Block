@@ -41,9 +41,9 @@ class IP_Geo_Block {
 	 * 
 	 */
 	private function __construct() {
+		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php';
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-load.php';
 		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-apis.php';
-		require_once IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-util.php';
 
 		$settings = self::get_option();
 		$priority = $settings['priority'];
@@ -174,7 +174,10 @@ class IP_Geo_Block {
 
 	// get optional values from wp options
 	public static function get_option() {
-		return FALSE !== ( $option = get_option( self::OPTION_NAME ) ) ? $option : self::get_default();
+		if ( function_exists( 'get_option' ) )
+			return FALSE !== ( $option = get_option( self::OPTION_NAME ) ) ? $option : self::get_default();
+		else
+			return IP_Geo_Block_Opts::load_settings();
 	}
 
 	/**

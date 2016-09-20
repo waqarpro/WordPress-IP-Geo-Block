@@ -413,7 +413,7 @@ class IP_Geo_Block_Logs {
 		if ( validate_file( $path ) !== 0 )
 			return;
 
-		$path = trailingslashit( $path ) .
+		$path = IP_Geo_Block_Util::slashit( $path ) .
 			IP_Geo_Block::PLUGIN_NAME . date('-Y-m') . '.log';
 
 		if ( ( $fp = @fopen( $path, 'ab' ) ) === FALSE )
@@ -557,7 +557,7 @@ class IP_Geo_Block_Logs {
 				@$statistics['daystats' ][ mktime( 0, 0, 0 ) ][ $hook ]++;
 			}
 
-			if ( count( $statistics['daystats'] ) > ( empty( $settings['period'] ) ? 30 : (int)$settings['period'] ) ) {
+			if ( count( $statistics['daystats'] ) > max( 30, min( 365, (int)@$settings['period'] ) ) ) {
 				reset( $statistics['daystats'] );
 				unset( $statistics['daystats'][ key( $statistics['daystats'] ) ] );
 			}

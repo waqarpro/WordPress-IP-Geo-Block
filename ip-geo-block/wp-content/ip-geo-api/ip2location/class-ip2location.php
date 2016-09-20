@@ -84,7 +84,7 @@ class IP_Geo_Block_API_IP2Location extends IP_Geo_Block_API {
 	}
 
 	private function get_db_dir() {
-		return trailingslashit( apply_filters(
+		return IP_Geo_Block_Util::slashit( apply_filters(
 			IP_Geo_Block::PLUGIN_NAME . '-ip2location-dir', dirname( __FILE__ )
 		) );
 	}
