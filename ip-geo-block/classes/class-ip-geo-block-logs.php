@@ -413,7 +413,7 @@ class IP_Geo_Block_Logs {
 		if ( validate_file( $path ) !== 0 )
 			return;
 
-		$path = IP_Geo_Block_Util::slashit( $path ) .
+		$path = trailingslashit( $path ) .
 			IP_Geo_Block::PLUGIN_NAME . date('-Y-m') . '.log';
 
 		if ( ( $fp = @fopen( $path, 'ab' ) ) === FALSE )

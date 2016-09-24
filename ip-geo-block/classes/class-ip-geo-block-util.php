@@ -566,13 +566,13 @@ class IP_Geo_Block_Util {
 	 *
 	 * Add / Remove slash at the end of string.
 	 * @source: wp-includes/formatting.php
-	 */
+	 *//*
 	public static function unslashit( $string ) {
 		return rtrim( $string, '/\\' );
 	}
 
 	public static function slashit( $string ) {
 		return self::unslashit( $string ) . '/';
-	}
+	}*/
 
 }
