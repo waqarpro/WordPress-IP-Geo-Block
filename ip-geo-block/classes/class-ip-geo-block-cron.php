@@ -142,12 +142,9 @@ class IP_Geo_Block_Cron {
 	 *
 	 */
 	public static function start_update_db( $settings ) {
-		if ( FALSE === get_transient( IP_Geo_Block::CRON_NAME . 'update' ) ) {
+		if ( has_action( 'activate_' . IP_GEO_BLOCK_BASE ) ) {
 			set_transient( IP_Geo_Block::CRON_NAME, IP_Geo_Block::get_ip_address(), MINUTE_IN_SECONDS );
 			self::schedule_cron_job( $settings['update'], NULL, TRUE );
-		}
-		else {
-			delete_transient( IP_Geo_Block::CRON_NAME . 'update' ); // not on activation
 		}
 	}
 
@@ -162,9 +159,8 @@ class IP_Geo_Block_Cron {
 	public static function exec_cache_gc( $settings ) {
 		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 		IP_Geo_Block_Logs::delete_expired_cache( $settings['cache_time'] );
-
-		wp_clear_scheduled_hook( IP_Geo_Block::CACHE_NAME );
-		wp_schedule_single_event( time() + $settings['cache_time_gc'], IP_Geo_Block::CACHE_NAME );
+		self::stop_cache_gc();
+		self::start_cache_gc();
 	}
 
 	public static function start_cache_gc( $settings ) {

@@ -57,11 +57,9 @@ class IP_Geo_Block {
 		if ( $settings['update']['auto'] )
 			add_action( self::CRON_NAME, array( $this, 'update_database' ) );
 
-		// check the package version and upgrade if needed
-		if ( version_compare( $settings['version'], self::VERSION ) < 0 || $settings['matching_rule'] < 0 ) {
-			set_transient( IP_Geo_Block::CRON_NAME . 'update', TRUE, MINUTE_IN_SECONDS );
+		// check the package version and upgrade if needed (activation hook never fire on upgrade)
+		if ( version_compare( $settings['version'], self::VERSION ) < 0 || $settings['matching_rule'] < 0 )
 			add_action( 'init', 'ip_geo_block_activate', $priority );
-		}
 
 		// Garbage collection for IP address cache
 		add_action( self::CACHE_NAME, array( $this, 'exec_cache_gc' ) );
