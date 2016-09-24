@@ -949,7 +949,7 @@ endif;
 		$field = 'cache_cookie';
 		add_settings_field(
 			$option_name.'_'.$field,
-			__( '<dfn title="IP address and its country code will be saved in the client cookie with a nonce to reduce SQL queries.">Cache by cookie</dfn>', 'ip-geo-block' ),
+			__( '<dfn title="The IP address and its country code will be saved into the client cookie with a dedicated nonce to reduce SQL queries.">Cache by cookie</dfn>', 'ip-geo-block' ),
 			array( $context, 'callback_field' ),
 			$option_slug,
 			$section,
