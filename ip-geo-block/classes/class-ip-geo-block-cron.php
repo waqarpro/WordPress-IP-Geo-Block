@@ -87,7 +87,7 @@ class IP_Geo_Block_Cron {
 			self::update_settings( $settings, array( 'matching_rule', 'white_list', 'black_list' ) );
 
 			// finished to update matching rule
-			set_transient( IP_Geo_Block::CRON_NAME, 'done', 2 * MINUTE_IN_SECONDS );
+			set_transient( IP_Geo_Block::CRON_NAME, 'done', 5 * MINUTE_IN_SECONDS );
 		}
 
 		return isset( $res ) ? $res : NULL;
@@ -138,15 +138,17 @@ class IP_Geo_Block_Cron {
 	}
 
 	/**
-	 * Kick off a cron job to download database immediately on background.
+	 * Kick off a cron job to download database immediately in background on activation.
 	 *
 	 */
-	public static function start_update_db( $immediate = TRUE ) {
-		if ( $immediate )
-			set_transient( IP_Geo_Block::CRON_NAME, IP_Geo_Block::get_ip_address(), 2 * MINUTE_IN_SECONDS );
-
-		$settings = IP_Geo_Block::get_option();
-		self::schedule_cron_job( $settings['update'], NULL, $immediate );
+	public static function start_update_db( $settings ) {
+		if ( FALSE === get_transient( IP_Geo_Block::CRON_NAME . 'update' ) ) {
+			set_transient( IP_Geo_Block::CRON_NAME, IP_Geo_Block::get_ip_address(), MINUTE_IN_SECONDS );
+			self::schedule_cron_job( $settings['update'], NULL, TRUE );
+		}
+		else {
+			delete_transient( IP_Geo_Block::CRON_NAME . 'update' ); // not on activation
+		}
 	}
 
 	public static function stop_update_db() {
@@ -159,11 +161,9 @@ class IP_Geo_Block_Cron {
 	 */
 	public static function exec_cache_gc( $settings ) {
 		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
-
-		wp_clear_scheduled_hook( IP_Geo_Block::CACHE_NAME );
-
 		IP_Geo_Block_Logs::delete_expired_cache( $settings['cache_time'] );
 
+		wp_clear_scheduled_hook( IP_Geo_Block::CACHE_NAME );
 		wp_schedule_single_event( time() + $settings['cache_time_gc'], IP_Geo_Block::CACHE_NAME );
 	}
 

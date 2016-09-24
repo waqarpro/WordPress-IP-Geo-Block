@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '3.0.0b8';
+	const VERSION = '3.0.0b9';
 	const GEOAPI_NAME = 'ip-geo-api';
 	const PLUGIN_NAME = 'ip-geo-block';
 	const PLUGIN_SLUG = 'ip-geo-block'; // fallback for ip-geo-api 1.1.3
@@ -58,8 +58,10 @@ class IP_Geo_Block {
 			add_action( self::CRON_NAME, array( $this, 'update_database' ) );
 
 		// check the package version and upgrade if needed
-		if ( version_compare( $settings['version'], self::VERSION ) < 0 || $settings['matching_rule'] < 0 )
+		if ( version_compare( $settings['version'], self::VERSION ) < 0 || $settings['matching_rule'] < 0 ) {
+			set_transient( IP_Geo_Block::CRON_NAME . 'update', TRUE, MINUTE_IN_SECONDS );
 			add_action( 'init', 'ip_geo_block_activate', $priority );
+		}
 
 		// Garbage collection for IP address cache
 		add_action( self::CACHE_NAME, array( $this, 'exec_cache_gc' ) );
@@ -428,7 +430,7 @@ class IP_Geo_Block {
 		IP_Geo_Block_API_Cache::update_cache( $hook, $validate, $settings );
 
 		// update statistics
-		if ( $settings['save_statistics'] )
+		if ( $auth && $settings['save_statistics'] )
 			IP_Geo_Block_Logs::update_stat( $hook, $validate, $settings );
 
 		// record log (0:no, 1:blocked, 2:passed, 3:unauth, 4:auth, 5:all)
@@ -790,8 +792,8 @@ class IP_Geo_Block {
 						return $validate + array( 'result' => $which ? 'blocked' : 'passed' );
 				}
 
-				elseif ( 2 === strlen( $code ) ) {
-					if ( $not xor $code === $validate['code'] )
+				elseif ( '*' === $code || 2 === strlen( $code ) ) {
+					if ( $not xor ( '*' === $code || $validate['code'] === $code ) )
 						return $validate + array( 'result' => $which ? 'blocked' : 'passed' );
 				}
 

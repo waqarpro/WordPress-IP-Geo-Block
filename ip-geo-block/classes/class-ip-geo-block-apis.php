@@ -456,7 +456,7 @@ class IP_Geo_Block_API_Cache extends IP_Geo_Block_API {
 	}
 
 	public static function update_cache( $hook, $validate, $settings ) {
-		$cache = IP_Geo_Block_Logs::search_cache( $ip = $validate['ip'] );
+		$cache = self::get_cache( $ip = $validate['ip'] );
 
 		if ( $cache ) {
 			$fail = $cache['fail'] + (int)isset( $validate['fail'] );

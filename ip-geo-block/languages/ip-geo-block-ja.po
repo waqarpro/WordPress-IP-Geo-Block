@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
-"POT-Creation-Date: 2016-09-21 00:49+0900\n"
-"PO-Revision-Date: 2016-09-21 00:57+0900\n"
+"POT-Creation-Date: 2016-09-24 13:13+0900\n"
+"PO-Revision-Date: 2016-09-24 13:31+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -66,8 +66,8 @@ msgstr ""
 "\">検証ルールの設定</a>」を確認して下さい。"
 
 #: admin/class-ip-geo-block-admin.php:293
-msgid "Matching rule has been updated."
-msgstr "マッチング規則を更新しました。"
+msgid "Local database and matching rule have been updated."
+msgstr "ローカル・データベースとマッチング規則を更新しました。"
 
 #: admin/class-ip-geo-block-admin.php:304
 msgid ""
@@ -585,7 +585,7 @@ msgstr "位置情報APIの設定"
 
 #: admin/includes/tab-settings.php:747
 msgid ""
-"<dfn title=\"Cache and local database are scaned at the top priority.\">API "
+"<dfn title=\"Cache and local database are scanned at the top priority.\">API "
 "selection and key settings</dfn>"
 msgstr ""
 "<dfn title=\"キャッシュとローカルのデータベースが最優先で検索されます。\">API"

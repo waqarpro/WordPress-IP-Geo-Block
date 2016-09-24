@@ -54,7 +54,7 @@ class IP_Geo_Block_Opts {
 			'plugins'     => 0,       // Validate on wp-content/plugins
 			'themes'      => 0,       // Validate on wp-content/themes
 			// since version 2.2.9
-			'period'      => 30,      // recording period
+			'period'      => 30,      // Number of days for recording period
 			'timing'      => 0,       // 0:init, 1:mu-plugins, 2:drop-in
 			// since version 3.0.0
 			'includes'    => 3,       // for wp-includes/
