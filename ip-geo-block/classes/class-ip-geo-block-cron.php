@@ -160,7 +160,7 @@ class IP_Geo_Block_Cron {
 		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-logs.php' );
 		IP_Geo_Block_Logs::delete_expired_cache( $settings['cache_time'] );
 		self::stop_cache_gc();
-		self::start_cache_gc();
+		self::start_cache_gc( $settings );
 	}
 
 	public static function start_cache_gc( $settings ) {
