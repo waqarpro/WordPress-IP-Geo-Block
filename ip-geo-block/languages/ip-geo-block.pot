@@ -610,8 +610,8 @@ msgstr ""
 
 #: admin/includes/tab-settings.php:952
 msgid ""
-"<dfn title=\"The IP address and its country code will be saved into the "
-"client cookie with a dedicated nonce to reduce SQL queries.\">Cache by "
+"<dfn title=\"IP address and its country code protected by a dedicated key "
+"will be saved into the client cookie to reduce SQL queries.\">Cache by "
 "cookie</dfn>"
 msgstr ""
 
