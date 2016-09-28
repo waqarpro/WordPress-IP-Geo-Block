@@ -392,7 +392,7 @@ class IP_Geo_Block_Util {
 	 *
 	 * Generate a keyed hash value using the HMAC method.
 	 */
-	public static function hash_hmac( $algo, $data, $key, $raw_output = FALSE ) {
+	private static function hash_hmac( $algo, $data, $key, $raw_output = FALSE ) {
 		// PHP 5 >= 5.1.2, PECL hash >= 1.1 or wp-includes/compat.php
 		if ( function_exists( 'hash_hmac' ) )
 			return hash_hmac( $algo, $data, $key, $raw_output );
@@ -484,7 +484,7 @@ class IP_Geo_Block_Util {
 	 * Validates a URL for use in a redirect.
 	 * @source: wp-includes/pluggable.php
 	 */
-	private static function validate_redirect($location, $default = '') {
+	private static function validate_redirect( $location, $default = '' ) {
 		$location = trim( $location );
 		// browsers will assume 'http' is your protocol, and will obey a redirect to a URL starting with '//'
 		if ( substr( $location, 0, 2 ) == '//' )
@@ -535,11 +535,27 @@ class IP_Geo_Block_Util {
 	/**
 	 * WP alternative function for mu-plugins
 	 *
+	 * Retrieves unvalidated referer from '_wp_http_referer' or HTTP referer.
+	 * @source: wp-includes/functions.php
+	 */
+	private static function get_raw_referer() {
+		if ( ! empty( $_REQUEST['_wp_http_referer'] ) )
+			return wp_unslash( $_REQUEST['_wp_http_referer'] ); // wp-includes/formatting.php
+
+		elseif ( ! empty( $_SERVER['HTTP_REFERER'] ) )
+			return wp_unslash( $_SERVER['HTTP_REFERER'] ); // wp-includes/formatting.php
+
+		return false;
+	}
+
+	/**
+	 * WP alternative function for mu-plugins
+	 *
 	 * Retrieve referer from '_wp_http_referer' or HTTP referer.
 	 * @source: wp-includes/functions.php
 	 */
 	public static function get_referer() {
-		$ref = wp_get_raw_referer(); // wp-includes/functions.php
+		$ref = self::get_raw_referer(); // wp-includes/functions.php
 
 		if ( $ref && $ref !== wp_unslash( $_SERVER['REQUEST_URI'] ) && $ref !== home_url() . wp_unslash( $_SERVER['REQUEST_URI'] ) )
 			return self::validate_redirect( $ref, false );
@@ -566,13 +582,13 @@ class IP_Geo_Block_Util {
 	 *
 	 * Add / Remove slash at the end of string.
 	 * @source: wp-includes/formatting.php
-	 *//*
+	 */
 	public static function unslashit( $string ) {
 		return rtrim( $string, '/\\' );
 	}
 
 	public static function slashit( $string ) {
 		return self::unslashit( $string ) . '/';
-	}*/
+	}
 
 }

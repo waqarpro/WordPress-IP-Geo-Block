@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: IP Geo Block 3.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ip-geo-block\n"
 "POT-Creation-Date: 2016-09-24 18:46+0900\n"
-"PO-Revision-Date: 2016-09-25 19:27+0900\n"
+"PO-Revision-Date: 2016-09-29 00:25+0900\n"
 "Last-Translator: tokkonopapa <tokkonopapa@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -866,10 +866,6 @@ msgstr ""
 #: classes/class-ip-geo-block-util.php:106
 #, php-format
 msgid "Unable to read %s. Please check the permission."
-msgstr ""
-
-#: classes/class-ip-geo-block.php:363
-msgid "Dashboard"
 msgstr ""
 
 #: wp-content/ip-geo-api/ip2location/class-ip2location.php:145

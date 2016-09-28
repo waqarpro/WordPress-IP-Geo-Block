@@ -245,7 +245,8 @@ class IP_Geo_Block_Admin_Ajax {
 			'[response_code]',
 			'[login_fails]',
 			'[redirect_uri]',            // 3.0.0
-			'[validation][timing]',      // 3.0.0
+			'[validation][timing]',      // 2.2.9
+			'[validation][period]',      // 2.2.9
 			'[validation][proxy]',
 			'[validation][comment]',
 			'[validation][xmlrpc]',
@@ -287,7 +288,7 @@ class IP_Geo_Block_Admin_Ajax {
 			'[providers][IP-Json]',
 			'[providers][Nekudo]',
 			'[providers][Xhanch]',
-			'[providers][GeoIPLookup]',
+			'[providers][GeoIPLookup]',  // 2.2.8
 			'[providers][ip-api.com]',
 			'[providers][IPInfoDB]',
 			'[save_statistics]',
@@ -363,7 +364,7 @@ class IP_Geo_Block_Admin_Ajax {
 				    'plugins'     => 2,       // Validate on wp-content/plugins
 				    'themes'      => 2,       // Validate on wp-content/themes
 				),
-				'signature'       => "..,/wp-config.php,/passwd,curl,wget,eval\nselect:.5,where:.5,union:.5\ncreate:.6,password:.4,load_file:.5",
+				'signature'       => "..,/wp-config.php,/passwd,curl,wget,eval\nscript,select:.5,where:.5,union:.5\ncreate:.6,password:.4,load_file:.5",
 				'rewrite'         => array(   // Apply rewrite rule
 				    'plugins'     => TRUE,    // for wp-content/plugins
 				    'themes'      => TRUE,    // for wp-content/themes

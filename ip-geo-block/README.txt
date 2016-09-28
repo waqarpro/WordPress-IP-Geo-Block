@@ -495,6 +495,15 @@ For more details, see
   and
     [release 3.0.0](http://www.ipgeoblock.com/changelog/release-3.0.0.html "3.0.0 Release Note | IP Geo Block").
 
+= 2.2.8.1 =
+* **Bug fix:** Fixed the issue of undefined function `wp_get_raw_referer()` 
+  error under certain condition. See
+  [the issue](https://wordpress.org/support/topic/since-php-update-fatal-error-everytime-i-want-to-edit-a-post/ "Since PHP update Fatal error everytime I want to edit a post")
+  at forum.
+* **Improved:** Avoid resetting country code on update. See
+  [the issue](https://wordpress.org/support/topic/whitelist-resets-on-update/ "Whitelist resets on update")
+  at forum.
+
 = 2.2.8 =
 * **Bug fix:** Fixed a issue of stripping some required characters for Google 
   maps API key.
