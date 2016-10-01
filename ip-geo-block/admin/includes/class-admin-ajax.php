@@ -246,7 +246,6 @@ class IP_Geo_Block_Admin_Ajax {
 			'[login_fails]',
 			'[redirect_uri]',            // 3.0.0
 			'[validation][timing]',      // 2.2.9
-			'[validation][period]',      // 2.2.9
 			'[validation][proxy]',
 			'[validation][comment]',
 			'[validation][xmlrpc]',
@@ -293,6 +292,7 @@ class IP_Geo_Block_Admin_Ajax {
 			'[providers][IPInfoDB]',
 			'[save_statistics]',
 			'[validation][reclogs]',
+			'[validation][recdays]',     // 2.2.9
 			'[validation][postkey]',
 			'[update][auto]',
 			'[anonymize]',

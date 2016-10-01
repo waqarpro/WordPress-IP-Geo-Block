@@ -51,7 +51,7 @@ class IP_Geo_Block {
 		$loader = new IP_Geo_Block_Loader();
 
 		// include drop in if it exists
-		@include_once untrailingslashit( $settings['api_dir'] ) . '/drop-in.php';
+		@include_once IP_Geo_Block_Util::unslashit( $settings['api_dir'] ) . '/drop-in.php';
 
 		// the action hook which will be fired by cron job
 		if ( $settings['update']['auto'] )
@@ -70,7 +70,7 @@ class IP_Geo_Block {
 		$this->pagenow = ! empty( $GLOBALS['pagenow'] ) ? $GLOBALS['pagenow'] : basename( $_SERVER['SCRIPT_NAME'] );
 
 		// setup the content folders
-		self::$wp_path = array( 'home' => untrailingslashit( parse_url( site_url(), PHP_URL_PATH ) ) ); // @since 2.6.0
+		self::$wp_path = array( 'home' => IP_Geo_Block_Util::unslashit( parse_url( site_url(), PHP_URL_PATH ) ) ); // @since 2.6.0
 		$len = strlen( self::$wp_path['home'] );
 		$list = array(
 			'admin'     => 'admin_url',          // @since 2.6.0
@@ -83,7 +83,7 @@ class IP_Geo_Block {
 
 		// analize the validation target (admin|plugins|themes|includes)
 		foreach ( $list as $key => $val ) {
-			self::$wp_path[ $key ] = trailingslashit( substr( parse_url( call_user_func( $val ), PHP_URL_PATH ), $len ) );
+			self::$wp_path[ $key ] = IP_Geo_Block_Util::slashit( substr( parse_url( call_user_func( $val ), PHP_URL_PATH ), $len ) );
 			if ( ! $this->target_type && FALSE !== strpos( $this->request_uri, self::$wp_path[ $key ] ) )
 				$this->target_type = $key;
 		}
@@ -753,6 +753,8 @@ class IP_Geo_Block {
 
 		// validate country by IP address (block: true, die: false)
 		add_filter( self::PLUGIN_NAME . '-public', array( $this, 'check_bots' ), 10, 2 );
+		add_filter( self::PLUGIN_NAME . '-public', array( $this, 'check_tags' ), 10, 2 );
+
 		$this->validate_ip( 'public', $settings, TRUE, ! $settings['public']['simulate'] );
 	}
 
@@ -804,6 +806,13 @@ class IP_Geo_Block {
 		}
 
 		return $validate;
+	}
+
+	public function check_tags( $validate, $settings ) {
+		if ( preg_match( '/<(".*?"|\'.*?\'|[^\'"])*?>/', urldecode( serialize( $_GET + $_POST ) ) ) )
+			return $validate + array( 'result' => 'tags' );
+		else
+			return $validate;
 	}
 
 	/**

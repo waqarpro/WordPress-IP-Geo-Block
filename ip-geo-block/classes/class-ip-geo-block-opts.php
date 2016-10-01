@@ -55,7 +55,7 @@ class IP_Geo_Block_Opts {
 			'themes'      => 0,       // Validate on wp-content/themes
 			// since version 2.2.9
 			'timing'      => 0,       // 0:init, 1:mu-plugins, 2:drop-in
-			'period'      => 30,      // Number of days for recording period
+			'recdays'     => 30,      // Number of days for recording logs
 			// since version 3.0.0
 			'includes'    => 3,       // for wp-includes/
 			'uploads'     => 3,       // for UPLOADS/uploads
@@ -250,8 +250,8 @@ class IP_Geo_Block_Opts {
 			}
 
 			if ( version_compare( $version, '3.0.0' ) < 0 ) { // actually 2.2.9
-				$settings['validation']['period'] = $default['validation']['period'];
-				$settings['validation']['timing'] = $default['validation']['timing'];
+				$settings['validation']['timing' ] = $default['validation']['timing' ];
+				$settings['validation']['recdays'] = $default['validation']['recdays'];
 			}
 
 			if ( version_compare( $version, '3.0.0' ) < 0 ) {
@@ -327,15 +327,15 @@ class IP_Geo_Block_Opts {
 			}
 		}
 
-		return trailingslashit(
+		return IP_Geo_Block_Util::slashit(
 			apply_filters( IP_Geo_Block::PLUGIN_NAME . '-api-dir', $dir )
 		) . IP_Geo_Block::GEOAPI_NAME; // must add `ip-geo-api` for basename
 	}
 
 	// http://php.net/manual/function.copy.php#91010
 	private static function recurse_copy( $src, $dst ) {
-		$src = trailingslashit( $src );
-		$dst = trailingslashit( $dst );
+		$src = IP_Geo_Block_Util::slashit( $src );
+		$dst = IP_Geo_Block_Util::slashit( $dst );
 
 		! @is_dir( $dst ) and wp_mkdir_p( $dst ); // @since 2.0.1 @mkdir( $dst );
 
@@ -355,7 +355,7 @@ class IP_Geo_Block_Opts {
 
 	// http://php.net/manual/function.rmdir.php#110489
 	private static function recurse_rmdir( $dir ) {
-		$dir = trailingslashit( $dir );
+		$dir = IP_Geo_Block_Util::slashit( $dir );
 		$files = array_diff( @scandir( $dir ), array( '.', '..' ) );
 
 		foreach ( $files as $file ) {

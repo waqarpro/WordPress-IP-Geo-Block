@@ -884,7 +884,7 @@ class IP_Geo_Block_Admin_Tab {
 		);
 
 if ( defined( 'IP_GEO_BLOCK_DEBUG' ) && IP_GEO_BLOCK_DEBUG ):
-		$key = 'period';
+		$key = 'recdays';
 		add_settings_field(
 			$option_name.'_'.$field.'_'.$key,
 			__( 'Recording period of the logs (days)', 'ip-geo-block' ),

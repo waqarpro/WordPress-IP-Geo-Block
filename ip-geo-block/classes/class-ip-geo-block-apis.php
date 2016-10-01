@@ -530,7 +530,7 @@ class IP_Geo_Block_API_Cookie extends IP_Geo_Block_API {
 			IP_Geo_Block::CACHE_NAME,
 			base64_encode( convert_uuencode( $nonce . '|' . implode( '|', array_values( $cache ) ) ) ),
 			$_SERVER['REQUEST_TIME'] + $settings['cache_time'],
-			trailingslashit( IP_Geo_Block::$wp_path['home'] ),
+			IP_Geo_Block_Util::slashit( IP_Geo_Block::$wp_path['home'] ),
 			'',
 			FALSE,
 			TRUE
@@ -719,7 +719,7 @@ if ( class_exists( 'IP_Geo_Block' ) ) {
 
 	// Get absolute path to the geo-location API
 	$dir = IP_Geo_Block::get_option();
-	$dir = trailingslashit(
+	$dir = IP_Geo_Block_Util::slashit(
 		apply_filters( IP_Geo_Block::PLUGIN_NAME . '-api-dir', dirname( $dir['api_dir'] ) )
 	) . IP_Geo_Block::GEOAPI_NAME;
 
@@ -728,7 +728,7 @@ if ( class_exists( 'IP_Geo_Block' ) ) {
 		$dir = IP_GEO_BLOCK_PATH . IP_Geo_Block::GEOAPI_NAME;
 
 	// Scan API directory
-	$dir = trailingslashit( $dir );
+	$dir = IP_Geo_Block_Util::slashit( $dir );
 	$plugins = is_dir( $dir ) ? scandir( $dir, 1 ) : FALSE; // SCANDIR_SORT_DESCENDING @since 5.4.0
 
 	// Load addons by heigher priority order
