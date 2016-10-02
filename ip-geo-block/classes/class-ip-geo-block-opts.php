@@ -135,6 +135,7 @@ class IP_Geo_Block_Opts {
 			'ua_list'        => "Google:HOST,bot:HOST,slurp:HOST\nspider:HOST,archive:HOST,*:FEED\n*:HOST=embed.ly,Twitterbot:US\nPinterest:US,AOL:US",
 			'advanced_cache' => NULL, // name of the cache plugin which has advanced-cache.php
 			'simulate'       => FALSE,// just simulate, never block
+			'exception'      => NULL, // Path from document root for exception
 		),
 	);
 

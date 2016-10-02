@@ -31,6 +31,7 @@ class IP_Geo_Block {
 
 	// Globals in this class
 	public static $wp_path;
+	private $query = '';
 	private $pagenow = NULL;
 	private $request_uri = NULL;
 	private $target_type = NULL;
@@ -65,6 +66,7 @@ class IP_Geo_Block {
 		add_action( self::CACHE_NAME, array( $this, 'exec_cache_gc' ) );
 
 		// normalize requested uri and page
+		$this->query = strtolower( urldecode( serialize( array_values( $_GET + $_POST ) ) ) );
 		$this->request_uri = strtolower( parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH ) );
 		$this->request_uri = preg_replace( array( '!\.+/!', '!//+!' ), '/', $this->request_uri );
 		$this->pagenow = ! empty( $GLOBALS['pagenow'] ) ? $GLOBALS['pagenow'] : basename( $_SERVER['SCRIPT_NAME'] );
@@ -257,8 +259,8 @@ class IP_Geo_Block {
 	 */
 	private static function make_validation( $ip, $result ) {
 		return array_merge( array(
-			'ip' => $ip,
-			'auth' => get_current_user_id(), // unavailale before 'init' hook
+			'ip'   => $ip,
+			'auth' => IP_Geo_Block_Util::get_current_user_id(),
 			'code' => 'ZZ', // may be overwritten with $result
 		), $result );
 	}
@@ -570,8 +572,10 @@ class IP_Geo_Block {
 		}
 
 		// register validation of malicious signature (except in the comment and post)
-		if ( ! IP_Geo_Block_Util::is_user_logged_in() || ! in_array( $this->pagenow, array( 'comment.php', 'post.php' ), TRUE ) )
+		if ( ! IP_Geo_Block_Util::is_user_logged_in() || ! in_array( $this->pagenow, array( 'comment.php', 'post.php' ), TRUE ) ) {
+			add_filter( self::PLUGIN_NAME . '-admin', array( $this, 'check_tags'      ), 6, 2 );
 			add_filter( self::PLUGIN_NAME . '-admin', array( $this, 'check_signature' ), 6, 2 );
+		}
 
 		// validate country by IP address (1: Block by country)
 		$this->validate_ip( 'admin', $settings, 1 & $type );
@@ -599,6 +603,7 @@ class IP_Geo_Block {
 			add_filter( self::PLUGIN_NAME . '-admin', array( $this, 'check_nonce' ), 5, 2 );
 
 		// register validation of malicious signature
+		add_filter( self::PLUGIN_NAME . '-admin', array( $this, 'check_tags'      ), 6, 2 );
 		add_filter( self::PLUGIN_NAME . '-admin', array( $this, 'check_signature' ), 6, 2 );
 
 		// validate country by IP address (1: Block by country)
@@ -665,14 +670,17 @@ class IP_Geo_Block {
 		return $validate['auth'] ? $validate + array( 'result' => 'passed' ) : $validate; // can't overwrite existing result
 	}
 
+	public function check_tags( $validate, $settings ) {
+		return preg_match( "!<script[^>]*>(.*?)</script[^>]*>!", $this->query, $matches ) && preg_match( '/\w+/', $matches[1] ) ? $validate + array( 'result' => 'script' ) : $validate;
+	}
+
 	public function check_signature( $validate, $settings ) {
 		$score = 0.0;
-		$request = strtolower( urldecode( serialize( $_GET + $_POST ) ) );
 
 		foreach ( IP_Geo_Block_Util::multiexplode( array( ",", "\n" ), $settings['signature'] ) as $sig ) {
 			$val = explode( ':', $sig, 2 );
 
-			if ( ( $sig = trim( $val[0] ) ) && FALSE !== strpos( $request, $sig ) ) {
+			if ( ( $sig = trim( $val[0] ) ) && FALSE !== strpos( $this->query, $sig ) ) {
 				if ( ( $score += ( empty( $val[1] ) ? 1.0 : (float)$val[1] ) ) > 0.99 )
 					return $validate + array( 'result' => 'badsig' ); // can't overwrite existing result
 			}
@@ -751,10 +759,12 @@ class IP_Geo_Block {
 			$settings['black_list'   ] = $settings['public']['black_list'   ];
 		}
 
-		// validate country by IP address (block: true, die: false)
-		add_filter( self::PLUGIN_NAME . '-public', array( $this, 'check_bots' ), 10, 2 );
-		add_filter( self::PLUGIN_NAME . '-public', array( $this, 'check_tags' ), 10, 2 );
+		if ( FALSE === strpos( $this->request_uri, $settings['public']['exception'] ) ) {
+			add_filter( self::PLUGIN_NAME . '-public', array( $this, 'check_tags' ), 6, 2 );
+			add_filter( self::PLUGIN_NAME . '-public', array( $this, 'check_bots' ), 6, 2 );
+		}
 
+		// validate country by IP address (block: true, die: false)
 		$this->validate_ip( 'public', $settings, TRUE, ! $settings['public']['simulate'] );
 	}
 
@@ -806,13 +816,6 @@ class IP_Geo_Block {
 		}
 
 		return $validate;
-	}
-
-	public function check_tags( $validate, $settings ) {
-		if ( preg_match( '/<(".*?"|\'.*?\'|[^\'"])*?>/', urldecode( serialize( $_GET + $_POST ) ) ) )
-			return $validate + array( 'result' => 'tags' );
-		else
-			return $validate;
 	}
 
 	/**
