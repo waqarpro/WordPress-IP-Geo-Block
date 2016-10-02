@@ -133,9 +133,8 @@ class IP_Geo_Block_Opts {
 			'white_list'     => NULL, // Comma separeted country code
 			'black_list'     => 'ZZ', // Comma separeted country code
 			'ua_list'        => "Google:HOST,bot:HOST,slurp:HOST\nspider:HOST,archive:HOST,*:FEED\n*:HOST=embed.ly,Twitterbot:US\nPinterest:US,AOL:US",
-			'advanced_cache' => NULL, // name of the cache plugin which has advanced-cache.php
-			'simulate'       => FALSE,// just simulate, never block
 			'exception'      => NULL, // Path from document root for exception
+			'simulate'       => FALSE,// just simulate, never block
 		),
 	);
 
