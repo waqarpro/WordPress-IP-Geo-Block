@@ -327,15 +327,15 @@ class IP_Geo_Block_Opts {
 			}
 		}
 
-		return IP_Geo_Block_Util::slashit(
+		return trailingslashit(
 			apply_filters( IP_Geo_Block::PLUGIN_NAME . '-api-dir', $dir )
 		) . IP_Geo_Block::GEOAPI_NAME; // must add `ip-geo-api` for basename
 	}
 
 	// http://php.net/manual/function.copy.php#91010
 	private static function recurse_copy( $src, $dst ) {
-		$src = IP_Geo_Block_Util::slashit( $src );
-		$dst = IP_Geo_Block_Util::slashit( $dst );
+		$src = trailingslashit( $src );
+		$dst = trailingslashit( $dst );
 
 		! @is_dir( $dst ) and wp_mkdir_p( $dst ); // @since 2.0.1 @mkdir( $dst );
 
@@ -355,7 +355,7 @@ class IP_Geo_Block_Opts {
 
 	// http://php.net/manual/function.rmdir.php#110489
 	private static function recurse_rmdir( $dir ) {
-		$dir = IP_Geo_Block_Util::slashit( $dir );
+		$dir = trailingslashit( $dir );
 		$files = array_diff( @scandir( $dir ), array( '.', '..' ) );
 
 		foreach ( $files as $file ) {
