@@ -15,7 +15,7 @@ class IP_Geo_Block {
 	 * Unique identifier for this plugin.
 	 *
 	 */
-	const VERSION = '3.0.0b9';
+	const VERSION = '3.0.0b10';
 	const GEOAPI_NAME = 'ip-geo-api';
 	const PLUGIN_NAME = 'ip-geo-block';
 	const PLUGIN_SLUG = 'ip-geo-block'; // fallback for ip-geo-api 1.1.3
@@ -54,16 +54,16 @@ class IP_Geo_Block {
 		// include drop in if it exists
 		@include_once IP_Geo_Block_Util::unslashit( $settings['api_dir'] ) . '/drop-in.php';
 
+		// Garbage collection for IP address cache
+		add_action( self::CACHE_NAME, array( $this, 'exec_cache_gc' ) );
+
 		// the action hook which will be fired by cron job
 		if ( $settings['update']['auto'] )
 			add_action( self::CRON_NAME, array( $this, 'update_database' ) );
 
 		// check the package version and upgrade if needed (activation hook never fire on upgrade)
 		if ( version_compare( $settings['version'], self::VERSION ) < 0 || $settings['matching_rule'] < 0 )
-			add_action( 'init', 'ip_geo_block_activate', $priority );
-
-		// Garbage collection for IP address cache
-		add_action( self::CACHE_NAME, array( $this, 'exec_cache_gc' ) );
+			$loader->add_action( 'init', 'ip_geo_block_activate', $priority );
 
 		// normalize requested uri and page
 		$this->query = strtolower( urldecode( serialize( array_values( $_GET + $_POST ) ) ) );
@@ -633,8 +633,8 @@ class IP_Geo_Block {
 			$settings = self::get_option();
 			$cache = IP_Geo_Block_API_Cache::update_cache( $cache['hook'], $validate, $settings );
 
-			// validate xmlrpc system.multicall ($HTTP_RAW_POST_DATA has already populated in xmlrpc.php)
-			if ( defined( 'XMLRPC_REQUEST' ) && FALSE !== stripos( $GLOBALS['HTTP_RAW_POST_DATA'], 'system.multicall' ) )
+			// validate xmlrpc system.multicall
+			if ( defined( 'XMLRPC_REQUEST' ) && FALSE !== stripos( file_get_contents( 'php://input' ), 'system.multicall' ) )
 				$validate['result'] = 'multi';
 
 			// (1) blocked, (3) unauthenticated, (5) all
