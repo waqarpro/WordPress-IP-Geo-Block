@@ -129,7 +129,7 @@ class IP_Geo_Block_Loader {
 		 * This part will be executed at the very beginning of WordPress core.
 		 * Execute callbacks that are specified by the component with 'init'.
 		 */
-		if ( ! IP_Geo_Block_Util::is_user_logged_in() ) {
+		if ( ! IP_Geo_Block_Util::may_be_logged_in() ) {
 			foreach ( $this->actions as $index => $hook ) {
 				if ( in_array( $hook['hook'], array( 'init', 'wp_loaded' ) ) ) {
 					// Execute callback directly
