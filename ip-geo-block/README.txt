@@ -3,7 +3,7 @@ Contributors: tokkonopapa
 Donate link:
 Tags: buddypress, bbPress, comment, pingback, trackback, spam, IP address, geo, geolocation, xmlrpc, login, wp-admin, admin, ajax, security, brute force, firewall, vulnerability
 Requires at least: 3.7
-Tested up to: 4.6
+Tested up to: 4.6.1
 Stable tag: 3.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -495,9 +495,12 @@ For more details, see
   and
     [release 3.0.0](http://www.ipgeoblock.com/changelog/release-3.0.0.html "3.0.0 Release Note | IP Geo Block").
 
+= 2.2.8.2 =
+* **Bug fix:** Fixed the mismatched internal version number.
+
 = 2.2.8.1 =
 * **Bug fix:** Fixed the issue of undefined function `wp_get_raw_referer()` 
-  error under certain condition. See
+  error that happened under certain condition. See
   [the issue](https://wordpress.org/support/topic/since-php-update-fatal-error-everytime-i-want-to-edit-a-post/ "Since PHP update Fatal error everytime I want to edit a post")
   at forum.
 * **Improved:** Avoid resetting country code on update. See
@@ -505,7 +508,7 @@ For more details, see
   at forum.
 
 = 2.2.8 =
-* **Bug fix:** Fixed a issue of stripping some required characters for Google 
+* **Bug fix:** Fixed the issue of stripping some required characters for Google
   maps API key.
 * **New feature:** Whois database Lookup for IP address on search tab.
 * **Update:** Updated geolocation API libraries and services.

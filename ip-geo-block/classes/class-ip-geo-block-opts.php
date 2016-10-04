@@ -242,7 +242,7 @@ class IP_Geo_Block_Opts {
 			if ( version_compare( $version, '2.2.7' ) < 0 )
 				$settings['api_key'] = $default['api_key'];
 
-			if ( version_compare( $version, '3.0.0' ) < 0 ) { // actually 2.2.8
+			if ( version_compare( $version, '2.2.8' ) < 0 ) {
 				$settings['login_action'] = $default['login_action'];
 				// Block by country (register, lost password)
 				if ( 2 === (int)$settings['validation']['login'] )
@@ -460,6 +460,10 @@ class IP_Geo_Block_Opts {
 		return TRUE;
 	}
 
+	/**
+	 * Save/Load settings data to/from API_DIR/config.php
+	 *
+	 */
 	public static function save_settings( $settings ) {
 		$path = self::get_api_dir( $settings );
 		return $path ? file_put_contents( $path . 'config.php', "<?php\nreturn " . var_export( $settings, TRUE ) . ";\n" ) : FALSE;

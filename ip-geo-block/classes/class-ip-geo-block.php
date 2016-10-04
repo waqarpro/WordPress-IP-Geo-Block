@@ -573,8 +573,8 @@ class IP_Geo_Block {
 
 		// register validation of malicious signature (except in the comment and post)
 		if ( ! IP_Geo_Block_Util::may_be_logged_in() || ! in_array( $this->pagenow, array( 'comment.php', 'post.php' ), TRUE ) ) {
-			add_filter( self::PLUGIN_NAME . '-admin', array( $this, 'check_tags'      ), 6, 2 );
 			add_filter( self::PLUGIN_NAME . '-admin', array( $this, 'check_signature' ), 6, 2 );
+			add_filter( self::PLUGIN_NAME . '-admin', array( $this, 'check_tags'      ), 6, 2 );
 		}
 
 		// validate country by IP address (1: Block by country)
@@ -603,8 +603,8 @@ class IP_Geo_Block {
 			add_filter( self::PLUGIN_NAME . '-admin', array( $this, 'check_nonce' ), 5, 2 );
 
 		// register validation of malicious signature
-		add_filter( self::PLUGIN_NAME . '-admin', array( $this, 'check_tags'      ), 6, 2 );
 		add_filter( self::PLUGIN_NAME . '-admin', array( $this, 'check_signature' ), 6, 2 );
+		add_filter( self::PLUGIN_NAME . '-admin', array( $this, 'check_tags'      ), 6, 2 );
 
 		// validate country by IP address (1: Block by country)
 		$validate = $this->validate_ip( 'admin', $settings, 1 & $type );
@@ -670,10 +670,6 @@ class IP_Geo_Block {
 		return $validate['auth'] ? $validate + array( 'result' => 'passed' ) : $validate; // can't overwrite existing result
 	}
 
-	public function check_tags( $validate, $settings ) {
-		return preg_match( "!<script[^>]*>(.*?)</script[^>]*>!", $this->query, $matches ) && preg_match( '/\w+/', $matches[1] ) ? $validate + array( 'result' => 'script' ) : $validate;
-	}
-
 	public function check_signature( $validate, $settings ) {
 		$score = 0.0;
 
@@ -687,6 +683,10 @@ class IP_Geo_Block {
 		}
 
 		return $validate;
+	}
+
+	public function check_tags( $validate, $settings ) {
+		return preg_match( "!<script[^>]*>(.*?)</script[^>]*>!", $this->query, $matches ) && preg_match( '/\w+/', $matches[1] ) ? $validate + array( 'result' => 'script' ) : $validate;
 	}
 
 	public function check_nonce( $validate, $settings ) {
@@ -759,10 +759,11 @@ class IP_Geo_Block {
 			$settings['black_list'   ] = $settings['public']['black_list'   ];
 		}
 
-		if ( FALSE === strpos( $this->request_uri, $settings['public']['exception'] ) ) {
+		// register user agent validation and malicious requests
+		add_filter( self::PLUGIN_NAME . '-public', array( $this, 'check_bots' ), 6, 2 );
+
+		if ( FALSE === strpos( $this->request_uri, $settings['public']['exception'] ) )
 			add_filter( self::PLUGIN_NAME . '-public', array( $this, 'check_tags' ), 6, 2 );
-			add_filter( self::PLUGIN_NAME . '-public', array( $this, 'check_bots' ), 6, 2 );
-		}
 
 		// validate country by IP address (block: true, die: false)
 		$this->validate_ip( 'public', $settings, TRUE, ! $settings['public']['simulate'] );
