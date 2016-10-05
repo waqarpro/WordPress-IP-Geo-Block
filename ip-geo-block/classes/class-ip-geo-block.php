@@ -670,6 +670,18 @@ class IP_Geo_Block {
 		return $validate['auth'] ? $validate + array( 'result' => 'passed' ) : $validate; // can't overwrite existing result
 	}
 
+	public function check_nonce( $validate, $settings ) {
+		$action = self::PLUGIN_NAME . '-auth-nonce';
+		$nonce = IP_Geo_Block_Util::retrieve_nonce( $action );
+
+		if ( ! IP_Geo_Block_Util::verify_nonce( $nonce, $action ) ) {
+			if ( empty( $validate['result'] ) || 'passed' === $validate['result'] )
+				$validate['result'] = 'wp-zep'; // can't overwrite existing result
+		}
+
+		return $validate;
+	}
+
 	public function check_signature( $validate, $settings ) {
 		$score = 0.0;
 
@@ -687,18 +699,6 @@ class IP_Geo_Block {
 
 	public function check_tags( $validate, $settings ) {
 		return preg_match( "!<script[^>]*>(.*?)</script[^>]*>!", $this->query, $matches ) && preg_match( '/\w+/', $matches[1] ) ? $validate + array( 'result' => 'script' ) : $validate;
-	}
-
-	public function check_nonce( $validate, $settings ) {
-		$action = self::PLUGIN_NAME . '-auth-nonce';
-		$nonce = IP_Geo_Block_Util::retrieve_nonce( $action );
-
-		if ( ! IP_Geo_Block_Util::verify_nonce( $nonce, $action ) ) {
-			if ( empty( $validate['result'] ) || 'passed' === $validate['result'] )
-				$validate['result'] = 'wp-zep'; // can't overwrite existing result
-		}
-
-		return $validate;
 	}
 
 	/**
@@ -763,7 +763,7 @@ class IP_Geo_Block {
 		add_filter( self::PLUGIN_NAME . '-public', array( $this, 'check_bots' ), 6, 2 );
 
 		if ( FALSE === strpos( $this->request_uri, $settings['public']['exception'] ) )
-			add_filter( self::PLUGIN_NAME . '-public', array( $this, 'check_tags' ), 6, 2 );
+			add_filter( self::PLUGIN_NAME . '-public', array( $this, 'check_tags' ), 5, 2 );
 
 		// validate country by IP address (block: true, die: false)
 		$this->validate_ip( 'public', $settings, TRUE, ! $settings['public']['simulate'] );
