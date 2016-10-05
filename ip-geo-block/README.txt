@@ -146,7 +146,7 @@ and reverse-brute-force attacks to the login form and XML-RPC.
 
 = Attribution =
 
-This package includes GeoLite data created by MaxMind, available from 
+This package includes GeoLite library distributed by MaxMind, available from 
     [MaxMind](http://www.maxmind.com "MaxMind - IP Geolocation and Online Fraud Prevention"),
 and also includes IP2Location open source libraries available from 
     [IP2Location](http://www.ip2location.com "IP Address Geolocation to Identify Website Visitor's Geographical Location").
@@ -163,8 +163,10 @@ Also thanks for providing the following great services and REST APIs for free.
 
 = Development =
 
-Development of this plugin is promoted on 
-    [GitHub](https://github.com/tokkonopapa/WordPress-IP-Geo-Block "tokkonopapa/WordPress-IP-Geo-Block - GitHub").
+Development of this plugin is promoted at 
+    [WordPress-IP-Geo-Block](https://github.com/tokkonopapa/WordPress-IP-Geo-Block "tokkonopapa/WordPress-IP-Geo-Block - GitHub")
+and class libraries to handle geo-location database of Maxmind and IP2Location are developed separately at 
+    [WordPress-IP-Geo-API](https://github.com/tokkonopapa/WordPress-IP-Geo-API "tokkonopapa/WordPress-IP-Geo-API - GitHub").
 All contributions will always be welcome. Or visit my 
     [development blog](http://www.ipgeoblock.com/ "IP Geo Block").
 
