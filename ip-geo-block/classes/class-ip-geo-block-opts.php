@@ -249,7 +249,7 @@ class IP_Geo_Block_Opts {
 					$settings['login_action']['login'] = FALSE;
 			}
 
-			if ( version_compare( $version, '3.0.0' ) < 0 ) { // actually 2.2.9
+			if ( version_compare( $version, '2.2.9' ) < 0 ) {
 				$settings['validation']['timing' ] = $default['validation']['timing' ];
 				$settings['validation']['recdays'] = $default['validation']['recdays'];
 			}
@@ -274,7 +274,7 @@ class IP_Geo_Block_Opts {
 		}
 
 		// install addons for IP Geolocation database API
-		if ( ! $settings['api_dir'] || version_compare( $version, '3.0.0' ) < 0 )
+		if ( ! $settings['api_dir'] || version_compare( $version, '2.2.9' ) < 0 )
 			$settings['api_dir'] = self::install_api( $settings );
 
 		// update option table

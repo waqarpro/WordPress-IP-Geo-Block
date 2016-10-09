@@ -497,6 +497,15 @@ For more details, see
   and
     [release 3.0.0](http://www.ipgeoblock.com/changelog/release-3.0.0.html "3.0.0 Release Note | IP Geo Block").
 
+= 2.2.9 =
+* **New feature:** A new option that makes this plugin configured as a 
+  "Must-use plugin". It reduces your server load massively against 
+  brute-force attacks because it initiates this plugin prior to typical 
+  other plugins.
+* **Improvement:** Validation of a certain signature against XSS is internally 
+  added to "Bad signature in query" by default.
+* Find details in [2.2.9 Release Note](http://www.ipgeoblock.com/changelog/release-2.2.9.html "2.2.9 Release Note").
+
 = 2.2.8.2 =
 * **Bug fix:** Fixed the mismatched internal version number.
 

@@ -18,7 +18,6 @@ class IP_Geo_Block {
 	const VERSION = '3.0.0b10';
 	const GEOAPI_NAME = 'ip-geo-api';
 	const PLUGIN_NAME = 'ip-geo-block';
-	const PLUGIN_SLUG = 'ip-geo-block'; // fallback for ip-geo-api 1.1.3
 	const OPTION_NAME = 'ip_geo_block_settings';
 	const CACHE_NAME  = 'ip_geo_block_cache';
 	const CRON_NAME   = 'ip_geo_block_cron';
