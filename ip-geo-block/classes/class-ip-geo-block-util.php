@@ -175,6 +175,7 @@ class IP_Geo_Block_Util {
 	/**
 	 * HTML/XHTML filter that only allows some elements and attributes
 	 *
+	 * @source: wp-includes/kses.php
 	 */
 	public static function kses( $str, $allow_tags = TRUE ) {
 		return wp_kses( $str, $allow_tags ? $GLOBALS['allowedtags'] : array() );
@@ -443,7 +444,7 @@ class IP_Geo_Block_Util {
 			)/x';
 		$location = preg_replace_callback( $regex, array( __CLASS__, 'sanitize_utf8_in_redirect' ), $location );
 		$location = preg_replace( '|[^a-z0-9-~+_.?#=&;,/:%!*\[\]()@]|i', '', $location );
-		$location = wp_kses_no_null( $location ); // wp-includes/kses.php
+		$location = self::kses_no_null( $location ); // wp-includes/kses.php
 	 
 		// remove %0d and %0a from location
 		$strip = array( '%0d', '%0a', '%0D', '%0A' );
@@ -485,9 +486,8 @@ class IP_Geo_Block_Util {
 	 * @source: wp-includes/pluggable.php
 	 */
 	private static function validate_redirect( $location, $default = '' ) {
-		$location = trim( $location );
 		// browsers will assume 'http' is your protocol, and will obey a redirect to a URL starting with '//'
-		if ( substr( $location, 0, 2 ) == '//' )
+		if ( substr( $location = trim( $location ), 0, 2 ) == '//' )
 			$location = 'http:' . $location;
 
 		// In php 5 parse_url may fail if the URL query part contains http://, bug #38143
@@ -590,7 +590,36 @@ class IP_Geo_Block_Util {
 	}
 
 	public static function slashit( $string ) {
-		return self::unslashit( $string ) . '/';
+		return rtrim( $string, '/\\' ) . '/';
+	}
+
+	/**
+	 * WP alternative function for advanced-cache.php
+	 *
+	 * Removes any NULL characters in $string. 
+	 * @source: wp-includes/kses.php
+	 */
+	public static function kses_no_null( $str ) {
+		$string = preg_replace( '/[\x00-\x08\x0B\x0C\x0E-\x1F]/', '', $string );
+		$string = preg_replace( '/\\\\+0+/', '', $string );
+
+		return $string;
+	}
+
+	/**
+	 * WP alternative function for advanced-cache.php
+	 *
+	 * Normalize a filesystem path.
+	 * @source: wp-includes/functions.php
+	 */
+	public static function normalize_path( $path ) {
+		$path = str_replace( '\\', '/', $path );
+		$path = preg_replace( '|(?<=.)/+|', '/', $path );
+
+		if ( ':' === substr( $path, 1, 1 ) )
+			$path = ucfirst( $path );
+
+		return $path;
 	}
 
 }

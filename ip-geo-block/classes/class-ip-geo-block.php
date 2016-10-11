@@ -697,7 +697,8 @@ class IP_Geo_Block {
 	}
 
 	public function check_tags( $validate, $settings ) {
-		return preg_match( "!<script[^>]*>(.*?)</script[^>]*>!", $this->query, $matches ) && preg_match( '/\w+/', $matches[1] ) ? $validate + array( 'result' => 'script' ) : $validate;
+		return preg_match( '!<script[^>]*>(.*?)<\\\\*/script[^>]*>!', $this->query, $m ) &&
+		       preg_match( '/\w+/', $m[1] ) ? $validate + array( 'result' => 'script' ) : $validate;
 	}
 
 	/**
@@ -772,7 +773,7 @@ class IP_Geo_Block {
 		require_once( IP_GEO_BLOCK_PATH . 'classes/class-ip-geo-block-lkup.php' );
 
 		// get the name of host (from the cache if exists)
-		if ( empty( $validate['host'] ) )
+		if ( empty( $validate['host'] ) && FALSE !== strpos( $settings['public']['ua_list'], 'HOST' ) )
 			$validate['host'] = IP_Geo_Block_Lkup::gethostbyaddr( $validate['ip'] );
 
 		// check requested url
