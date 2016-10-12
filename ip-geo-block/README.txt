@@ -74,7 +74,7 @@ and reverse-brute-force attacks to the login form and XML-RPC.
   which can help to massively 
   [reduce the load on server](http://www.ipgeoblock.com/codex/validation-timing.html "Validation timing | IP Geo Block")
   especially against brute-force attacks because they would be blocked before 
-  regular plugins (not MU plugins) are loaded.  
+  regular plugins are loaded.  
   And father more, a cache mechanism for the fetched IP addresses and country code 
   has been equipped to reduce load on the server against the burst accesses with a 
   short period of time.
