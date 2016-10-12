@@ -548,6 +548,7 @@ class IP_Geo_Block {
 			// if the request has no page and no action, skip WP-ZEP
 			$zep = ( $page || $action ) ? TRUE : FALSE;
 			$type = (int)$settings['validation']['admin'];
+			break;
 		}
 
 		// setup WP-ZEP (2: WP-ZEP)
@@ -714,9 +715,7 @@ class IP_Geo_Block {
 	}
 
 	private function check_ips( $validate, $ips, $which ) {
-		$ip = $validate['ip'];
-
-		if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ) {
+		if ( filter_var( $ip = $validate['ip'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ) {
 			require_once( IP_GEO_BLOCK_PATH . 'includes/Net/IPv4.php' );
 
 			foreach ( IP_Geo_Block_Util::multiexplode( array( ",", "\n" ), $ips ) as $i ) {
@@ -751,22 +750,23 @@ class IP_Geo_Block {
 	 */
 	public function validate_public() {
 		$settings = self::get_option();
+		$public = $settings['public'];
 
 		// replace "Validation rule settings"
-		if ( -1 !== (int)$settings['public']['matching_rule'] ) {
-			$settings['matching_rule'] = $settings['public']['matching_rule'];
-			$settings['white_list'   ] = $settings['public']['white_list'   ];
-			$settings['black_list'   ] = $settings['public']['black_list'   ];
+		if ( -1 !== (int)$public['matching_rule'] ) {
+			$settings['matching_rule'] = $public['matching_rule'];
+			$settings['white_list'   ] = $public['white_list'   ];
+			$settings['black_list'   ] = $public['black_list'   ];
 		}
 
 		// register user agent validation and malicious requests
 		add_filter( self::PLUGIN_NAME . '-public', array( $this, 'check_bots' ), 6, 2 );
 
-		if ( FALSE === strpos( $this->request_uri, $settings['public']['exception'] ) )
+		if ( $public['exception'] && FALSE === strpos( $this->request_uri, $public['exception'] ) )
 			add_filter( self::PLUGIN_NAME . '-public', array( $this, 'check_tags' ), 5, 2 );
 
 		// validate country by IP address (block: true, die: false)
-		$this->validate_ip( 'public', $settings, TRUE, ! $settings['public']['simulate'] );
+		$this->validate_ip( 'public', $settings, TRUE, ! $public['simulate'] );
 	}
 
 	public function check_bots( $validate, $settings ) {

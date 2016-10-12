@@ -537,13 +537,14 @@ class IP_Geo_Block_Util {
 	 *
 	 * Retrieves unvalidated referer from '_wp_http_referer' or HTTP referer.
 	 * @source: wp-includes/functions.php
+	 * @note: wp_unslash() can be replaced with stripslashes() in this context because the target value is 'string'.
 	 */
 	private static function get_raw_referer() {
 		if ( ! empty( $_REQUEST['_wp_http_referer'] ) )
-			return wp_unslash( $_REQUEST['_wp_http_referer'] ); // wp-includes/formatting.php
+			return /*wp_unslash*/ stripslashes( $_REQUEST['_wp_http_referer'] ); // wp-includes/formatting.php
 
 		elseif ( ! empty( $_SERVER['HTTP_REFERER'] ) )
-			return wp_unslash( $_SERVER['HTTP_REFERER'] ); // wp-includes/formatting.php
+			return /*wp_unslash*/ stripslashes( $_SERVER['HTTP_REFERER'] ); // wp-includes/formatting.php
 
 		return false;
 	}
@@ -556,8 +557,9 @@ class IP_Geo_Block_Util {
 	 */
 	public static function get_referer() {
 		$ref = self::get_raw_referer(); // wp-includes/functions.php
+		$req = /*wp_unslash*/ stripslashes( $_SERVER['REQUEST_URI'] );
 
-		if ( $ref && $ref !== wp_unslash( $_SERVER['REQUEST_URI'] ) && $ref !== home_url() . wp_unslash( $_SERVER['REQUEST_URI'] ) )
+		if ( $ref && $ref !== $req && $ref !== home_url() . $req )
 			return self::validate_redirect( $ref, false );
 
 		return false;
@@ -599,27 +601,10 @@ class IP_Geo_Block_Util {
 	 * Removes any NULL characters in $string. 
 	 * @source: wp-includes/kses.php
 	 */
-	public static function kses_no_null( $str ) {
+	private static function kses_no_null( $string ) {
 		$string = preg_replace( '/[\x00-\x08\x0B\x0C\x0E-\x1F]/', '', $string );
 		$string = preg_replace( '/\\\\+0+/', '', $string );
-
 		return $string;
-	}
-
-	/**
-	 * WP alternative function for advanced-cache.php
-	 *
-	 * Normalize a filesystem path.
-	 * @source: wp-includes/functions.php
-	 */
-	public static function normalize_path( $path ) {
-		$path = str_replace( '\\', '/', $path );
-		$path = preg_replace( '|(?<=.)/+|', '/', $path );
-
-		if ( ':' === substr( $path, 1, 1 ) )
-			$path = ucfirst( $path );
-
-		return $path;
 	}
 
 }

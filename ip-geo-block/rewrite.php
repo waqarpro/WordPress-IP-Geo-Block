@@ -53,6 +53,22 @@ class IP_Geo_Block_Rewrite {
 	}
 
 	/**
+	 * WP alternative function for advanced-cache.php
+	 *
+	 * Normalize a filesystem path.
+	 * @source: wp-includes/functions.php
+	 */
+	private static function normalize_path( $path ) {
+		$path = str_replace( '\\', '/', $path );
+		$path = preg_replace( '|(?<=.)/+|', '/', $path );
+
+		if ( ':' === substr( $path, 1, 1 ) )
+			$path = ucfirst( $path );
+
+		return $path;
+	}
+
+	/**
 	 * Post process (never return)
 	 *
 	 */
@@ -99,14 +115,14 @@ class IP_Geo_Block_Rewrite {
 
 		// get absolute path of requested uri
 		// @link http://davidwalsh.name/iis-php-server-request_uri
-		$path = ( $root = IP_Geo_Block_Util::normalize_path( $root ) ) . parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH );
+		$path = ( $root = self::normalize_path( $root ) ) . parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH );
 
 		// while malicios URI may be intercepted by the server,
 		// null byte attack should be invalidated just in case.
 		// @note: is_file(), is_readable(), file_exists() need a valid path.
 		// @link: http://php.net/releases/5_3_4.php, https://bugs.php.net/bug.php?id=39863
 		// ex) $path = "/etc/passwd\0.php"; is_file( $path ) === true (5.2.14), false (5.4.4)
-		$path = self::realpath( IP_Geo_Block_Util::kses_no_null( $path ) ); // str_replace( "\0", '', $path )
+		$path = self::realpath( str_replace( "\0", '', $path ) );
 
 		// check path if under the document root
 		// This may be meaningless because the HTTP request is always inside the document root.

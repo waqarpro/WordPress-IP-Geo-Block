@@ -68,12 +68,16 @@ and reverse-brute-force attacks to the login form and XML-RPC.
   or themes can be blocked. A numerous such attacks can be found in 
     [this article](http://www.ipgeoblock.com/article/exposure-of-wp-config-php.html "Prevent exposure of wp-config.php").
 
-* ** Validation at the very beginning of WordPress core:**  
+* ** Minimize server load against brute-force attacks:**  
   You can configure this plugin as a 
   [Must Use Plugins](https://codex.wordpress.org/Must_Use_Plugins "Must Use Plugins &laquo; WordPress Codex")
-  which can help to drastically
+  which can help to massively 
   [reduce the load on server](http://www.ipgeoblock.com/codex/validation-timing.html "Validation timing | IP Geo Block")
-  especially against brute-force attacks.
+  especially against brute-force attacks because they would be blocked before 
+  regular plugins (not MU plugins) are loaded.  
+  And father more, a cache mechanism for the fetched IP addresses and country code 
+  has been equipped to reduce load on the server against the burst accesses with a 
+  short period of time.
 
 * **Support of BuddyPress and bbPress:**  
   You can configure this plugin such that a registered user can login as the
@@ -100,11 +104,6 @@ and reverse-brute-force attacks to the login form and XML-RPC.
   [IP2Location](http://www.ip2location.com/ "IP Address Geolocation to Identify Website Visitor's Geographical Location") 
   LITE databases can be incorporated with this plugin. Those will be downloaded
   and updated (once a month) automatically.
-
-* **Cache mechanism:**  
-  A cache mechanism for the fetched IP addresses and country code has been 
-  equipped to reduce load on the server against the burst accesses with a 
-  short period of time.
 
 * **Customizing response:**  
   HTTP response code can be selectable as `403 Forbidden` to deny access pages,
