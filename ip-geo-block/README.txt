@@ -71,13 +71,12 @@ and reverse-brute-force attacks to the login form and XML-RPC.
 * ** Minimize server load against brute-force attacks:**  
   You can configure this plugin as a 
   [Must Use Plugins](https://codex.wordpress.org/Must_Use_Plugins "Must Use Plugins &laquo; WordPress Codex")
-  which can help to massively 
+  which would be loaded prior to regular plugins and can massively 
   [reduce the load on server](http://www.ipgeoblock.com/codex/validation-timing.html "Validation timing | IP Geo Block")
-  especially against brute-force attacks because they would be blocked before 
-  regular plugins are loaded.  
-  And father more, a cache mechanism for the fetched IP addresses and country code 
-  has been equipped to reduce load on the server against the burst accesses with a 
-  short period of time.
+  especially against brute-force attacks.  
+  And furthermore, a cache mechanism for the fetched IP addresses and country 
+  code has been equipped to reduce load on the server against the burst 
+  accesses with a short period of time.
 
 * **Support of BuddyPress and bbPress:**  
   You can configure this plugin such that a registered user can login as the
@@ -335,10 +334,11 @@ Please refer to
 "[How can I fix permission troubles?](http://www.ipgeoblock.com/codex/how-can-i-fix-permission-troubles.html 'How can I fix permission troubles? | IP Geo Block')"
 in order to fix this error.
 
-= Does this plugin works well with caching plugin? =
+= Does this plugin works well with caching? =
 
-For the back-end protection, the answer is YES. But for the front-end, the 
-answer depends on the plugin you are using.
+For the back-end protection, the answer is YES if you disable caching on 
+back-end. But for the front-end, the answer depends on the caching method 
+you are employing.
 
 Currently, the following caching plugins and configurations can be supported:
 
@@ -348,16 +348,10 @@ Currently, the following caching plugins and configurations can be supported:
 - [W3 Total Cache](https://wordpress.org/plugins/w3-total-cache/ "W3 Total Cache &mdash; WordPress Plugins")  
   Select "**Disk: Basic**" and enable "**Late initialization**" for page cache.
 
-- [Wordfence](https://wordpress.org/plugins/wordfence/ "Wordfence Security &mdash; WordPress Plugins")  
-  Select "**Basic Caching**" at Performance Settings and put 
-  `ip-geo-block-mu.php` in this package into your 
-  [Must Use Plugins](https://codex.wordpress.org/Must_Use_Plugins "Must Use Plugins &laquo; WordPress Codex")
-  directory.
-
-If your plugin serves caching by `mod_rewrite` using `.htaccess` (e.g. WP 
-Fastest Cache) or caching by `advanced-cache.php` drop-in (Comet Cache), 
-"**Blocking on front-end**" feature might lead to generate inconsistent 
-pages. 
+If your plugin serves caching by `mod_rewrite` in `.htaccess` (e.g. WP Fastest 
+Cache) or caching by `advanced-cache.php` drop-in (Comet Cache) or front-end 
+caching served by your hosting provider, "**Blocking on front-end**" feature 
+might lead to generate inconsistent pages. 
 
 For more details, please refer to some documents at 
 [Blocking on front-end](http://www.ipgeoblock.com/codex/#blocking-on-front-end "Codex | IP Geo Block").
@@ -439,6 +433,7 @@ Yes, here is the list of all hooks to extend the feature of this plugin.
 * `ip-geo-block-login`            : validate IP address at `wp-login.php`.
 * `ip-geo-block-admin`            : validate IP address at `wp-admin/*.php`.
 * `ip-geo-block-public`           : validate IP address at front-end.
+* `ip-geo-block-allowed-actions`  : allowed actions at validating bad signatures on front-end.
 * `ip-geo-block-extra-ips`        : white/black list of extra IPs for prior validation.
 * `ip-geo-block-xxxxxx-status`    : http response status code for comment|xmlrpc|login|admin.
 * `ip-geo-block-xxxxxx-reason`    : http response reason      for comment|xmlrpc|login|admin.
