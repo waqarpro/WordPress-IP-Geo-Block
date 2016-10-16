@@ -433,13 +433,13 @@ Yes, here is the list of all hooks to extend the feature of this plugin.
 * `ip-geo-block-login`            : validate IP address at `wp-login.php`.
 * `ip-geo-block-admin`            : validate IP address at `wp-admin/*.php`.
 * `ip-geo-block-public`           : validate IP address at front-end.
-* `ip-geo-block-allowed-actions`  : allowed actions at validating bad signatures on front-end.
 * `ip-geo-block-extra-ips`        : white/black list of extra IPs for prior validation.
 * `ip-geo-block-xxxxxx-status`    : http response status code for comment|xmlrpc|login|admin.
 * `ip-geo-block-xxxxxx-reason`    : http response reason      for comment|xmlrpc|login|admin.
 * `ip-geo-block-bypass-admins`    : array of admin queries which should bypass WP-ZEP.
 * `ip-geo-block-bypass-plugins`   : array of plugin name which should bypass WP-ZEP.
 * `ip-geo-block-bypass-themes`    : array of theme name which should bypass WP-ZEP.
+* `ip-geo-block-bypass-public`    : array of actions which should bypass bad signatures validation.
 * `ip-geo-block-backup-dir`       : full path where log files should be saved.
 * `ip-geo-block-api-dir`          : full path to the API class libraries and local DB files.
 * `ip-geo-block-maxmind-dir`      : full path where Maxmind GeoLite DB files should be saved.
@@ -465,6 +465,12 @@ For more details, see
   or same domain links within `comment_content`. This change prevents to block 
   "Self Site Request Forgeries" (not Cross Site but a malicious link in the 
   comment field of own site).
+
+* Wordfence makes an ajax request whose action is `wordfence_testAjax` using 
+  `wp_remote_post()` and would receive 403 forbidden (it depends on your 
+  configuration) when you enable "**Prevent Zero-day Exploit**" at "**Admin 
+  ajax/post**". It does't affect its functionality because the response code 
+  never be verified.
 
 == Screenshots ==
 
@@ -493,11 +499,13 @@ For more details, see
 
 = 2.2.9 =
 * **New feature:** A new option that makes this plugin configured as a 
-  "Must-use plugin". It reduces your server load massively against 
-  brute-force attacks because it initiates this plugin prior to typical 
-  other plugins.
+  "Must-use plugin". It can massively reduce the server load especially 
+  against brute-force attacks because it initiates this plugin prior to 
+  other typical plugins.
 * **Improvement:** Validation of a certain signature against XSS is internally 
   added to "Bad signature in query" by default.
+* **Improvement:** Improved compatibility with PHP 7 
+  (Thanks to [FireMyst](https://wordpress.org/support/topic/plans-for-php-7-compatiblity/ "Topic: Plans for PHP 7 compatiblity? &laquo; WordPress.org Forums").
 * Find details in [2.2.9 Release Note](http://www.ipgeoblock.com/changelog/release-2.2.9.html "2.2.9 Release Note").
 
 = 2.2.8.2 =

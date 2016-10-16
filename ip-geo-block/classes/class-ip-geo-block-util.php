@@ -175,7 +175,6 @@ class IP_Geo_Block_Util {
 	/**
 	 * HTML/XHTML filter that only allows some elements and attributes
 	 *
-	 * @source: wp-includes/kses.php
 	 */
 	public static function kses( $str, $allow_tags = TRUE ) {
 		return wp_kses( $str, $allow_tags ? $GLOBALS['allowedtags'] : array() );
@@ -604,6 +603,7 @@ class IP_Geo_Block_Util {
 	private static function kses_no_null( $string ) {
 		$string = preg_replace( '/[\x00-\x08\x0B\x0C\x0E-\x1F]/', '', $string );
 		$string = preg_replace( '/\\\\+0+/', '', $string );
+
 		return $string;
 	}
 

@@ -759,7 +759,7 @@ class IP_Geo_Block {
 		}
 
 		// validate bad signatures when an action is required on front-end
-		if ( isset( $_REQUEST['action'] ) && ! in_array( $_REQUEST['action'], apply_filters( self::PLUGIN_NAME . '-allowed-actions', array() ), TRUE ) )
+		if ( isset( $_REQUEST['action'] ) && ! in_array( $_REQUEST['action'], apply_filters( self::PLUGIN_NAME . '-bypass-public', array() ), TRUE ) )
 			add_filter( self::PLUGIN_NAME . '-public', array( $this, 'check_signature' ), 5, 2 );
 
 		// validate script tag on front-end
@@ -787,11 +787,11 @@ class IP_Geo_Block {
 		foreach ( IP_Geo_Block_Util::multiexplode( array( ",", "\n" ), $settings['public']['ua_list'] ) as $pat ) {
 			@list( $name, $code ) = IP_Geo_Block_Util::multiexplode( array( ':', '#' ), $pat );
 
-			$which = ( FALSE === strpos( $pat, ':' ) );     // 0: pass (':'), 1: block ('#')
-			$not   = ( '!' === substr( $code, 0, 1 ) );     // 0: positive, 1: negative
-			$code  = ( $not ? substr( $code, 1 ) : $code ); // qualification identifier
-
 			if ( $name && ( '*' === $name || FALSE !== strpos( $u_agent, $name ) ) ) {
+				$which = ( FALSE === strpos( $pat, ':' ) );     // 0: pass (':'), 1: block ('#')
+				$not   = ( '!' === substr( $code, 0, 1 ) );     // 0: positive, 1: negative
+				$code  = ( $not ? substr( $code, 1 ) : $code ); // qualification identifier
+
 				if ( 'FEED' === $code ) {
 					if ( $not xor $is_feed )
 						return $validate + array( 'result' => $which ? 'blocked' : 'passed' );
